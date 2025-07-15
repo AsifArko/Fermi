@@ -92,9 +92,9 @@ CLERK_SECRET_KEY=your-clerk-secret-key
 
 ## Get sanity environment variables and configuration information
 
-- Run `npm install -g @sanity/cli`
+- Go to [sanity.io](https://sanity.io) and create a sanity application and you will get the `project-id` and default dataset `production`, after creating the project in sanity.io.
 
-- Go to [sanity.io](https://sanity.io) and create a sanity application. You should get the `project-id` dataset `production` by default, after creating the project in sanity.io.
+- Run `npm install -g @sanity/cli`
 
 - Run `npm create sanity@latest -- --project project-id --dataset production --template clean`. Sanity backend files are placed in `src/sanity`.
 
@@ -102,15 +102,11 @@ CLERK_SECRET_KEY=your-clerk-secret-key
 
 - Go to https://www.sanity.io/organizations/organization-id/project/project-id/api, create `ADMIN_TOKEN` with `Editor` permission and set that token to `SANITY_API_ADMIN_TOKEN` environment variable. Replace the organization-id and project-id with your organization-id and project-id in the url.
 
-- Create `READ_ONLY_TOKEN` with `Viewer` permission and set that token to SANITY_API_TOKEN environment variable.
+- Create `READ_ONLY_TOKEN` with `Viewer` permission and set that token to `SANITY_API_TOKEN` environment variable.
 
-- Go to [sanity.io](https://sanity.io) and create a sanity application. You should get the `project-id` dataset `production` by default, after creating the project in sanity.io. To do a fresh install of the sanity backend in the source code you need to run `npm create sanity@latest -- --project project-id --dataset production --template clean`. Sanity backend files are placed in `src/sanity`. To login to sanity backend with CLI run `sanity login` and run `sanity manage` to go to the project console in the browser. Go to https://www.sanity.io/organizations/organization-id/project/project-id/api, create `ADMIN_TOKEN` with `Editor` permission and set that token to `SANITY_API_ADMIN_TOKEN` environment variable.
+- Run `npm run typegen`
 
-- Then create `READ_ONLY_TOKEN` with `Viewer` permission and set that token to SANITY_API_TOKEN environment variable. If you update sanity schemas and libraries located in `/src/sanity/`.
-
-- Run `npm run typegen` to sync your latest changes with the sanity dashboard on the browser.
-
-- Run `sanity deploy` to deploy the changes to sanity library.
+- Run `sanity deploy`
 
 ## Get Clerk environment variables
 
