@@ -5,7 +5,6 @@ interface LoomEmbedProps {
 }
 
 export function LoomEmbed({ shareUrl }: LoomEmbedProps) {
-  // Convert share URL to embed URL
   const embedUrl = shareUrl.replace("/share/", "/embed/").split("?")[0];
 
   return (

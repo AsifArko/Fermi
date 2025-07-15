@@ -11,13 +11,3 @@ export const config = {
     "/(api|trpc)(.*)", // Protect API routes if needed
   ],
 };
-
-/*
-export const config = {
-  matcher: [
-    
-    // Always run for API routes
-    "/(api|trpc)(.*)",
-  ],
-};
-*/

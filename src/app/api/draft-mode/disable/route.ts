@@ -1,5 +1,3 @@
-// src/app/api/draft-mode/disable/route.ts
-
 import { draftMode } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
