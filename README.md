@@ -1,339 +1,147 @@
-This is a e-learning platform built with [Next.js](https://nextjs.org). The project created with `npx create-next-app` command. The authentication of this project is handled by [Clerk](https://clerk.com/), [Sanity](https://www.sanity.io/) is used for the backend and [Stripe](https://www.stripe.com) is used for payment.
+# Fermi E-Learning Platform
 
-## Features
+A modern e-learning platform built with [Next.js](https://nextjs.org), [Clerk](https://clerk.com/) for auth, [Sanity](https://sanity.io/) for content, and [Stripe](https://stripe.com) for payments.
 
-### For Students
+---
 
-- 📚 Access to comprehensive course content
-- 📊 Real-time progress tracking
-- ✅ Lesson completion system
-- 🎯 Module-based learning paths
-- 🎥 Multiple video player integrations (YouTube, Vimeo, Loom)
-- 💳 Secure course purchases
-- 📱 Mobile-friendly learning experience
-- 🔄 Course progress synchronization
+**Features for Students:**  
+• Module-based courses, real-time progress, lesson completion  
+• Video: YouTube, Vimeo, Loom  
+• Secure purchases, mobile-friendly
 
-### For Course Creators
+**For Creators:**  
+• Sanity CMS, analytics, flexible structure, Stripe payments
 
-- 📝 Rich content management with Sanity CMS
-- 📊 Student progress monitoring
-- 📈 Course analytics
-- 🎨 Customizable course structure
-- 📹 Multiple video hosting options
-- 💰 Direct payments via Stripe
-- 🔄 Real-time content updates
-- 📱 Mobile-optimized content delivery
+**Technical:**  
+• Next.js 15, Clerk, Stripe, Sanity, Tailwind, shadcn/ui  
+• Server Components, protected routes, dark mode
 
-### Technical Features
+**UI/UX:**  
+• Clean, accessible, responsive, micro-interactions, dark/light toggle
 
-- 🚀 Server Components & Server Actions
-- 👤 Authentication with Clerk
-- 💳 Payment processing with Stripe
-- 📝 Content management with Sanity CMS
-- 🎨 Modern UI with Tailwind CSS and shadcn/ui
-- 📱 Responsive design
-- 🔄 Real-time content updates
-- 🔒 Protected routes and content
-- 🌙 Dark mode support
+---
 
-### UI/UX Features
+**Prerequisites:**  
+`Node.js v22.12.0` · `npm v11.2.0` · `Next.js v15.3.5`  
+Accounts: Clerk, Sanity, Stripe
 
-- 🎯 Modern, clean interface
-- 🎨 Consistent design system using shadcn/ui
-- ♿ Accessible components
-- 🎭 Smooth transitions and animations
-- 📱 Responsive across all devices
-- 🔄 Loading states with skeleton loaders
-- 💫 Micro-interactions for better engagement
-- 🌙 Dark/Light mode toggle
+**Quick Setup:**
 
-## Getting Started
+1. `cp .env.example .env.local` and fill in your secrets (see below).
+2. `npm install`
+3. `npm run dev` (or `npm run build && npm start` for production)
+4. Sanity Studio: `npm run sanity:dev`
 
-### Prerequisites
+**Environment Variables:**
 
-- NodeJs [v22.12.0]
-- Npm [v11.2.0]
-- Next [v15.3.5]
-- Clerk Account
-- Sanity Account
-- Stripe Account
+<details>
+<summary>Click to expand</summary>
 
-Run `cp .env.example .env.local` and then follow the further instrusctions to update the values of environment variables. Example
-
-```
+```env
 # Sanity
-NEXT_PUBLIC_SANITY_PROJECT_ID=your-project-id
+NEXT_PUBLIC_SANITY_PROJECT_ID=...
 NEXT_PUBLIC_SANITY_DATASET=production
-
-# Read Token
-SANITY_API_TOKEN=your-sanity-read-token
-
-# Full Access Admin Token
-SANITY_API_ADMIN_TOKEN=your-sanity-admin-token
-
-# For Sanity Studio to read
-SANITY_STUDIO_PROJECT_ID=your-project-id
+SANITY_API_TOKEN=...
+SANITY_API_ADMIN_TOKEN=...
+SANITY_STUDIO_PROJECT_ID=...
 SANITY_STUDIO_DATASET=production
 
 # Next.js
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
 
 # Stripe
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your-stripe-publishable-key
-STRIPE_SECRET_KEY=your-stripe-secret-key
-STRIPE_WEBHOOK_SECRET=your-stripe-webhook-secret
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=...
+STRIPE_SECRET_KEY=...
+STRIPE_WEBHOOK_SECRET=...
 
 # Clerk
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your-clerk-publishable-key
-CLERK_SECRET_KEY=your-clerk-secret-key
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=...
+CLERK_SECRET_KEY=...
 ```
 
-### Setting up Sanity CMS
+</details>
 
-## Get sanity environment variables and configuration information
+---
 
-- Go to [sanity.io](https://sanity.io) and create a sanity application and you will get the `project-id` and default dataset `production`, after creating the project in sanity.io.
+**Sanity Setup:**
 
-- Run `npm install -g @sanity/cli`
+1. Create project at [sanity.io](https://sanity.io)
+2. `npm install -g @sanity/cli`
+3. `npm create sanity@latest -- --project <project-id> --dataset production --template clean`
+4. `sanity login` → `sanity manage`
+5. Create API tokens (Admin & Read-only) in [Sanity API settings](https://www.sanity.io/organizations/<org-id>/project/<project-id>/api)
+6. `npm run typegen`
+7. `sanity deploy`
 
-- Run `npm create sanity@latest -- --project project-id --dataset production --template clean`. Sanity backend files are placed in `src/sanity`.
+**Clerk Setup:**
 
-- Login to sanity backend with Sanity-CLI with `sanity login` and run `sanity manage` to go to the project console in the browser.
+1. [Clerk Dashboard](https://dashboard.clerk.com/) → create app
+2. Go to **Configure > API Keys** (`/apps/<app_id>/instances/<ins_id>/api-keys`)
+3. Add redirect URLs, copy env vars
 
-- Go to https://www.sanity.io/organizations/organization-id/project/project-id/api, create `ADMIN_TOKEN` with `Editor` permission and set that token to `SANITY_API_ADMIN_TOKEN` environment variable. Replace the organization-id and project-id with your organization-id and project-id in the url.
+**Stripe Setup:**
 
-- Create `READ_ONLY_TOKEN` with `Viewer` permission and set that token to `SANITY_API_TOKEN` environment variable.
+1. [Stripe Dashboard](https://dashboard.stripe.com/) → create app
+2. Copy Publishable & Secret Keys to env
+3. For webhooks:
+   - Local: `stripe listen --forward-to localhost:3000/api/stripe/webhook`
+   - Production: set endpoint to `https://<your-vercel-project>.vercel.app/api/stripe/webhook`
+   - Set `STRIPE_WEBHOOK_SECRET`
+4. Webhook handler: `/src/app/api/stripe/webhook/route.ts`
 
-- Run `npm run typegen`
+---
 
-- Run `sanity deploy`
+**Run:**
 
-## Get Clerk environment variables
+- Teachers: [localhost:3000/studio](http://localhost:3000/studio)
+- Students: [localhost:3000](http://localhost:3000)
 
-- Go to [clerk dashboard](https://dashboard.clerk.com/), create an clerk application, navigate to the application overview page. The url should look like this `https://dashboard.clerk.com/apps/app_id/instances/ins_id/api-keys`. Look for `API keys` in the `Configure` tab of the clerk application you've just created. Add redirect url and add clerk environment variables.
+**Deploy:**
 
-## Get stripe environment variables and configuration information
+1. `npm i -g vercel`
+2. `vercel login`
+3. [Vercel](https://vercel.com/) → create project
+4. Add env vars: `https://vercel.com/<your-project>/settings/environment-variables`
+5. `vercel`
+6. Deployments: `https://vercel.com/<your-project>/deployments`
+7. Live: `https://<your-project>.vercel.app/`
 
-- Go to [stripe dashboard](https://dashboard.stripe.com/) and create a stripe application. Upon creation you should get `Publishable Key` and `Secret Key`, set them in the `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` and `STRIPE_SECRET_KEY` environment variables respectively.
+---
 
-- For the `STRIPE_WEBHOOK_SECRET` to work with the local environment you can run `stripe listen --forward-to localhost:3000/api/stripe/webhook` and for vercel production url, you will have to create a webhook event destination for event `Checkout` session `checkout.session.completed`.
+**Docker:**
 
-- The `Endpoint URL` should be the vercel producion url with the following signature `https://vercel-project-name.vercel.app/api/stripe/webhook`. The suffix of this url `/api/stripe/webhook` refering the the stripe backend processing in `/src/app/api/stripe/webhook/route.ts` file.
+- Prereq: [Docker](https://www.docker.com/get-started), [Docker Compose](https://docs.docker.com/compose/)
+- Copy env file to project root
+- Build & run: `docker-compose up --build`
+- Stop: `docker-compose down`
+- Next.js: [localhost:3000](http://localhost:3000)
+- Sanity: [localhost:3333](http://localhost:3333)
 
-Once you have added all your environment variable you can start installing the depencies.
+---
 
-## Install dependencies
+<details>
+<summary>Architecture & Content Model</summary>
 
-Install the dependencies with `npm install`
+- **Courses:** Title, Description, Price, Image, Modules, Instructor, Category
+- **Modules:** Title, Lessons, Order
+- **Lessons:** Title, Description, Video URL, Content, Completion
+- **Students:** Profile, Enrollments, Progress
+- **Instructors:** Name, Bio, Photo, Courses
 
-## Run the application
+</details>
 
-To build the application run `npm run build` and start the application with `npm start`. Use `npm run dev` to run the application in dev mode. Run `npm run sanity:dev` to start sanity studio.
+---
 
-Teachers portal: [localhost:3000/studio](http://localhost:3000/studio)
-Students portal: [localhost:3000](http://localhost:3000)
+**Key Directories:**  
+`/app` (Next.js) · `/components` · `/sanity` · `/lib` · `/api` · `/schemas`
 
-## Deployment
+---
 
-Install the vercel cli with `npm i -g vercel` then login to your vercel account with `vercel login`. Then in the browser go to [Vercel](https://vercel.com/), create a vercel project.
-Go to `https://vercel.com/your-project/settings/environment-variables` and add your environment variables to your project. Then finally you can deply with `vercel`. You can see the deployments at https://vercel.com/your-project/deployments. The deployed url should have the following signature `https://your-project.vercel.app/`.
+**Current Issues:**
 
-## Running with Docker
+- "Mark as Complete" button/Sidebar update works in dev, not in production build.
 
-You can run the entire project (Next.js app and Sanity Studio) using Docker, making it OS-independent and easy to set up.
+**Todo:**
 
-### Prerequisites
-
-- [Docker](https://www.docker.com/get-started) installed
-- [Docker Compose](https://docs.docker.com/compose/) (if not included with Docker Desktop)
-
-### 1. Set up environment variables
-
-Copy your environment variables file (e.g., `.env.local`) to the project root, or ensure it is available for Docker. You can use a `.env` file for Docker Compose, or mount your env file as a volume if needed.
-
-### 2. Build and run with Docker Compose
-
-```
-docker-compose up --build
-```
-
-This will:
-
-- Build the Docker image for your project
-- Start two services:
-  - **nextjs** (Next.js app) on [http://localhost:3000](http://localhost:3000)
-  - **sanity** (Sanity Studio) on [http://localhost:3333](http://localhost:3333)
-
-### 3. Stopping the services
-
-Press `Ctrl+C` in the terminal, or run:
-
-```
-docker-compose down
-```
-
-### Notes
-
-- Make sure your environment variables are set correctly for both Next.js and Sanity Studio.
-- If you need to run only one service, you can do so with:
-  - `docker-compose up nextjs`
-  - `docker-compose up sanity`
-- For production, you may want to adjust environment variables and volumes as needed.
-
-## Architecture
-
-### Content Schema
-
-- Courses
-  - Title
-  - Description
-  - Price
-  - Image
-  - Modules
-  - Instructor
-  - Category
-
-- Modules
-  - Title
-  - Lessons
-  - Order
-
-- Lessons
-  - Title
-  - Description
-  - Video URL
-  - Content (Rich Text)
-  - Completion Status
-
-- Students
-  - Profile Information
-  - Enrolled Courses
-  - Progress Data
-
-- Instructors
-  - Name
-  - Bio
-  - Photo
-  - Courses
-
-### Key Components
-
-- Course Management System
-  - Content creation and organization
-  - Module and lesson structuring
-  - Rich text editing
-  - Media integration
-
-- Progress Tracking
-  - Lesson completion
-  - Course progress calculation
-  - Module progress visualization
-
-- Payment Processing
-  - Secure checkout
-  - Course enrollment
-  - Stripe integration
-
-- User Authentication
-  - Clerk authentication
-  - Protected routes
-  - User roles
-
-## Usage
-
-### Creating a Course
-
-1. Access Sanity Studio
-2. Create course structure with modules and lessons
-3. Add content and media
-4. Publish course
-
-### Student Experience
-
-1. Browse available courses
-2. Purchase and enroll in courses
-3. Access course content
-4. Track progress through modules
-5. Mark lessons as complete
-6. View completion certificates
-
-## Development
-
-### Key Files and Directories
-
-```
-
-/app # Next.js app directory
-/(dashboard) # Dashboard routes
-/(user) # User routes
-/api # API routes
-/components # React components
-/sanity # Sanity configuration
-/lib # Sanity utility functions
-/schemas # Content schemas
-/lib # Utility functions
-
-```
-
-### Core Technologies
-
-- Next.js 15
-- TypeScript
-- Sanity CMS
-- Stripe Payments
-- Clerk Authentication
-- Tailwind CSS
-- Shadcn UI
-- Lucide Icons
-
-## Features in Detail
-
-### Course Management
-
-- Flexible course structure with modules and lessons
-- Rich text editor for lesson content
-- Support for multiple video providers
-- Course pricing and enrollment management
-
-### Student Dashboard
-
-- Progress tracking across all enrolled courses
-- Lesson completion status
-- Continue where you left off
-- Course navigation with sidebar
-
-### Video Integration
-
-- URL Video Player
-- Loom Embed Support
-- Responsive video playback
-
-### Payment System
-
-- Secure Stripe checkout
-- Course access management
-- Webhook integration
-- Payment status tracking
-
-### Authentication
-
-- User registration and login
-- Protected course content
-- Role-based access control
-- Secure session management
-
-### UI Components
-
-- Modern, responsive design
-- Loading states and animations
-- Progress indicators
-- Toast notifications
-- Modal dialogs
-
-## Current Issues
-
-The `Mark as Complete` button toggle and the respective sidebar component update feature doesn't behave properly when a build is run instead of dev mode. In dev mode it works perfectly.
-
-## Todo
-
-Fix the button issue first, then may be work on the structure tool. The current one is not good enough for comprehensive content writing, clean up.
+- Fix button issue
+- Improve structure tool for content writing
