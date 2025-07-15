@@ -6,7 +6,6 @@ import { getCourses } from "@/sanity/lib/courses/getCourses";
 export default async function Home() {
   const courses = await getCourses();
   return (
-    // <UserLayout>
     <div className="min-h-screen bg-background">
       <Hero />
 
@@ -31,6 +30,5 @@ export default async function Home() {
         </div>
       </div>
     </div>
-    // </UserLayout>
   );
 }
