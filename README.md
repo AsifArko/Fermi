@@ -142,6 +142,48 @@ Students portal: [localhost:3000](http://localhost:3000)
 Install the vercel cli with `npm i -g vercel` then login to your vercel account with `vercel login`. Then in the browser go to [Vercel](https://vercel.com/), create a vercel project.
 Go to `https://vercel.com/your-project/settings/environment-variables` and add your environment variables to your project. Then finally you can deply with `vercel`. You can see the deployments at https://vercel.com/your-project/deployments. The deployed url should have the following signature `https://your-project.vercel.app/`.
 
+## Running with Docker
+
+You can run the entire project (Next.js app and Sanity Studio) using Docker, making it OS-independent and easy to set up.
+
+### Prerequisites
+
+- [Docker](https://www.docker.com/get-started) installed
+- [Docker Compose](https://docs.docker.com/compose/) (if not included with Docker Desktop)
+
+### 1. Set up environment variables
+
+Copy your environment variables file (e.g., `.env.local`) to the project root, or ensure it is available for Docker. You can use a `.env` file for Docker Compose, or mount your env file as a volume if needed.
+
+### 2. Build and run with Docker Compose
+
+```
+docker-compose up --build
+```
+
+This will:
+
+- Build the Docker image for your project
+- Start two services:
+  - **nextjs** (Next.js app) on [http://localhost:3000](http://localhost:3000)
+  - **sanity** (Sanity Studio) on [http://localhost:3333](http://localhost:3333)
+
+### 3. Stopping the services
+
+Press `Ctrl+C` in the terminal, or run:
+
+```
+docker-compose down
+```
+
+### Notes
+
+- Make sure your environment variables are set correctly for both Next.js and Sanity Studio.
+- If you need to run only one service, you can do so with:
+  - `docker-compose up nextjs`
+  - `docker-compose up sanity`
+- For production, you may want to adjust environment variables and volumes as needed.
+
 ## Architecture
 
 ### Content Schema
