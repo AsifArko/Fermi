@@ -21,7 +21,7 @@ export function CourseCard({ course, progress, href }: CourseCardProps) {
       prefetch={false}
       className="group hover:no-underline flex"
     >
-      <div className="bg-card rounded-xl overflow-hidden shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:translate-y-[-4px] border border-border flex flex-col flex-1">
+      <div className="bg-card rounded-xl overflow-hidden shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl hover:translate-y-[-4px] border border-border flex flex-col flex-1 ">
         <div className="relative h-52 w-full overflow-hidden">
           {course.image ? (
             <Image
@@ -55,7 +55,7 @@ export function CourseCard({ course, progress, href }: CourseCardProps) {
           <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors duration-300">
             {course.title}
           </h3>
-          <p className="text-muted-foreground mb-4 line-clamp-2 flex-1">
+          <p className="text-sm text-muted-foreground mb-4 line-clamp-2 flex-1">
             {course.description}
           </p>
           <div className="space-y-4 mt-auto">

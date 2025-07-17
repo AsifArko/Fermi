@@ -10,8 +10,8 @@ import { usePathname } from "next/navigation";
 export default function Header() {
   const pathname = usePathname();
   const hideHeader =
-    pathname?.includes("/dashboard/courses/") &&
-    pathname?.includes("/lessons/") &&
+    pathname?.includes("/dashboard/courses/") ||
+    pathname?.includes("/lessons/") ||
     pathname?.includes("/studio/structure");
   if (hideHeader) return null;
 

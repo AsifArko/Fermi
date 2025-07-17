@@ -2,7 +2,7 @@ import React from "react";
 
 function Hero() {
   return (
-    <div className="relative h-[45vh] w-full">
+    <div className="relative min-h-[45vh] w-full flex items-center pt-16">
       <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/55 dark:from-white/15 dark:to-black/40" />
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/20" />
 
