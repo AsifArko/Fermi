@@ -40,7 +40,7 @@ export default defineConfig({
   beta: {
     create: {
       startInCreateEnabled: true,
-      fallbackStudioOrigin: "binaryatmosphere.sanity.studio",
+      fallbackStudioOrigin: "fermi.sanity.studio",
     },
   },
 });
