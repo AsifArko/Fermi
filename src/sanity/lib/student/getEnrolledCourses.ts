@@ -20,5 +20,11 @@ export async function getEnrolledCourses(clerkId: string) {
     params: { clerkId },
   });
 
-  return result?.data?.enrolledCourses || [];
+  return (
+    result?.data?.enrolledCourses?.filter(
+      (e, i, arr) =>
+        e?.course?._id &&
+        arr.findIndex((x) => x?.course?._id === e?.course?._id) === i
+    ) || []
+  );
 }

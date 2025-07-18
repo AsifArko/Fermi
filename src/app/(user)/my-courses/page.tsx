@@ -62,6 +62,8 @@ export default async function MyCoursesPage() {
                     course={item.course}
                     progress={item.progress}
                     href={`/dashboard/courses/${item.course._id}`}
+                    showProgressFirst={true}
+                    cardHeight="h-[520px] md:h-[560px]"
                   />
                 );
               })}

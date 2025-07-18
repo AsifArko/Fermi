@@ -12,16 +12,27 @@ interface CourseCardProps {
   course: GetCoursesQueryResult[number];
   progress?: number;
   href: string;
+  showProgressFirst?: boolean;
+  cardHeight?: string; // optional, for custom height classes
 }
 
-export function CourseCard({ course, progress, href }: CourseCardProps) {
+export function CourseCard({
+  course,
+  progress,
+  href,
+  showProgressFirst,
+  cardHeight,
+}: CourseCardProps) {
+  const heightClass = cardHeight || "h-[500px] md:h-[540px]";
   return (
     <Link
       href={href}
       prefetch={false}
       className="group hover:no-underline block"
     >
-      <div className="relative h-[500px] md:h-[540px] bg-gradient-to-br from-card via-card to-card/80 rounded-2xl overflow-hidden shadow-lg transition-all duration-500 ease-out hover:shadow-2xl hover:shadow-primary/10 hover:translate-y-[-8px] border border-border/50 hover:border-primary/20 group-hover:bg-gradient-to-br group-hover:from-card group-hover:via-card/95 group-hover:to-primary/5">
+      <div
+        className={`relative ${heightClass} bg-gradient-to-br from-card via-card to-card/80 rounded-2xl overflow-hidden shadow-lg transition-all duration-500 ease-out hover:shadow-2xl hover:shadow-primary/10 hover:translate-y-[-8px] border border-border/50 hover:border-primary/20 group-hover:bg-gradient-to-br group-hover:from-card group-hover:via-card/95 group-hover:to-primary/5`}
+      >
         {/* Floating background elements */}
         <div className="absolute inset-0 overflow-hidden opacity-0 group-hover:opacity-100 transition-opacity duration-500">
           {/* Floating particles */}
@@ -103,70 +114,133 @@ export function CourseCard({ course, progress, href }: CourseCardProps) {
             {course.description}
           </p>
 
-          {/* Course stats with icons */}
-
-          {/* Instructor section with enhanced styling */}
-          {course.instructor && (
-            <div
-              className="relative flex items-center justify-between mb-4 p-3 rounded-xl border border-border/50 overflow-hidden group-hover:border-primary/20 transition-all duration-300"
-              style={{
-                background:
-                  "linear-gradient(135deg, var(--background), var(--primary)/10 80%)",
-              }}
-            >
-              {/* Softly pulsing ring SVG accent, top-left, non-overlapping */}
-              <svg
-                className="absolute top-2 left-2 w-5 h-5 opacity-10 animate-pulse-slow pointer-events-none"
-                style={{ marginTop: "2px", marginLeft: "2px" }}
-                viewBox="0 0 32 32"
-                fill="none"
-              >
-                <circle
-                  cx="16"
-                  cy="16"
-                  r="13"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                />
-              </svg>
-              <div className="flex items-center relative z-10">
-                {course.instructor.photo ? (
-                  <div className="relative h-10 w-10 mr-3">
-                    <Image
-                      src={urlFor(course.instructor.photo).url() || ""}
-                      alt={course.instructor.name || "Instructor"}
-                      fill
-                      className="rounded-full object-cover border-2 border-white/20 shadow-sm"
-                    />
-                  </div>
-                ) : (
-                  <div className="h-10 w-10 mr-3 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center border-2 border-white/20">
-                    <Loader size="sm" />
-                  </div>
-                )}
-                <div>
-                  <span className="text-sm font-medium text-foreground">
-                    by {course.instructor.name}
-                  </span>
-                  <div className="text-xs text-muted-foreground">
-                    Expert Instructor
-                  </div>
+          {/* Conditional rendering for progress and instructor order */}
+          {showProgressFirst ? (
+            <>
+              {typeof progress === "number" && (
+                <div className="mb-4">
+                  <CourseProgress
+                    progress={progress}
+                    variant="default"
+                    size="sm"
+                    label="Course Progress"
+                  />
                 </div>
-              </div>
-              <GraduationCap className="h-5 w-5 text-primary/80 group-hover:text-primary transition-colors duration-300 relative z-10" />
-            </div>
-          )}
-
-          {/* Progress section with enhanced styling */}
-          {typeof progress === "number" && (
-            <div className="mt-auto">
-              <CourseProgress
-                progress={progress}
-                variant="default"
-                size="sm"
-                label="Course Progress"
-              />
-            </div>
+              )}
+              {course.instructor && (
+                <div
+                  className="relative flex items-center justify-between mb-4 p-3 rounded-xl border border-border/50 overflow-hidden group-hover:border-primary/20 transition-all duration-300"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, var(--background), var(--primary)/10 80%)",
+                  }}
+                >
+                  {/* Softly pulsing ring SVG accent, top-left, non-overlapping */}
+                  <svg
+                    className="absolute top-2 left-2 w-5 h-5 opacity-10 animate-pulse-slow pointer-events-none"
+                    style={{ marginTop: "2px", marginLeft: "2px" }}
+                    viewBox="0 0 32 32"
+                    fill="none"
+                  >
+                    <circle
+                      cx="16"
+                      cy="16"
+                      r="13"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    />
+                  </svg>
+                  <div className="flex items-center relative z-10">
+                    {course.instructor.photo ? (
+                      <div className="relative h-10 w-10 mr-3">
+                        <Image
+                          src={urlFor(course.instructor.photo).url() || ""}
+                          alt={course.instructor.name || "Instructor"}
+                          fill
+                          className="rounded-full object-cover border-2 border-white/20 shadow-sm"
+                        />
+                      </div>
+                    ) : (
+                      <div className="h-10 w-10 mr-3 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center border-2 border-white/20">
+                        <Loader size="sm" />
+                      </div>
+                    )}
+                    <div>
+                      <span className="text-sm font-medium text-foreground">
+                        by {course.instructor.name}
+                      </span>
+                      <div className="text-xs text-muted-foreground">
+                        Expert Instructor
+                      </div>
+                    </div>
+                  </div>
+                  <GraduationCap className="h-5 w-5 text-primary/80 group-hover:text-primary transition-colors duration-300 relative z-10" />
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              {course.instructor && (
+                <div
+                  className="relative flex items-center justify-between mb-4 p-3 rounded-xl border border-border/50 overflow-hidden group-hover:border-primary/20 transition-all duration-300"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, var(--background), var(--primary)/10 80%)",
+                  }}
+                >
+                  {/* Softly pulsing ring SVG accent, top-left, non-overlapping */}
+                  <svg
+                    className="absolute top-2 left-2 w-5 h-5 opacity-10 animate-pulse-slow pointer-events-none"
+                    style={{ marginTop: "2px", marginLeft: "2px" }}
+                    viewBox="0 0 32 32"
+                    fill="none"
+                  >
+                    <circle
+                      cx="16"
+                      cy="16"
+                      r="13"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    />
+                  </svg>
+                  <div className="flex items-center relative z-10">
+                    {course.instructor.photo ? (
+                      <div className="relative h-10 w-10 mr-3">
+                        <Image
+                          src={urlFor(course.instructor.photo).url() || ""}
+                          alt={course.instructor.name || "Instructor"}
+                          fill
+                          className="rounded-full object-cover border-2 border-white/20 shadow-sm"
+                        />
+                      </div>
+                    ) : (
+                      <div className="h-10 w-10 mr-3 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center border-2 border-white/20">
+                        <Loader size="sm" />
+                      </div>
+                    )}
+                    <div>
+                      <span className="text-sm font-medium text-foreground">
+                        by {course.instructor.name}
+                      </span>
+                      <div className="text-xs text-muted-foreground">
+                        Expert Instructor
+                      </div>
+                    </div>
+                  </div>
+                  <GraduationCap className="h-5 w-5 text-primary/80 group-hover:text-primary transition-colors duration-300 relative z-10" />
+                </div>
+              )}
+              {typeof progress === "number" && (
+                <div className="mt-auto">
+                  <CourseProgress
+                    progress={progress}
+                    variant="default"
+                    size="sm"
+                    label="Course Progress"
+                  />
+                </div>
+              )}
+            </>
           )}
 
           {/* Decorative accent line */}
