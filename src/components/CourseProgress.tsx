@@ -31,24 +31,19 @@ export function CourseProgress({
     >
       <div className="flex items-center justify-between gap-2">
         {label && (
-          <span className="text-muted-foreground font-semibold text-sm tracking-wide">
+          <span className="text-[11px] font-normal text-muted-foreground/80 uppercase tracking-widest">
             {label}
           </span>
         )}
         <div className="flex items-center gap-1">
           {showPercentage && (
-            <span
-              className={cn(
-                "font-bold text-sm",
-                isComplete ? "text-emerald-600" : "text-primary"
-              )}
-            >
+            <span className="text-[11px] font-normal text-muted-foreground/80 uppercase tracking-widest">
               {progress}%
             </span>
           )}
           {isComplete && (
             <CheckCircle2
-              className="w-4 h-4 text-emerald-600 ml-1"
+              className="w-4 h-4 text-emerald-500/90 ml-1"
               aria-label="Completed"
             />
           )}
@@ -57,8 +52,8 @@ export function CourseProgress({
       <Progress
         value={progress}
         className={cn(
-          "h-3 rounded-full bg-muted [&>div]:rounded-full shadow-inner transition-all",
-          size === "sm" && "h-2",
+          "h-1 rounded-full bg-muted [&>div]:rounded-full shadow-inner transition-all",
+          size === "sm" && "h-0.5",
           variant === "success" && "[&>div]:bg-emerald-600"
         )}
       />

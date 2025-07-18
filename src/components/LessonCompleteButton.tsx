@@ -65,55 +65,34 @@ export function LessonCompleteButton({
   const isLoading = isCompleted === null || isPendingTransition;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-sm border-t z-50">
-      <div className="max-w-4xl mx-auto flex items-center justify-between gap-4">
-        <div className="flex-1">
-          <p className="text-sm font-medium">
-            {isCompleted
-              ? "Lesson completed!"
-              : "Ready to complete this lesson?"}
-          </p>
-          <p className="text-sm text-muted-foreground">
-            {isCompleted
-              ? "You can mark it as incomplete if you need to revisit it."
-              : "Mark it as complete when you're done."}
-          </p>
-        </div>
-        <Button
-          onClick={handleToggle}
-          disabled={isPending || isLoading}
-          size="lg"
-          variant="default"
-          className={cn(
-            "min-w-[200px] transition-all duration-200 ease-in-out",
-            isCompleted
-              ? "bg-gray-600 hover:bg-gray-700 text-white"
-              : "bg-green-600 hover:bg-green-700 text-white"
-          )}
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              Updating...
-            </>
-          ) : isPending ? (
-            <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              {isCompleted ? "Uncompleting..." : "Completing..."}
-            </>
-          ) : isCompleted ? (
-            <>
-              <XCircle className="h-4 w-4 mr-2" />
-              Mark as Not Complete
-            </>
-          ) : (
-            <>
-              <CheckCircle className="h-4 w-4 mr-2" />
-              Mark as Complete
-            </>
-          )}
-        </Button>
-      </div>
-    </div>
+    <Button
+      onClick={handleToggle}
+      disabled={isPending || isLoading}
+      size="icon"
+      variant="default"
+      className={cn(
+        "fixed bottom-4 right-4 z-50 rounded-full shadow-lg transition-all duration-200 ease-in-out",
+        isCompleted
+          ? "bg-gray-600 hover:bg-gray-700 text-white"
+          : "bg-green-600 hover:bg-green-700 text-white"
+      )}
+      aria-label={
+        isLoading
+          ? "Updating lesson status"
+          : isCompleted
+            ? "Mark as Not Complete"
+            : "Mark as Complete"
+      }
+    >
+      {isLoading ? (
+        <Loader2 className="h-6 w-6 animate-spin" />
+      ) : isPending ? (
+        <Loader2 className="h-6 w-6 animate-spin" />
+      ) : isCompleted ? (
+        <XCircle className="h-6 w-6" />
+      ) : (
+        <CheckCircle className="h-6 w-6" />
+      )}
+    </Button>
   );
 }

@@ -1,29 +1,11 @@
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, BookOpen } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import EnrollButton from "@/components/EnrollButton";
 import getCourseBySlug from "@/sanity/lib/courses/getCourseBySlug";
 import { isEnrolledInCourse } from "@/sanity/lib/student/isEnrolledInCourse";
 import { auth } from "@clerk/nextjs/server";
-
-// --- Animated scientific background shapes (copied from Hero) ---
-function TriangleShape() {
-  return (
-    <div
-      className="absolute bottom-4 right-4 z-20 opacity-50 animate-float"
-      style={{ width: "48px", height: "48px", animationDuration: "8s" }}
-    >
-      <svg viewBox="0 0 100 100" className="w-full h-full">
-        <polygon
-          points="50,10 90,90 10,90"
-          fill="currentColor"
-          className="text-primary/30"
-        />
-      </svg>
-    </div>
-  );
-}
 
 function RectangleShape({
   position = "top-right",
