@@ -8,11 +8,13 @@ import { instructorType } from "./instructorType";
 import { lessonCompletionType } from "./lessonCompletionType";
 import { moduleType } from "./moduleType";
 import { lessonType } from "./lessonType";
+import { codeType } from "./codeType";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
     blockContent,
     categoryType,
+    codeType,
     courseType,
     enrollmentType,
     instructorType,

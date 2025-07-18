@@ -90,7 +90,9 @@ export type Lesson = {
     level?: number;
     _type: "block";
     _key: string;
-  }>;
+  } | {
+    _key: string;
+  } & Code>;
 };
 
 export type Enrollment = {
@@ -192,6 +194,12 @@ export type Instructor = {
     crop?: SanityImageCrop;
     _type: "image";
   };
+};
+
+export type Code = {
+  _type: "code";
+  code?: string;
+  language?: "javascript" | "typescript" | "python" | "java" | "cpp" | "csharp" | "php" | "ruby" | "go" | "rust" | "swift" | "kotlin" | "html" | "css" | "sql" | "json" | "yaml" | "markdown" | "shell" | "text";
 };
 
 export type Category = {
@@ -344,7 +352,7 @@ export type SanityAssetSourceData = {
   url?: string;
 };
 
-export type AllSanitySchemaTypes = LessonCompletion | Module | Lesson | Enrollment | Student | Course | Instructor | Category | BlockContent | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
+export type AllSanitySchemaTypes = LessonCompletion | Module | Lesson | Enrollment | Student | Course | Instructor | Code | Category | BlockContent | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: src/sanity/lib/courses/getCourseById.ts
 // Variable: getCourseByIdQuery
@@ -402,6 +410,8 @@ export type GetCourseByIdQueryResult = {
       videoUrl?: string;
       loomUrl?: string;
       content?: Array<{
+        _key: string;
+      } & Code | {
         children?: Array<{
           marks?: Array<string>;
           text?: string;
@@ -500,6 +510,8 @@ export type GetCourseBySlugQueryResult = {
       videoUrl?: string;
       loomUrl?: string;
       content?: Array<{
+        _key: string;
+      } & Code | {
         children?: Array<{
           marks?: Array<string>;
           text?: string;
@@ -570,6 +582,8 @@ export type ProgressQueryResult = {
       videoUrl?: string;
       loomUrl?: string;
       content?: Array<{
+        _key: string;
+      } & Code | {
         children?: Array<{
           marks?: Array<string>;
           text?: string;
@@ -658,6 +672,8 @@ export type ProgressQueryResult = {
         videoUrl?: string;
         loomUrl?: string;
         content?: Array<{
+          _key: string;
+        } & Code | {
           children?: Array<{
             marks?: Array<string>;
             text?: string;
@@ -835,6 +851,8 @@ export type GetLessonByIdQueryResult = {
   videoUrl?: string;
   loomUrl?: string;
   content?: Array<{
+    _key: string;
+  } & Code | {
     children?: Array<{
       marks?: Array<string>;
       text?: string;
@@ -919,6 +937,8 @@ export type GetCompletionsQueryResult = {
       videoUrl?: string;
       loomUrl?: string;
       content?: Array<{
+        _key: string;
+      } & Code | {
         children?: Array<{
           marks?: Array<string>;
           text?: string;
@@ -1007,6 +1027,8 @@ export type GetCompletionsQueryResult = {
         videoUrl?: string;
         loomUrl?: string;
         content?: Array<{
+          _key: string;
+        } & Code | {
           children?: Array<{
             marks?: Array<string>;
             text?: string;

@@ -50,6 +50,18 @@ export const lessonPortableTextComponents: PortableTextComponents = {
     bullet: ({ children }) => <li className="ml-1">{children}</li>,
     number: ({ children }) => <li className="ml-1">{children}</li>,
   },
+  types: {
+    code: ({ value }) => (
+      <pre className="bg-muted rounded-lg p-4 my-4 overflow-x-auto border">
+        <div className="flex items-center justify-between mb-2 text-xs text-muted-foreground">
+          <span className="font-medium">{value.language || "text"}</span>
+        </div>
+        <code className="text-sm font-mono text-primary/90 whitespace-pre">
+          {value.code}
+        </code>
+      </pre>
+    ),
+  },
   marks: {
     strong: ({ children }) => (
       <strong className="font-semibold text-primary">{children}</strong>

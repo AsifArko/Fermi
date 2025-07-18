@@ -29,19 +29,19 @@ export default async function LessonPage({ params }: LessonPageProps) {
   }
 
   return (
-    <div className="h-full flex flex-col overflow-hidden bg-background">
+    <div className="h-full flex flex-col overflow-hidden bg-background font-sans antialiased text-[17px] text-primary/96">
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto pt-12 pb-20 px-4">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-primary tracking-tight">
+        <div className="max-w-4xl mx-auto pt-14 pb-24 px-4">
+          <h1 className="text-4xl md:text-5xl font-light mb-5 text-primary/96 tracking-tight leading-tight">
             {lesson.title}
           </h1>
           {lesson.description && (
-            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              {lesson.description}
-            </p>
+            <div className="prose prose-blue dark:prose-invert max-w-none text-muted-foreground prose-headings:font-normal prose-headings:text-primary/96 prose-headings:tracking-tight prose-p:leading-relaxed prose-p:text-inherit prose-li:marker:text-primary/60 prose-a:text-blue-600 dark:prose-a:text-blue-400 mb-10">
+              <p>{lesson.description}</p>
+            </div>
           )}
 
-          <div className="space-y-8">
+          <div className="space-y-10">
             {/* Video Section */}
             {lesson.videoUrl && <VideoPlayer url={lesson.videoUrl} />}
 
@@ -51,10 +51,10 @@ export default async function LessonPage({ params }: LessonPageProps) {
             {/* Lesson Content */}
             {lesson.content && (
               <div>
-                <h2 className="text-xl font-semibold mb-4 text-primary/90">
+                <h2 className="text-2xl font-normal mb-5 text-primary/96 tracking-tight">
                   Lesson Notes
                 </h2>
-                <div className="prose prose-blue dark:prose-invert max-w-none">
+                <div className="prose prose-blue dark:prose-invert max-w-none prose-headings:font-normal prose-headings:text-primary/96 prose-headings:tracking-tight prose-p:leading-relaxed prose-p:text-primary/96 prose-li:marker:text-primary/60 prose-a:text-blue-600 dark:prose-a:text-blue-400">
                   <PortableText
                     value={lesson.content}
                     components={lessonPortableTextComponents}
@@ -63,7 +63,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
               </div>
             )}
 
-            <div className="flex justify-end pt-2">
+            <div className="flex justify-end pt-4">
               <LessonCompleteButton lessonId={lesson._id} clerkId={user!.id} />
             </div>
           </div>
