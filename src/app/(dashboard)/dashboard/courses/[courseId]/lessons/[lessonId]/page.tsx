@@ -5,6 +5,7 @@ import { PortableText } from "@portabletext/react";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { LoomEmbed } from "@/components/LoomEmbed";
 import { LessonCompleteButton } from "@/components/LessonCompleteButton";
+import lessonPortableTextComponents from "@/components/lessonPortableTextComponents";
 
 interface LessonPageProps {
   params: Promise<{
@@ -28,13 +29,16 @@ export default async function LessonPage({ params }: LessonPageProps) {
   }
 
   return (
-    <div className="h-full flex flex-col overflow-hidden">
+    <div className="h-full flex flex-col overflow-hidden bg-background">
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto pt-12 pb-20 px-4">
-          <h1 className="text-2xl font-bold mb-4">{lesson.title}</h1>
-
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-primary tracking-tight">
+            {lesson.title}
+          </h1>
           {lesson.description && (
-            <p className="text-muted-foreground mb-8">{lesson.description}</p>
+            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+              {lesson.description}
+            </p>
           )}
 
           <div className="space-y-8">
@@ -47,14 +51,19 @@ export default async function LessonPage({ params }: LessonPageProps) {
             {/* Lesson Content */}
             {lesson.content && (
               <div>
-                <h2 className="text-xl font-semibold mb-4">Lesson Notes</h2>
+                <h2 className="text-xl font-semibold mb-4 text-primary/90">
+                  Lesson Notes
+                </h2>
                 <div className="prose prose-blue dark:prose-invert max-w-none">
-                  <PortableText value={lesson.content} />
+                  <PortableText
+                    value={lesson.content}
+                    components={lessonPortableTextComponents}
+                  />
                 </div>
               </div>
             )}
 
-            <div className="flex justify-end">
+            <div className="flex justify-end pt-2">
               <LessonCompleteButton lessonId={lesson._id} clerkId={user!.id} />
             </div>
           </div>
