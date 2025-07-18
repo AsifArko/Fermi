@@ -10,7 +10,7 @@ const Footer = () => {
   if (hideFooter) return null;
 
   return (
-    <footer className="relative w-full border-t bg-gradient-to-br from-background via-background to-primary/10 dark:bg-gray-950 py-4 px-4 mt-12 overflow-hidden">
+    <footer className="relative w-full border-t from-background via-background to-primary/10 dark:bg-gray-950 py-6 px-4 mt-12 overflow-hidden">
       {/* Subtle Computer SVG - bottom left, slow float */}
       <div
         className="absolute bottom-2 left-4 opacity-20 animate-float-slow pointer-events-none"

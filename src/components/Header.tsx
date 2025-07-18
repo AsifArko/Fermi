@@ -20,7 +20,7 @@ export default function Header() {
   if (hideHeader) return null;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background border-b border-border py-4 px-0">
+    <header className="max-w-7xl mx-auto fixed top-0 left-0 right-0 z-50 bg-background border-b border-border py-4 px-0">
       <div className="container mx-auto px-4">
         <div className="flex flex-wrap items-center justify-between gap-2 min-h-0">
           <Link
