@@ -9,33 +9,10 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="max-w-7xl mx-auto min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="relative min-h-[45vh] w-full flex items-center pt-16 overflow-hidden">
+      <div className="relative min-h-[60vh] w-full flex items-center pt-20 overflow-hidden bg-gradient-to-tr from-background via-background to-primary/5">
         {/* Animated Background Elements */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-black/55 dark:from-white/15 dark:to-black/40" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/20" />
-
-        {/* Floating Particles */}
-        <div className="absolute inset-0">
-          <div
-            className="absolute top-1/4 left-1/4 w-2 h-2 bg-primary/30 rounded-full animate-pulse"
-            style={{ animationDelay: "0s", animationDuration: "3s" }}
-          ></div>
-          <div
-            className="absolute top-1/3 right-1/3 w-1 h-1 bg-primary/40 rounded-full animate-pulse"
-            style={{ animationDelay: "1s", animationDuration: "4s" }}
-          ></div>
-          <div
-            className="absolute bottom-1/3 left-1/3 w-1.5 h-1.5 bg-primary/20 rounded-full animate-pulse"
-            style={{ animationDelay: "2s", animationDuration: "5s" }}
-          ></div>
-          <div
-            className="absolute top-1/2 right-1/4 w-1 h-1 bg-primary/30 rounded-full animate-pulse"
-            style={{ animationDelay: "0.5s", animationDuration: "3.5s" }}
-          ></div>
-        </div>
-
         {/* Grid Pattern */}
         <div className="absolute inset-0 opacity-5">
           <div
