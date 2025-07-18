@@ -12,6 +12,7 @@ import MobileSidebar from "./MobileSidebar";
 
 export default function Header() {
   const pathname = usePathname();
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const hideHeader =
     pathname?.includes("/dashboard/courses/") ||
@@ -41,7 +42,7 @@ export default function Header() {
             <SignedIn>
               <Link href="/my-courses">
                 <Button
-                  className="px-4 py-1.5 h-auto text-sm font-semibold rounded-md bg-white text-secondary border border-border shadow-none hover:bg-primary/10 hover:text-primary transition-all duration-200"
+                  className="px-4 py-1.5 h-auto text-sm font-semibold rounded-md bg-background text-primary border border-border shadow-none hover:bg-primary/10 hover:text-primary transition-all duration-200"
                   style={{ minWidth: 0, boxShadow: "none" }}
                 >
                   My Courses

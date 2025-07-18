@@ -35,22 +35,6 @@ function RectangleShape({
   );
 }
 
-// Add GridOverlay component for subtle gridlines
-function GridOverlay() {
-  return (
-    <div
-      className="absolute inset-0 pointer-events-none z-0"
-      aria-hidden="true"
-      style={{
-        backgroundImage:
-          "url(\"data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 0H0V40' stroke='%239CA3AF33' stroke-width='1'/%3E%3Cpath d='M20 0V40' stroke='%239CA3AF22' stroke-width='0.5'/%3E%3Cpath d='M0 20H40' stroke='%239CA3AF22' stroke-width='0.5'/%3E%3C/svg%3E\")",
-        backgroundSize: "40px 40px",
-        opacity: 0.35,
-      }}
-    />
-  );
-}
-
 interface CoursePageProps {
   params: Promise<{
     slug: string;
@@ -139,7 +123,6 @@ export default async function CoursePage({ params }: CoursePageProps) {
           <div className="lg:col-span-2 relative">
             <div className="bg-card rounded-lg p-8 mb-8 border border-border shadow-2xl relative overflow-hidden">
               {/* Subtle grid overlay */}
-              <GridOverlay />
               <h2 className="text-2xl font-semibold mb-8 tracking-tight text-foreground">
                 Course Content
               </h2>

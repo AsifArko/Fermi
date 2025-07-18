@@ -43,16 +43,16 @@ export default async function RootLayout({
           </>
         )}
         <ClerkProvider>
-          <Header />
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
           >
+            <Header />
             {children}
+            <Footer />
           </ThemeProvider>
-          <Footer />
         </ClerkProvider>
       </body>
     </html>
