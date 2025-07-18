@@ -174,50 +174,6 @@ function Hero() {
             <circle cx="12" cy="12" r="2" fill="currentColor" />
           </svg>
         </div>
-
-        {/* Machine Learning Icon */}
-        <div
-          className="absolute opacity-15 animate-float"
-          style={{
-            bottom: "25%",
-            right: "30%",
-            animationDuration: "10s",
-            animationDelay: "0.8s",
-            filter: "blur(0.5px)",
-          }}
-        >
-          <svg
-            className="w-9 h-9 text-primary/60"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <rect
-              x="5"
-              y="13"
-              width="2.5"
-              height="6"
-              rx="1"
-              strokeWidth="1.5"
-            />
-            <rect
-              x="10.75"
-              y="9"
-              width="2.5"
-              height="10"
-              rx="1"
-              strokeWidth="1.5"
-            />
-            <rect
-              x="16.5"
-              y="5"
-              width="2.5"
-              height="14"
-              rx="1"
-              strokeWidth="1.5"
-            />
-          </svg>
-        </div>
       </div>
     </div>
   );
