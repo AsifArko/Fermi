@@ -3,7 +3,7 @@
 A modern e-learning platform built with [Next.js](https://nextjs.org), [Clerk](https://clerk.com/) for auth, [Sanity](https://sanity.io/) for content, and [Stripe](https://stripe.com) for payments. This codebase has been tested in macos and windows many times and in most case one doesn't require making any change to the source code. Both docker and local build should run successfully. On vercel however, I recommend before doing any deployment first add environment variables from settings by uploading .env files for different environments and then deploy.
 
 **Authors:** Sadia Afrin Purba & Asif Imtiyaz Chowdhury  
-**Email:** asif.imch@gmail.com
+**Email:** purba0101@gmail.com & asif.imch@gmail.com
 
 > **Co-Authorship:** This software is co-authored by both partners, ensuring equal rights and privileges for both authors.
 
