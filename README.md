@@ -1,19 +1,24 @@
 # Fermi E-Learning Platform
 
-A modern e-learning platform built with [Next.js](https://nextjs.org), [Clerk](https://clerk.com/) for auth, [Sanity](https://sanity.io/) for content, and [Stripe](https://stripe.com) for payments.
+A modern e-learning platform built with [Next.js](https://nextjs.org), [Clerk](https://clerk.com/) for auth, [Sanity](https://sanity.io/) for content, and [Stripe](https://stripe.com) for payments. This codebase has been tested in macos and windows many times and in most case one doesn't require making any change to the source code. Both docker and local build should run successfully. On vercel however, I recommend before doing any deployment first add environment variables from settings by uploading .env files for different environments and then deploy.
+
+**Authors:** Sadia Afrin Purba & Asif Imtiyaz Chowdhury  
+**Email:** asif.imch@gmail.com
+
+> **Co-Authorship:** This software is co-authored by both partners, ensuring equal rights and privileges for both authors.
 
 ---
 
 **Features for Students:**  
-• Module-based courses, real-time progress, lesson completion  
+• Module-based courses, real-time progress, resource files, lesson completion
 • Video: YouTube, Vimeo, Loom  
 • Secure purchases, mobile-friendly
 
 **For Creators:**  
-• Sanity CMS, analytics, flexible structure, Stripe payments
+• Sanity CMS, analytics, flexible structure, Stripe payments, multiple media and document file support
 
 **Technical:**  
-• Next.js 15, Clerk, Stripe, Sanity, Tailwind, shadcn/ui  
+• Next.js 15, Clerk, Stripe, Sanity, Tailwind, shadcn/ui, radix-ui
 • Server Components, protected routes, dark mode
 
 **UI/UX:**  
@@ -29,8 +34,39 @@ Accounts: Clerk, Sanity, Stripe
 
 1. `cp .env.example .env.local` and fill in your secrets (see below).
 2. `npm install`
-3. `npm run dev` (or `npm run build && npm start` for production)
-4. Sanity Studio: `npm run sanity:dev`
+3. `npm run typegen` # This should be done while doing sanity configuration.
+4. `sanity deploy` # This should be done while doing sanity configuration
+5. `npm run dev` (or `npm run build && npm start` for production)
+
+In the browser,
+
+**For Teachers/Creators:**
+
+- Sanity Studio: [localhost:3000/studio](http://localhost:3000/studio)
+- Manage courses, lessons, and content
+- Upload videos, files, and images
+- Monitor student progress
+
+**For Students:**
+
+- Main Portal: [localhost:3000](http://localhost:3000)
+- Browse and enroll in courses
+- Access lesson content and resources
+- Track learning progress
+- Complete lessons and earn certificates
+
+---
+
+**Docker:**
+
+- Prereq: [Docker](https://www.docker.com/get-started), [Docker Compose](https://docs.docker.com/compose/)
+- Copy env file to project root
+- Build & run: `docker-compose up --build`
+- Stop: `docker-compose down`
+- Next.js: [localhost:3000](http://localhost:3000)
+- Sanity: [localhost:3333](http://localhost:3333)
+
+---
 
 **Environment Variables:**
 
@@ -91,40 +127,24 @@ CLERK_SECRET_KEY=...
 
 ---
 
-**Run:**
-
-- Teachers: [localhost:3000/studio](http://localhost:3000/studio)
-- Students: [localhost:3000](http://localhost:3000)
-
 **Deploy:**
 
-1. `npm i -g vercel`
-2. `vercel login`
-3. [Vercel](https://vercel.com/) → create project
+1. Install vercel `npm i -g vercel`
+2. Login to vercel with `vercel login`, it should take you to the browser
+3. [Vercel](https://vercel.com/) → create a project
 4. Add env vars: `https://vercel.com/<your-project>/settings/environment-variables`
-5. `vercel`
+5. To deploy a preview deployment run `vercel`. For local development server run `vercel dev` and for production deployment run `vercel prod`
 6. Deployments: `https://vercel.com/<your-project>/deployments`
 7. Live: `https://<your-project>.vercel.app/`
 
----
-
-**Docker:**
-
-- Prereq: [Docker](https://www.docker.com/get-started), [Docker Compose](https://docs.docker.com/compose/)
-- Copy env file to project root
-- Build & run: `docker-compose up --build`
-- Stop: `docker-compose down`
-- Next.js: [localhost:3000](http://localhost:3000)
-- Sanity: [localhost:3333](http://localhost:3333)
-
----
+Through out the configuration consistent naming of the applications is recommended among different platforms like Clerk, Sanity, Stripe.
 
 <details>
 <summary>Architecture & Content Model</summary>
 
 - **Courses:** Title, Description, Price, Image, Modules, Instructor, Category
 - **Modules:** Title, Lessons, Order
-- **Lessons:** Title, Description, Video URL, Content, Completion
+- **Lessons:** Title, Description, Video URL, Content, Code, Images, Course Material Files (pdf/docs), Completion
 - **Students:** Profile, Enrollments, Progress
 - **Instructors:** Name, Bio, Photo, Courses
 
@@ -136,12 +156,3 @@ CLERK_SECRET_KEY=...
 `/app` (Next.js) · `/components` · `/sanity` · `/lib` · `/api` · `/schemas`
 
 ---
-
-**Current Issues:**
-
-- "Mark as Complete" button/Sidebar update works in dev, not in production build.
-
-**Todo:**
-
-- Fix button issue
-- Improve structure tool for content writing
