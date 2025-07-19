@@ -7,7 +7,14 @@ export async function getLessonById(id: string) {
     ...,
     files[]{
       _key,
-      asset,
+      asset->{
+        _id,
+        _type,
+        originalFilename,
+        url,
+        mimeType,
+        size
+      },
       title,
       description
     },

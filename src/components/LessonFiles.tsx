@@ -15,13 +15,16 @@ import {
   File,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { projectId, dataset } from "@/sanity/env";
 
 type LessonFile = {
   _key: string;
   asset: {
-    _ref: string;
-    _type: "reference";
+    _id: string;
+    _type: string;
+    originalFilename?: string;
+    url?: string;
+    mimeType?: string;
+    size?: number;
   } | null;
   title: string | null;
   description: string | null;
@@ -66,36 +69,36 @@ export function LessonFiles({ files }: LessonFilesProps) {
     }
 
     try {
-      // Construct the download URL for Sanity assets
-      const assetId = file.asset._ref.replace("file-", "");
-      const downloadUrl = `https://cdn.sanity.io/files/${projectId}/${dataset}/${assetId}`;
+      // Use the asset ID directly since we now have the expanded asset
+      const assetId = file.asset._id;
 
-      // Fetch the file to get the actual download URL
-      const response = await fetch(downloadUrl);
-      if (!response.ok) {
-        throw new Error("Failed to fetch file");
+      console.log("Downloading file:", {
+        title: file.title,
+        assetId: assetId,
+        originalFilename: file.asset.originalFilename,
+        url: file.asset.url,
+      });
+
+      // If we have a direct URL from Sanity, use it
+      if (file.asset.url) {
+        window.open(file.asset.url, "_blank");
+        return;
       }
 
-      // Get the blob and create download link
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
+      // Otherwise, use our server-side API route
+      const downloadUrl = `/api/files/${assetId}`;
+
+      // Create a temporary link and trigger download
       const link = document.createElement("a");
-      link.href = url;
+      link.href = downloadUrl;
       link.download = file.title;
+      link.target = "_blank";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading file:", error);
-      // Fallback: try direct download
-      try {
-        const assetId = file.asset._ref.replace("file-", "");
-        const downloadUrl = `https://cdn.sanity.io/files/${projectId}/${dataset}/${assetId}`;
-        window.open(downloadUrl, "_blank");
-      } catch (fallbackError) {
-        console.error("Fallback download also failed:", fallbackError);
-      }
+      alert("Failed to download file. Please try again.");
     }
   };
 

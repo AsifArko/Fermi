@@ -2,7 +2,6 @@
 
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { CheckCircle2 } from "lucide-react";
 
 interface CourseProgressProps {
   progress: number;
@@ -21,7 +20,6 @@ export function CourseProgress({
   label,
   className,
 }: CourseProgressProps) {
-  const isComplete = progress >= 100 && variant === "success";
   return (
     <div
       className={cn(
