@@ -73,6 +73,15 @@ export type Lesson = {
   description?: string;
   videoUrl?: string;
   loomUrl?: string;
+  files?: Array<{
+    _key: string;
+    asset: {
+      _ref: string;
+      _type: "reference";
+    };
+    title: string;
+    description?: string;
+  }>;
   content?: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -344,7 +353,27 @@ export type SanityAssetSourceData = {
   url?: string;
 };
 
-export type AllSanitySchemaTypes = LessonCompletion | Module | Lesson | Enrollment | Student | Course | Instructor | Category | BlockContent | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
+export type AllSanitySchemaTypes =
+  | LessonCompletion
+  | Module
+  | Lesson
+  | Enrollment
+  | Student
+  | Course
+  | Instructor
+  | Category
+  | BlockContent
+  | SanityImagePaletteSwatch
+  | SanityImagePalette
+  | SanityImageDimensions
+  | SanityImageHotspot
+  | SanityImageCrop
+  | SanityFileAsset
+  | SanityImageAsset
+  | SanityImageMetadata
+  | Geopoint
+  | Slug
+  | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: src/sanity/lib/courses/getCourses.ts
 // Variable: getCoursesQyery
@@ -433,7 +462,7 @@ export type GetStudentByClerkIdQueryResult = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "*[_type == \"course\"] {\n    ...,\n    \"slug\": slug.current,\n    \"category\": category->{...},\n    \"instructor\": instructor->{...},\n  }": GetCoursesQyeryResult;
-    "*[_type == \"student\" && clerkId == $clerkId][0]": GetStudentByClerkIdQueryResult;
+    '*[_type == "course"] {\n    ...,\n    "slug": slug.current,\n    "category": category->{...},\n    "instructor": instructor->{...},\n  }': GetCoursesQyeryResult;
+    '*[_type == "student" && clerkId == $clerkId][0]': GetStudentByClerkIdQueryResult;
   }
 }

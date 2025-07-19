@@ -61,6 +61,35 @@ export const lessonType = defineType({
         }),
     }),
     defineField({
+      name: "files",
+      title: "Lesson Files",
+      type: "array",
+      of: [
+        {
+          type: "file",
+          options: {
+            accept: ".pdf,.txt,.csv",
+          },
+          fields: [
+            {
+              name: "title",
+              title: "File Title",
+              type: "string",
+              description: "Display name for the file",
+              validation: (rule) => rule.required(),
+            },
+            {
+              name: "description",
+              title: "File Description",
+              type: "text",
+              description: "Optional description of what this file contains",
+            },
+          ],
+        },
+      ],
+      description: "Upload PDF, TXT, or CSV files for students to download",
+    }),
+    defineField({
       name: "content",
       title: "Content",
       type: "array",

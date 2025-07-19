@@ -5,6 +5,7 @@ import { PortableText } from "@portabletext/react";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { LoomEmbed } from "@/components/LoomEmbed";
 import { LessonCompleteButton } from "@/components/LessonCompleteButton";
+import { LessonFiles } from "@/components/LessonFiles";
 import lessonPortableTextComponents from "@/components/lessonPortableTextComponents";
 
 interface LessonPageProps {
@@ -28,6 +29,8 @@ export default async function LessonPage({ params }: LessonPageProps) {
     return redirect(`/dashboard/courses/${courseId}`);
   }
 
+  const hasFiles = lesson.files && lesson.files.length > 0;
+
   return (
     <div className="h-full flex flex-col overflow-hidden bg-background font-sans antialiased text-[17px] text-primary/96">
       <div className="flex-1 overflow-y-auto">
@@ -47,6 +50,24 @@ export default async function LessonPage({ params }: LessonPageProps) {
 
             {/* Loom Embed Video if loomUrl is provided */}
             {lesson.loomUrl && <LoomEmbed shareUrl={lesson.loomUrl} />}
+
+            {/* Files Section - Only show if files exist */}
+            {hasFiles && (
+              <div>
+                <LessonFiles
+                  files={
+                    lesson.files
+                      ?.filter((file) => file && file.asset && file.title)
+                      .map((file) => ({
+                        _key: file._key,
+                        asset: file.asset!,
+                        title: file.title!,
+                        description: file.description,
+                      })) || []
+                  }
+                />
+              </div>
+            )}
 
             {/* Lesson Content */}
             {lesson.content && (

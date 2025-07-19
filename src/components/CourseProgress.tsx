@@ -41,12 +41,6 @@ export function CourseProgress({
               {progress}%
             </span>
           )}
-          {isComplete && (
-            <CheckCircle2
-              className="w-4 h-4 text-emerald-500/90 ml-1"
-              aria-label="Completed"
-            />
-          )}
         </div>
       </div>
       <Progress
