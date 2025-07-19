@@ -21,13 +21,13 @@ type LessonFile = {
   asset: {
     _id: string;
     _type: string;
-    originalFilename?: string;
-    url?: string;
-    mimeType?: string;
-    size?: number;
+    originalFilename: string | null;
+    url: string | null;
+    mimeType: string | null;
+    size: number | null;
   } | null;
-  title: string;
-  description?: string;
+  title: string | null;
+  description: string | null;
 };
 
 interface LessonFilesProps {

@@ -1074,7 +1074,7 @@ export type SearchQueryResult = Array<{
 
 // Source: src/sanity/lib/lessons/getLessonById.ts
 // Variable: getLessonByIdQuery
-// Query: *[_type == "lesson" && _id == $id][0] {    ...,    files[]{      _key,      asset,      title,      description    },    "module": module->{      ...,      "course": course->{...}    }  }
+// Query: *[_type == "lesson" && _id == $id][0] {    ...,    files[]{      _key,      asset->{        _id,        _type,        originalFilename,        url,        mimeType,        size      },      title,      description    },    "module": module->{      ...,      "course": course->{...}    }  }
 export type GetLessonByIdQueryResult = {
   _id: string;
   _type: 'lesson';
@@ -1089,10 +1089,12 @@ export type GetLessonByIdQueryResult = {
   files: Array<{
     _key: string;
     asset: {
-      _ref: string;
-      _type: 'reference';
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: 'sanity.fileAsset';
+      _id: string;
+      _type: 'sanity.fileAsset';
+      originalFilename: string | null;
+      url: string | null;
+      mimeType: string | null;
+      size: number | null;
     } | null;
     title: string | null;
     description: string | null;
@@ -1549,7 +1551,7 @@ declare module '@sanity/client' {
       | GetCompletionsQueryResult;
     '*[_type == "course"] {\n    ...,\n    "slug": slug.current,\n    "category": category->{...},\n    "instructor": instructor->{...}\n  }': GetCoursesQueryResult;
     '*[_type == "course" && (\n    title match $term + "*" ||\n    description match $term + "*" ||\n    category->name match $term + "*"\n  )] {\n    ...,\n    "slug": slug.current,\n    "category": category->{...},\n    "instructor": instructor->{...}\n  }': SearchQueryResult;
-    '*[_type == "lesson" && _id == $id][0] {\n    ...,\n    files[]{\n      _key,\n      asset,\n      title,\n      description\n    },\n    "module": module->{\n      ...,\n      "course": course->{...}\n    }\n  }': GetLessonByIdQueryResult;
+    '*[_type == "lesson" && _id == $id][0] {\n    ...,\n    files[]{\n      _key,\n      asset->{\n        _id,\n        _type,\n        originalFilename,\n        url,\n        mimeType,\n        size\n      },\n      title,\n      description\n    },\n    "module": module->{\n      ...,\n      "course": course->{...}\n    }\n  }': GetLessonByIdQueryResult;
     '*[_type == "lessonCompletion" && student._ref == $studentId && lesson._ref == $lessonId][0] {\n    ...\n  }': CompletionStatusQueryResult;
     '*[_type == "student" && clerkId == $clerkId][0] {\n    "enrolledCourses": *[_type == "enrollment" && student._ref == ^._id] {\n      ...,\n      "course": course-> {\n        ...,\n        "slug": slug.current,\n        "category": category->{...},\n        "instructor": instructor->{...}\n      }\n    }\n  }': GetEnrolledCoursesQueryResult;
     '*[_type == "student" && clerkId == $clerkId][0]': GetStudentByClerkIdQueryResult;
