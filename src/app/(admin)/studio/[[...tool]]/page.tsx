@@ -15,5 +15,11 @@ export const dynamic = "force-static";
 export { metadata, viewport } from "next-sanity/studio";
 
 export default function StudioPage() {
-  return <NextStudio config={config} />;
+  return (
+    <NextStudio
+      config={config}
+      // Help prevent filename length issues
+      unstable_noAuthBoundary={false}
+    />
+  );
 }

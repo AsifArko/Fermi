@@ -1,5 +1,7 @@
 import { PortableTextComponents } from "@portabletext/react";
 import React from "react";
+import Image from "next/image";
+import { urlFor } from "@/sanity/lib/image";
 
 export const lessonPortableTextComponents: PortableTextComponents = {
   block: {
@@ -61,6 +63,46 @@ export const lessonPortableTextComponents: PortableTextComponents = {
         </code>
       </pre>
     ),
+    image: ({ value }) => {
+      // Handle Sanity image properly using urlFor
+      const imageUrl = value?.asset ? urlFor(value).url() : null;
+
+      if (!imageUrl) {
+        return (
+          <figure className="my-6">
+            <div className="w-full h-64 bg-muted rounded-lg flex items-center justify-center border-2 border-dashed border-muted-foreground/30">
+              <p className="text-muted-foreground text-sm">
+                Image not available
+              </p>
+            </div>
+            {value?.caption && (
+              <figcaption className="text-sm text-muted-foreground text-center mt-2 italic">
+                {value.caption}
+              </figcaption>
+            )}
+          </figure>
+        );
+      }
+
+      return (
+        <figure className="my-6">
+          <Image
+            src={imageUrl}
+            alt={value.alt || ""}
+            width={0}
+            height={0}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 800px"
+            className="w-full h-auto rounded-lg shadow-md"
+            style={{ objectFit: "contain" }}
+          />
+          {value.caption && (
+            <figcaption className="text-sm text-muted-foreground text-center mt-2 italic">
+              {value.caption}
+            </figcaption>
+          )}
+        </figure>
+      );
+    },
   },
   marks: {
     strong: ({ children }) => (

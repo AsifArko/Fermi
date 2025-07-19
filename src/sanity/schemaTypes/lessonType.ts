@@ -64,7 +64,31 @@ export const lessonType = defineType({
       name: "content",
       title: "Content",
       type: "array",
-      of: [{ type: "block" }, { type: "code" }],
+      of: [
+        { type: "block" },
+        { type: "code" },
+        {
+          type: "image",
+          options: {
+            hotspot: true,
+          },
+          fields: [
+            {
+              name: "alt",
+              title: "Alt Text",
+              type: "string",
+              description: "Alternative text for accessibility",
+              validation: (rule) => rule.required(),
+            },
+            {
+              name: "caption",
+              title: "Caption",
+              type: "string",
+              description: "Optional caption for the image",
+            },
+          ],
+        },
+      ],
     }),
   ],
 });
