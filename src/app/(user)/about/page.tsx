@@ -180,6 +180,18 @@ export default function AboutPage() {
                   with protected routes and user management.
                 </p>
               </div>
+
+              {/* New Card: Rich Lesson Resources */}
+              <div className="p-6 border border-border rounded-lg bg-card">
+                <h3 className="text-lg font-semibold mb-2">
+                  Rich Lesson Resources
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Teachers can upload multiple files (PDF, DOCX, JSON, PPTX, and
+                  images) per lesson, making resources easily accessible.
+                  Lessons also support code snippets for technical topics.
+                </p>
+              </div>
             </div>
           </section>
 

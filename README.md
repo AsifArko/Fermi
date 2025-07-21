@@ -9,22 +9,37 @@ A modern e-learning platform built with [Next.js](https://nextjs.org), [Clerk](h
 
 ---
 
-**Features for Students:**  
-• Module-based courses, real-time progress, resource files, lesson completion
-• Video: YouTube, Vimeo, Loom  
-• Secure purchases, mobile-friendly
+### ✨ Features
 
-**For Creators:**  
-• Sanity CMS, analytics, flexible structure, Stripe payments, multiple media and document file support
+#### 🎓 For Students
 
-**Technical:**  
-• Next.js 15, Clerk, Stripe, Sanity, Tailwind, shadcn/ui, radix-ui
-• Server Components, protected routes, dark mode
+- **Interactive Learning:** Engage with module-based courses, track your progress in real-time, and access downloadable resource files.
+- **Rich Media Content:** Watch lesson videos from YouTube and Loom directly within the platform.
+- **Seamless Experience:** Enjoy secure and easy course purchases with a fully mobile-friendly design.
+- **Lesson Tracking:** Mark lessons as complete to keep track of your learning journey.
 
-**UI/UX:**  
-• Clean, accessible, responsive, micro-interactions, dark/light toggle
+#### 👩‍🏫 For Creators
 
----
+- **Powerful Content Management:** Use the integrated Sanity CMS to create and manage course content with ease.
+- **Flexible Course Structure:** Design courses with custom modules and lessons to fit your teaching style.
+- **Monetization:** Accept payments securely through Stripe integration.
+- **Rich Media Support:** Upload various media types, including videos, documents, and other files for your lessons.
+- **Student Analytics:** Monitor student progress and engagement.
+
+#### 🛠️ Technical Stack
+
+- **Framework:** [Next.js](https://nextjs.org/) 15 (with Server Components)
+- **Authentication:** [Clerk](https://clerk.com/) for secure user management and protected routes.
+- **CMS:** [Sanity](https://sanity.io/) for flexible and powerful content management.
+- **Payments:** [Stripe](https://stripe.com/) for reliable payment processing.
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/) with [shadcn/ui](https://ui.shadcn.com/) and [Radix UI](https://www.radix-ui.com/) for a modern and responsive UI.
+- **Dark Mode:** Built-in dark mode support.
+
+#### 🎨 UI/UX
+
+- **Modern Design:** A clean, accessible, and responsive interface.
+- **Engaging Interactions:** Thoughtful micro-interactions to enhance the user experience.
+- **Theme Toggle:** Easily switch between light and dark modes.
 
 **Prerequisites:**  
 `Node.js v22.12.0` · `npm v11.2.0` · `Next.js v15.3.5`  
@@ -33,10 +48,24 @@ Accounts: Clerk, Sanity, Stripe
 **Quick Setup:**
 
 1. `cp .env.example .env.local && cp .env.example .env` and fill the secrets in both `.env` and `.env.local`
-2. `npm install`
-3. `npm run typegen` # This should be done while doing sanity configuration.
-4. `sanity deploy` # This should be done while doing sanity configuration
-5. `npm run dev` (or `npm run build && npm start` for production)
+
+**Run with Docker:**
+
+- Prereq: [Docker](https://www.docker.com/get-started), [Docker Compose](https://docs.docker.com/compose/)
+- Copy env file to project root
+- Build & run: `docker-compose up --build --no-cache`
+- Stop: `docker-compose down`
+- Next.js: [localhost:3000](http://localhost:3000)
+- Sanity: [localhost:3333](http://localhost:3333)
+
+---
+
+**Run Locally:**
+
+1. `npm install`
+2. `npm run typegen` # This should be done while doing sanity configuration.
+3. `sanity deploy` # This should be done while doing sanity configuration
+4. `npm run dev` (or `npm run build && npm start` for production)
 
 In the browser,
 
@@ -54,17 +83,6 @@ In the browser,
 - Access lesson content and resources
 - Track learning progress
 - Complete lessons and earn certificates
-
----
-
-**Docker:**
-
-- Prereq: [Docker](https://www.docker.com/get-started), [Docker Compose](https://docs.docker.com/compose/)
-- Copy env file to project root
-- Build & run: `docker-compose up --build`
-- Stop: `docker-compose down`
-- Next.js: [localhost:3000](http://localhost:3000)
-- Sanity: [localhost:3333](http://localhost:3333)
 
 ---
 

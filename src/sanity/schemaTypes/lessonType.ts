@@ -61,6 +61,12 @@ export const lessonType = defineType({
         }),
     }),
     defineField({
+      name: 'jupyterNotebookUrl',
+      title: 'Jupyter Notebook URL',
+      type: 'url',
+      description: 'URL to the Jupyter Notebook for this lesson.',
+    }),
+    defineField({
       name: 'files',
       title: 'Lesson Files',
       type: 'array',

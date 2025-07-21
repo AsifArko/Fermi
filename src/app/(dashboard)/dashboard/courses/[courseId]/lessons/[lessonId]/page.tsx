@@ -4,6 +4,7 @@ import { getLessonById } from '@/sanity/lib/lessons/getLessonById';
 import { PortableText } from '@portabletext/react';
 import { VideoPlayer } from '@/components/VideoPlayer';
 import { LoomEmbed } from '@/components/LoomEmbed';
+import { JupyterNotebook } from '@/components/JupyterNotebook';
 import { LessonCompleteButton } from '@/components/LessonCompleteButton';
 import { LessonFiles } from '@/components/LessonFiles';
 import lessonPortableTextComponents from '@/components/lessonPortableTextComponents';
@@ -64,6 +65,11 @@ export default async function LessonPage({ params }: LessonPageProps) {
 
             {/* Loom Embed Video if loomUrl is provided */}
             {lesson.loomUrl && <LoomEmbed shareUrl={lesson.loomUrl} />}
+
+            {/* Jupyter Notebook if jupyterNotebook is provided */}
+            {lesson.jupyterNotebookUrl && (
+              <JupyterNotebook jupyterNotebookUrl={lesson.jupyterNotebookUrl} />
+            )}
 
             {/* Files Section - Only show if files exist */}
             {hasFiles && (

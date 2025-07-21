@@ -4,15 +4,16 @@
   "private": true,
   "author": "Sadia Afrin Purba <purba0101@gmail.com> & Asif Imtiyaz Chowdhury <asif.imch@gmail.com>",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "rm -rf .next && concurrently --kill-others --success first -s first \"npm run jupyter\" \"next dev\"",
+    "build": "rm -rf .next && next build",
+    "start": "rm -rf .next && concurrently --kill-others --success first -s first \"npm run jupyter\" \"next start\"",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "typegen": "sanity schema extract && sanity typegen generate",
     "format": "prettier --write .",
     "type-check": "tsc --noEmit",
-    "prepare": "husky"
+    "prepare": "husky",
+    "jupyter": "jupyter notebook --notebook-dir=./notebooks --ip=0.0.0.0 --port=8888 --no-browser --NotebookApp.token=fermi > jupyter.log 2>&1"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.23.2",
@@ -64,6 +65,7 @@
     "@types/react-dom": "^19.1.6",
     "@typescript-eslint/eslint-plugin": "^8.15.0",
     "@typescript-eslint/parser": "^8.15.0",
+    "concurrently": "^8.2.2",
     "eslint": "^9.30.0",
     "eslint-config-next": "^15.3.4",
     "eslint-config-prettier": "^9.1.0",

@@ -73,6 +73,7 @@ export type Lesson = {
   description?: string;
   videoUrl?: string;
   loomUrl?: string;
+  jupyterNotebookUrl?: string;
   files?: Array<{
     _key: string;
     asset: {

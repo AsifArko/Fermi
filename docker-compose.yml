@@ -34,3 +34,13 @@ services:
       - NODE_ENV=production
     volumes:
       - .env.local:/app/.env.local
+
+  jupyter:
+    build:
+      context: .
+      dockerfile: jupyter.Dockerfile
+    ports:
+      - '8888:8888'
+    environment:
+      - JUPYTER_TOKEN=fermi
+    restart: unless-stopped
