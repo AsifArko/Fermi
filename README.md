@@ -32,7 +32,7 @@ Accounts: Clerk, Sanity, Stripe
 
 **Quick Setup:**
 
-1. `cp .env.example .env.local` and fill in your secrets (see below).
+1. `cp .env.example .env.local && cp .env.example .env` and fill the secrets in both `.env` and `.env.local`
 2. `npm install`
 3. `npm run typegen` # This should be done while doing sanity configuration.
 4. `sanity deploy` # This should be done while doing sanity configuration

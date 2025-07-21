@@ -49,6 +49,10 @@ export function LessonFiles({ files }: LessonFilesProps) {
         return <FileText className="h-3.5 w-3.5" />;
       case 'csv':
         return <FileSpreadsheet className="h-3.5 w-3.5" />;
+      case 'pptx':
+      case 'docx':
+        // No specific Lucide icon for pptx/docx, use FileText as a stand-in
+        return <FileText className="h-3.5 w-3.5" />;
       case 'txt':
         return <File className="h-3.5 w-3.5" />;
       default:
@@ -59,6 +63,8 @@ export function LessonFiles({ files }: LessonFilesProps) {
   const getFileType = (filename: string | null) => {
     if (!filename) return 'FILE';
     const extension = filename.split('.').pop()?.toUpperCase();
+    if (extension === 'PPTX') return 'PPTX';
+    if (extension === 'DOCX') return 'DOCX';
     return extension || 'FILE';
   };
 
