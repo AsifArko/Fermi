@@ -8,6 +8,8 @@ import { LessonCompleteButton } from '@/components/LessonCompleteButton';
 import { LessonFiles } from '@/components/LessonFiles';
 import lessonPortableTextComponents from '@/components/lessonPortableTextComponents';
 import NotebookPreview from '@/components/NotebookPreview';
+import Link from 'next/link';
+import { ColabIcon } from '@/components/ColabIcon';
 
 type LessonFile = {
   _key: string;
@@ -53,8 +55,8 @@ export default async function LessonPage({ params }: LessonPageProps) {
   return (
     <div className="h-full flex flex-col overflow-hidden bg-background font-sans antialiased text-[17px] text-primary/96">
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto pt-14 pb-24 px-4">
-          <h1 className="text-4xl md:text-5xl font-light mb-5 text-primary/96 tracking-tight leading-tight">
+        <div className="max-w-4xl mx-auto pt-14 pb-24 px-4 sm:px-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-light mb-5 text-primary/96 tracking-tight leading-tight">
             {lesson.title}
           </h1>
           {lesson.description && (
@@ -63,7 +65,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
             </div>
           )}
 
-          <div className="space-y-10">
+          <div className="space-y-8 sm:space-y-10">
             {/* Video Section */}
             {lesson.videoUrl && <VideoPlayer url={lesson.videoUrl} />}
 
@@ -71,12 +73,33 @@ export default async function LessonPage({ params }: LessonPageProps) {
             {lesson.loomUrl && <LoomEmbed shareUrl={lesson.loomUrl} />}
 
             {/* Jupyter Notebook Section */}
-            {notebookUrl && (
-              <div className="my-8">
-                <h2 className="text-2xl font-normal mb-5 text-primary/96 tracking-tight">
-                  Jupyter Notebook
-                </h2>
-                <NotebookPreview url={notebookUrl} />
+            {(notebookUrl || lesson.colabUrl) && (
+              <div className="my-6 sm:my-8">
+                <div className="flex items-center justify-between gap-4 mb-4 sm:mb-5">
+                  <h2 className="text-xl sm:text-2xl font-normal text-primary/96 tracking-tight">
+                    Jupyter Notebook
+                  </h2>
+                  {lesson.colabUrl && (
+                    <Link
+                      href={lesson.colabUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-primary/96 border border-border hover:border-primary/20 rounded-lg transition-all duration-200 w-fit shrink-0"
+                    >
+                      <ColabIcon className="w-4 h-4" />
+                      <span className="hidden sm:inline">Google Colab</span>
+                    </Link>
+                  )}
+                </div>
+                {notebookUrl ? (
+                  <NotebookPreview url={notebookUrl} />
+                ) : (
+                  <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      No notebook file available for this lesson.
+                    </p>
+                  </div>
+                )}
               </div>
             )}
 
@@ -96,7 +119,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
             {/* Lesson Content */}
             {lesson.content && (
               <div>
-                <h2 className="text-2xl font-normal mb-5 text-primary/96 tracking-tight">
+                <h2 className="text-xl sm:text-2xl font-normal mb-4 sm:mb-5 text-primary/96 tracking-tight">
                   Lesson Notes
                 </h2>
                 <div className="prose prose-blue dark:prose-invert max-w-none prose-headings:font-normal prose-headings:text-primary/96 prose-headings:tracking-tight prose-p:leading-relaxed prose-p:text-primary/96 prose-li:marker:text-primary/60 prose-a:text-blue-600 dark:prose-a:text-blue-400">

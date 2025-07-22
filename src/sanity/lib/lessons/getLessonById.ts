@@ -23,6 +23,7 @@ export async function getLessonById(id: string) {
       "course": course->{...}
     },
     notebookUrl,
+    colabUrl,
     notebookFile{
       asset->{
         url,

@@ -84,6 +84,7 @@ export type Lesson = {
     media?: unknown;
     _type: 'file';
   };
+  colabUrl?: string;
   files?: Array<{
     asset?: {
       _ref: string;
@@ -513,6 +514,7 @@ export type GetCourseByIdQueryResult = {
         media?: unknown;
         _type: 'file';
       };
+      colabUrl?: string;
       files?: Array<{
         asset?: {
           _ref: string;
@@ -663,6 +665,7 @@ export type GetCourseBySlugQueryResult = {
         media?: unknown;
         _type: 'file';
       };
+      colabUrl?: string;
       files?: Array<{
         asset?: {
           _ref: string;
@@ -785,6 +788,7 @@ export type ProgressQueryResult = {
         media?: unknown;
         _type: 'file';
       };
+      colabUrl?: string;
       files?: Array<{
         asset?: {
           _ref: string;
@@ -925,6 +929,7 @@ export type ProgressQueryResult = {
           media?: unknown;
           _type: 'file';
         };
+        colabUrl?: string;
         files?: Array<{
           asset?: {
             _ref: string;
@@ -1150,6 +1155,7 @@ export type GetLessonByIdQueryResult = {
       originalFilename: string | null;
     } | null;
   } | null;
+  colabUrl?: string;
   files: Array<{
     _key: string;
     asset: {
@@ -1286,6 +1292,7 @@ export type GetCompletionsQueryResult = {
         media?: unknown;
         _type: 'file';
       };
+      colabUrl?: string;
       files?: Array<{
         asset?: {
           _ref: string;
@@ -1426,6 +1433,7 @@ export type GetCompletionsQueryResult = {
           media?: unknown;
           _type: 'file';
         };
+        colabUrl?: string;
         files?: Array<{
           asset?: {
             _ref: string;

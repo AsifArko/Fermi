@@ -78,6 +78,12 @@ export const lessonType = defineType({
         'Upload a Jupyter notebook file (.ipynb) for this lesson. Either this or the Notebook URL above will be used for notebook preview. If both are set, the URL takes priority.',
     }),
     defineField({
+      name: 'colabUrl',
+      title: 'Colab URL',
+      type: 'url',
+      description: 'URL to the Google Colab notebook for this lesson',
+    }),
+    defineField({
       name: 'files',
       title: 'Lesson Files',
       type: 'array',

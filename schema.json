@@ -382,6 +382,13 @@
         },
         "optional": true
       },
+      "colabUrl": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
       "files": {
         "type": "objectAttribute",
         "value": {
