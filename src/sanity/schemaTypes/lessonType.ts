@@ -61,6 +61,23 @@ export const lessonType = defineType({
         }),
     }),
     defineField({
+      name: 'notebookUrl',
+      title: 'Notebook URL',
+      type: 'url',
+      description:
+        'Paste a public URL to a .ipynb file (e.g., from GitHub raw or Gist). Either this or the Notebook File below will be used for notebook preview. If both are set, the URL takes priority.',
+    }),
+    defineField({
+      name: 'notebookFile',
+      title: 'Notebook File',
+      type: 'file',
+      options: {
+        accept: '.ipynb',
+      },
+      description:
+        'Upload a Jupyter notebook file (.ipynb) for this lesson. Either this or the Notebook URL above will be used for notebook preview. If both are set, the URL takes priority.',
+    }),
+    defineField({
       name: 'files',
       title: 'Lesson Files',
       type: 'array',
@@ -68,7 +85,7 @@ export const lessonType = defineType({
         {
           type: 'file',
           options: {
-            accept: '.pdf,.txt,.csv',
+            accept: '.pdf,.txt,.csv,.ipynb,.pptx,.ppt',
           },
           fields: [
             {

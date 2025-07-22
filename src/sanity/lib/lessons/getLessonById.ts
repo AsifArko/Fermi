@@ -21,6 +21,13 @@ export async function getLessonById(id: string) {
     "module": module->{
       ...,
       "course": course->{...}
+    },
+    notebookUrl,
+    notebookFile{
+      asset->{
+        url,
+        originalFilename
+      }
     }
   }`);
 

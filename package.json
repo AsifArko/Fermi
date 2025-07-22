@@ -4,8 +4,8 @@
   "private": true,
   "author": "Sadia Afrin Purba <purba0101@gmail.com> & Asif Imtiyaz Chowdhury <asif.imch@gmail.com>",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "rm -rf .next && next dev",
+    "build": "rm -rf .next && next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
@@ -45,6 +45,7 @@
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.52.1",
     "react-is": "^19.1.0",
+    "react-jupyter-notebook": "^0.4.0",
     "react-player": "^3.0.0",
     "sanity": "^3.95.0",
     "sonner": "^1.4.3",

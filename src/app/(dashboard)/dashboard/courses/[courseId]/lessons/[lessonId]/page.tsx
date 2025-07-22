@@ -7,6 +7,7 @@ import { LoomEmbed } from '@/components/LoomEmbed';
 import { LessonCompleteButton } from '@/components/LessonCompleteButton';
 import { LessonFiles } from '@/components/LessonFiles';
 import lessonPortableTextComponents from '@/components/lessonPortableTextComponents';
+import NotebookPreview from '@/components/NotebookPreview';
 
 type LessonFile = {
   _key: string;
@@ -45,6 +46,10 @@ export default async function LessonPage({ params }: LessonPageProps) {
 
   const hasFiles = lesson.files && lesson.files.length > 0;
 
+  // Find the Jupyter notebook file URL if present
+  const notebookFile = lesson.notebookFile;
+  const notebookUrl = lesson.notebookUrl || notebookFile?.asset?.url;
+
   return (
     <div className="h-full flex flex-col overflow-hidden bg-background font-sans antialiased text-[17px] text-primary/96">
       <div className="flex-1 overflow-y-auto">
@@ -64,6 +69,16 @@ export default async function LessonPage({ params }: LessonPageProps) {
 
             {/* Loom Embed Video if loomUrl is provided */}
             {lesson.loomUrl && <LoomEmbed shareUrl={lesson.loomUrl} />}
+
+            {/* Jupyter Notebook Section */}
+            {notebookUrl && (
+              <div className="my-8">
+                <h2 className="text-2xl font-normal mb-5 text-primary/96 tracking-tight">
+                  Jupyter Notebook
+                </h2>
+                <NotebookPreview url={notebookUrl} />
+              </div>
+            )}
 
             {/* Files Section - Only show if files exist */}
             {hasFiles && (

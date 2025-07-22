@@ -73,6 +73,17 @@ export type Lesson = {
   description?: string;
   videoUrl?: string;
   loomUrl?: string;
+  notebookUrl?: string;
+  notebookFile?: {
+    asset?: {
+      _ref: string;
+      _type: 'reference';
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: 'sanity.fileAsset';
+    };
+    media?: unknown;
+    _type: 'file';
+  };
   files?: Array<{
     asset?: {
       _ref: string;
@@ -491,6 +502,17 @@ export type GetCourseByIdQueryResult = {
       description?: string;
       videoUrl?: string;
       loomUrl?: string;
+      notebookUrl?: string;
+      notebookFile?: {
+        asset?: {
+          _ref: string;
+          _type: 'reference';
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: 'sanity.fileAsset';
+        };
+        media?: unknown;
+        _type: 'file';
+      };
       files?: Array<{
         asset?: {
           _ref: string;
@@ -630,6 +652,17 @@ export type GetCourseBySlugQueryResult = {
       description?: string;
       videoUrl?: string;
       loomUrl?: string;
+      notebookUrl?: string;
+      notebookFile?: {
+        asset?: {
+          _ref: string;
+          _type: 'reference';
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: 'sanity.fileAsset';
+        };
+        media?: unknown;
+        _type: 'file';
+      };
       files?: Array<{
         asset?: {
           _ref: string;
@@ -741,6 +774,17 @@ export type ProgressQueryResult = {
       description?: string;
       videoUrl?: string;
       loomUrl?: string;
+      notebookUrl?: string;
+      notebookFile?: {
+        asset?: {
+          _ref: string;
+          _type: 'reference';
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: 'sanity.fileAsset';
+        };
+        media?: unknown;
+        _type: 'file';
+      };
       files?: Array<{
         asset?: {
           _ref: string;
@@ -870,6 +914,17 @@ export type ProgressQueryResult = {
         description?: string;
         videoUrl?: string;
         loomUrl?: string;
+        notebookUrl?: string;
+        notebookFile?: {
+          asset?: {
+            _ref: string;
+            _type: 'reference';
+            _weak?: boolean;
+            [internalGroqTypeReferenceTo]?: 'sanity.fileAsset';
+          };
+          media?: unknown;
+          _type: 'file';
+        };
         files?: Array<{
           asset?: {
             _ref: string;
@@ -1076,7 +1131,7 @@ export type SearchQueryResult = Array<{
 
 // Source: src/sanity/lib/lessons/getLessonById.ts
 // Variable: getLessonByIdQuery
-// Query: *[_type == "lesson" && _id == $id][0] {    ...,    files[]{      _key,      asset->{        _id,        _type,        originalFilename,        url,        mimeType,        size      },      title,      description    },    "module": module->{      ...,      "course": course->{...}    }  }
+// Query: *[_type == "lesson" && _id == $id][0] {    ...,    files[]{      _key,      asset->{        _id,        _type,        originalFilename,        url,        mimeType,        size      },      title,      description    },    "module": module->{      ...,      "course": course->{...}    },    notebookUrl,    notebookFile{      asset->{        url,        originalFilename      }    }  }
 export type GetLessonByIdQueryResult = {
   _id: string;
   _type: 'lesson';
@@ -1088,6 +1143,13 @@ export type GetLessonByIdQueryResult = {
   description?: string;
   videoUrl?: string;
   loomUrl?: string;
+  notebookUrl: string | null;
+  notebookFile: {
+    asset: {
+      url: string | null;
+      originalFilename: string | null;
+    } | null;
+  } | null;
   files: Array<{
     _key: string;
     asset: {
@@ -1213,6 +1275,17 @@ export type GetCompletionsQueryResult = {
       description?: string;
       videoUrl?: string;
       loomUrl?: string;
+      notebookUrl?: string;
+      notebookFile?: {
+        asset?: {
+          _ref: string;
+          _type: 'reference';
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: 'sanity.fileAsset';
+        };
+        media?: unknown;
+        _type: 'file';
+      };
       files?: Array<{
         asset?: {
           _ref: string;
@@ -1342,6 +1415,17 @@ export type GetCompletionsQueryResult = {
         description?: string;
         videoUrl?: string;
         loomUrl?: string;
+        notebookUrl?: string;
+        notebookFile?: {
+          asset?: {
+            _ref: string;
+            _type: 'reference';
+            _weak?: boolean;
+            [internalGroqTypeReferenceTo]?: 'sanity.fileAsset';
+          };
+          media?: unknown;
+          _type: 'file';
+        };
         files?: Array<{
           asset?: {
             _ref: string;
@@ -1553,7 +1637,7 @@ declare module '@sanity/client' {
       | GetCompletionsQueryResult;
     '*[_type == "course"] {\n    ...,\n    "slug": slug.current,\n    "category": category->{...},\n    "instructor": instructor->{...}\n  }': GetCoursesQueryResult;
     '*[_type == "course" && (\n    title match $term + "*" ||\n    description match $term + "*" ||\n    category->name match $term + "*"\n  )] {\n    ...,\n    "slug": slug.current,\n    "category": category->{...},\n    "instructor": instructor->{...}\n  }': SearchQueryResult;
-    '*[_type == "lesson" && _id == $id][0] {\n    ...,\n    files[]{\n      _key,\n      asset->{\n        _id,\n        _type,\n        originalFilename,\n        url,\n        mimeType,\n        size\n      },\n      title,\n      description\n    },\n    "module": module->{\n      ...,\n      "course": course->{...}\n    }\n  }': GetLessonByIdQueryResult;
+    '*[_type == "lesson" && _id == $id][0] {\n    ...,\n    files[]{\n      _key,\n      asset->{\n        _id,\n        _type,\n        originalFilename,\n        url,\n        mimeType,\n        size\n      },\n      title,\n      description\n    },\n    "module": module->{\n      ...,\n      "course": course->{...}\n    },\n    notebookUrl,\n    notebookFile{\n      asset->{\n        url,\n        originalFilename\n      }\n    }\n  }': GetLessonByIdQueryResult;
     '*[_type == "lessonCompletion" && student._ref == $studentId && lesson._ref == $lessonId][0] {\n    ...\n  }': CompletionStatusQueryResult;
     '*[_type == "student" && clerkId == $clerkId][0] {\n    "enrolledCourses": *[_type == "enrollment" && student._ref == ^._id] {\n      ...,\n      "course": course-> {\n        ...,\n        "slug": slug.current,\n        "category": category->{...},\n        "instructor": instructor->{...}\n      }\n    }\n  }': GetEnrolledCoursesQueryResult;
     '*[_type == "student" && clerkId == $clerkId][0]': GetStudentByClerkIdQueryResult;
