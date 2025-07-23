@@ -15,7 +15,7 @@ A modern e-learning platform built with [Next.js](https://nextjs.org), [Clerk](h
 • Secure purchases, mobile-friendly
 
 **For Creators:**  
-• Sanity CMS, analytics, flexible structure, Stripe payments, multiple media and document file support
+• Sanity CMS, analytics, flexible structure, Stripe payments, media and document file support, asset manager
 
 **Technical:**  
 • Next.js 15, Clerk, Stripe, Sanity, Tailwind, shadcn/ui, radix-ui
@@ -43,6 +43,7 @@ In the browser,
 **For Teachers/Creators:**
 
 - Sanity Studio: [localhost:3000/studio](http://localhost:3000/studio)
+- Asset Manager: [localhost:3000/studio/asset-manager](http://localhost:3000/studio/asset-manager)
 - Manage courses, lessons, and content
 - Upload videos, files, and images
 - Monitor student progress

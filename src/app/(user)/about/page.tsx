@@ -180,6 +180,34 @@ export default function AboutPage() {
                   with protected routes and user management.
                 </p>
               </div>
+
+              <div className="p-6 border border-border rounded-lg bg-card">
+                <h3 className="text-lg font-semibold mb-2">Asset Manager</h3>
+                <p className="text-sm text-muted-foreground">
+                  Comprehensive file management system for organizing and
+                  distributing course materials, documents, and resources.
+                </p>
+              </div>
+
+              <div className="p-6 border border-border rounded-lg bg-card">
+                <h3 className="text-lg font-semibold mb-2">
+                  Jupyter Notebook Integration
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Jupyter notebook support in read only mode for data analysis,
+                  and collaborative learning experiences.
+                </p>
+              </div>
+
+              <div className="p-6 border border-border rounded-lg bg-card">
+                <h3 className="text-lg font-semibold mb-2">
+                  Google Colab Integration
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Google Colab for cloud-based computational notebooks and
+                  collaborative coding projects.
+                </p>
+              </div>
             </div>
           </section>
 
