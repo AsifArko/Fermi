@@ -16,10 +16,7 @@ export function SearchInput() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="relative w-full flex-1 max-w-[300px]"
-    >
+    <form onSubmit={handleSubmit} className="relative w-full flex-1">
       <input
         type="text"
         placeholder="Search courses..."

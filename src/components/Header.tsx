@@ -61,12 +61,13 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo and Brand */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2">
               <Link
                 href="/"
                 prefetch={false}
                 className="flex items-center space-x-2 hover:opacity-90 transition-opacity"
               >
+                <div className="w-8 h-8 bg-primary/85 rounded-lg" />
                 <span className="text-xl font-bold tracking-tight text-foreground">
                   Fermi
                 </span>
@@ -74,7 +75,7 @@ export default function Header() {
             </div>
 
             {/* Search Bar - Hidden on mobile */}
-            <div className="hidden md:flex flex-1 max-w-md mx-6">
+            <div className="hidden md:flex flex-1 max-w-md mx-4">
               <SearchInput />
             </div>
 
