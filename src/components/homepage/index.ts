@@ -1,0 +1,12 @@
+export { ScientificHeader } from './ScientificHeader';
+export { CategoryNavigator } from './CategoryNavigator';
+export { CourseMatrix } from './CourseMatrix';
+export { CategoryFilter } from './CategoryFilter';
+export { HomepageContent } from './HomepageContent';
+export { MobileResponsiveHomepageContent } from './MobileResponsiveHomepageContent';
+export { MobileResponsiveCategoryFilter } from './MobileResponsiveCategoryFilter';
+export { ScientificBackground } from './ScientificBackground';
+export { ScientificHero } from './ScientificHero';
+export { StatsSection } from './StatsSection';
+export { FeaturedCoursesSection } from './FeaturedCoursesSection';
+export { FeatureBadges } from './FeatureBadges';

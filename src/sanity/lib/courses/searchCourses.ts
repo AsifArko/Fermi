@@ -10,7 +10,17 @@ export async function searchCourses(term: string) {
     ...,
     "slug": slug.current,
     "category": category->{...},
-    "instructor": instructor->{...}
+    "instructor": instructor->{...},
+    "modules": modules[]->{
+      ...,
+      "lessons": lessons[]->{
+        ...,
+        "hasVideo": defined(videoUrl) || defined(loomUrl),
+        "hasNotebook": defined(notebookUrl) || defined(notebookFile),
+        "hasColab": defined(colabUrl),
+        "fileCount": count(files)
+      }
+    }
   }`);
 
   const result = await sanityFetch({

@@ -7,13 +7,11 @@ import { SearchInput } from './SearchInput';
 import { Button } from './ui/button';
 import DarkModeToggle from './DarkModeToggle';
 import { usePathname } from 'next/navigation';
-import { Menu } from 'lucide-react';
-import MobileSidebar from './MobileSidebar';
+import { Menu, X, User } from 'lucide-react';
 
 export default function Header() {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
-
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Ensure component is mounted before checking pathname
@@ -33,24 +31,23 @@ export default function Header() {
   // Don't render until mounted to prevent hydration mismatch
   if (!mounted) {
     return (
-      <header className="max-w-7xl mx-auto fixed top-0 left-0 right-0 z-50 bg-background border-b border-border py-4 px-0">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-wrap items-center justify-between gap-2 min-h-0">
-            <div className="flex items-center space-x-2 shrink-0">
-              <span className="text-2xl font-extrabold tracking-tight text-foreground drop-shadow-sm">
-                Fermi
-              </span>
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/20 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-primary rounded-lg animate-pulse" />
+              <div className="w-20 h-6 bg-muted rounded animate-pulse" />
             </div>
-            <div className="flex-1 min-w-0 mx-2">
-              <div className="w-full h-9 bg-secondary/80 rounded-md animate-pulse" />
+            <div className="flex-1 max-w-md mx-4">
+              <div className="w-full h-9 bg-muted rounded-lg animate-pulse" />
             </div>
-            <div className="hidden md:flex items-center gap-2 z-10 shrink-0">
-              <div className="w-20 h-8 bg-secondary rounded-md animate-pulse" />
-              <div className="w-8 h-8 bg-secondary rounded-md animate-pulse" />
-              <div className="w-8 h-8 bg-secondary rounded-md animate-pulse" />
+            <div className="hidden md:flex items-center space-x-3">
+              <div className="w-20 h-8 bg-muted rounded animate-pulse" />
+              <div className="w-8 h-8 bg-muted rounded animate-pulse" />
+              <div className="w-8 h-8 bg-muted rounded-full animate-pulse" />
             </div>
-            <div className="md:hidden flex items-center z-10">
-              <div className="w-9 h-9 bg-secondary rounded-md animate-pulse" />
+            <div className="md:hidden">
+              <div className="w-8 h-8 bg-muted rounded animate-pulse" />
             </div>
           </div>
         </div>
@@ -59,62 +56,144 @@ export default function Header() {
   }
 
   return (
-    <header className="max-w-7xl mx-auto fixed top-0 left-0 right-0 z-50 bg-background border-b border-border py-4 px-0">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-wrap items-center justify-between gap-2 min-h-0">
-          <Link
-            href="/"
-            prefetch={false}
-            className="flex items-center space-x-2 hover:opacity-90 transition-opacity shrink-0"
-          >
-            <span className="text-2xl font-extrabold tracking-tight text-foreground drop-shadow-sm">
-              Fermi
-            </span>
-          </Link>
-          <div className="flex-1 min-w-0 mx-2">
-            <SearchInput />
-          </div>
-          {/* Desktop nav buttons */}
-          <div className="hidden md:flex items-center gap-2 z-10 shrink-0">
-            <SignedIn>
-              <Link href="/my-courses">
-                <Button
-                  className="px-4 py-1.5 h-auto text-sm font-semibold rounded-md bg-background text-primary border border-border shadow-none hover:bg-primary/10 hover:text-primary transition-all duration-200"
-                  style={{ minWidth: 0, boxShadow: 'none' }}
-                >
-                  My Courses
-                </Button>
+    <>
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/20 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo and Brand */}
+            <div className="flex items-center space-x-2">
+              <Link
+                href="/"
+                prefetch={false}
+                className="flex items-center space-x-2 hover:opacity-90 transition-opacity"
+              >
+                <div className="w-8 h-8 bg-primary/85 rounded-lg" />
+                <span className="text-xl font-bold tracking-tight text-foreground">
+                  Fermi
+                </span>
               </Link>
-              <DarkModeToggle />
-              <UserButton />
-            </SignedIn>
-            <SignedOut>
-              <SignInButton mode="modal">
-                <Button
-                  variant="outline"
-                  size="default"
-                  className="font-semibold px-4 py-1.5 h-auto text-sm rounded-md"
-                >
-                  Sign In
-                </Button>
-              </SignInButton>
-            </SignedOut>
-          </div>
-          {/* Mobile hamburger menu */}
-          <div className="md:hidden flex items-center z-10">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setSidebarOpen(true)}
-              aria-label="Open menu"
-            >
-              <Menu className="w-6 h-6" />
-            </Button>
+            </div>
+
+            {/* Search Bar - Hidden on mobile */}
+            <div className="hidden md:flex flex-1 max-w-md mx-4">
+              <SearchInput />
+            </div>
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-3">
+              <SignedIn>
+                <Link href="/my-courses">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 px-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  >
+                    <User className="w-4 h-4 mr-2" />
+                    My Courses
+                  </Button>
+                </Link>
+                <DarkModeToggle />
+                <UserButton
+                  appearance={{
+                    elements: {
+                      avatarBox: 'w-8 h-8',
+                    },
+                  }}
+                />
+              </SignedIn>
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-4 text-sm font-medium"
+                  >
+                    Sign In
+                  </Button>
+                </SignInButton>
+              </SignedOut>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSidebarOpen(true)}
+                className="h-8 w-8 p-0"
+              >
+                <Menu className="w-5 h-5" />
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
-      {/* Mobile Sidebar Drawer */}
-      <MobileSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-    </header>
+      </header>
+
+      {/* Mobile Sidebar */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setSidebarOpen(false)}
+          />
+
+          {/* Sidebar */}
+          <div className="fixed right-0 top-0 h-full w-80 bg-background border-l border-border/20 shadow-xl">
+            <div className="flex items-center justify-between p-4 border-b border-border/20">
+              <h2 className="text-lg font-semibold">Menu</h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSidebarOpen(false)}
+                className="h-8 w-8 p-0"
+              >
+                <X className="w-5 h-5" />
+              </Button>
+            </div>
+
+            <div className="p-4 space-y-4">
+              {/* Mobile Search */}
+              <div className="pb-4 border-b border-border/20">
+                <SearchInput />
+              </div>
+
+              {/* Navigation Links */}
+              <SignedIn>
+                <Link
+                  href="/my-courses"
+                  onClick={() => setSidebarOpen(false)}
+                  className="flex items-center space-x-3 p-3 rounded-lg hover:bg-muted/50 transition-colors"
+                >
+                  <User className="w-5 h-5 text-muted-foreground" />
+                  <span className="font-medium">My Courses</span>
+                </Link>
+              </SignedIn>
+
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start h-12 text-base"
+                    onClick={() => setSidebarOpen(false)}
+                  >
+                    <User className="w-5 h-5 mr-3" />
+                    Sign In
+                  </Button>
+                </SignInButton>
+              </SignedOut>
+
+              {/* Theme Toggle */}
+              <div className="pt-4 border-t border-border/20">
+                <div className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                  <span className="font-medium">Theme</span>
+                  <DarkModeToggle />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

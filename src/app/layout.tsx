@@ -8,6 +8,7 @@ import { DisableDraftMode } from '@/components/DisableDraftMode';
 import Footer from '@/components/Footer';
 import { ClerkProvider } from '@clerk/nextjs';
 import Header from '@/components/Header';
+import { GlobalScientificBackground } from '@/components/GlobalScientificBackground';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -36,6 +37,7 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
       <body className="antialiased" suppressHydrationWarning>
+        <GlobalScientificBackground />
         {(await draftMode()).isEnabled && (
           <>
             <DisableDraftMode />

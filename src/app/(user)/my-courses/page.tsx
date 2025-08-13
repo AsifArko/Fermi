@@ -4,8 +4,10 @@ import { getEnrolledCourses } from '@/sanity/lib/student/getEnrolledCourses';
 import Link from 'next/link';
 import { GraduationCap } from 'lucide-react';
 import { getCourseProgress } from '@/sanity/lib/courses/getCourseProgress';
-import { CourseCard } from '@/components/CourseCard';
+import { MobileResponsiveCourseCard } from '@/components/shared/MobileResponsiveCourseCard';
+import { MyCoursesGrid } from '@/components/layout';
 import { generateRandomHash } from '@/lib/utils';
+import { EnhancedCourse } from '@/sanity/lib/courses/getCourses';
 
 export default async function MyCoursesPage() {
   const user = await currentUser();
@@ -17,7 +19,8 @@ export default async function MyCoursesPage() {
 
   // Get progress for each enrolled course
   const coursesWithProgress = await Promise.all(
-    enrolledCourses.map(async ({ course }) => {
+    enrolledCourses.map(async enrollment => {
+      const { course } = enrollment;
       if (!course) return null;
       const progress = await getCourseProgress(user.id, course._id);
       return {
@@ -28,12 +31,14 @@ export default async function MyCoursesPage() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto relative z-10">
       <div className="h-full pt-16">
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center gap-4 mb-8">
-            <GraduationCap className="h-8 w-8 text-primary" />
-            <h1 className="text-3xl font-bold">My Courses</h1>
+            <GraduationCap className="h-8 w-8 text-gray-600 dark:text-gray-400 stroke-[1.5]" />
+            <h1 className="text-4xl font-light text-gray-800 dark:text-gray-200 tracking-tight">
+              My Courses
+            </h1>
           </div>
 
           {enrolledCourses.length === 0 ? (
@@ -52,22 +57,21 @@ export default async function MyCoursesPage() {
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <MyCoursesGrid>
               {coursesWithProgress.map(item => {
                 if (!item || !item.course) return null;
 
                 return (
-                  <CourseCard
+                  <MobileResponsiveCourseCard
                     key={`${item.course._id}::${generateRandomHash()}`}
-                    course={item.course}
+                    course={item.course as unknown as EnhancedCourse}
                     progress={item.progress}
                     href={`/dashboard/courses/${item.course._id}`}
-                    showProgressFirst={true}
-                    cardHeight="h-[580px] md:h-[560px]"
+                    variant="featured"
                   />
                 );
               })}
-            </div>
+            </MyCoursesGrid>
           )}
         </div>
       </div>

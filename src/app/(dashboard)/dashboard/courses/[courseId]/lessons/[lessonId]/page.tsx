@@ -53,7 +53,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
   const notebookUrl = lesson.notebookUrl || notebookFile?.asset?.url;
 
   return (
-    <div className="h-full flex flex-col overflow-hidden bg-background font-sans antialiased text-[17px] text-primary/96">
+    <div className="h-full flex flex-col overflow-hidden font-sans antialiased text-[17px] text-primary/96 relative z-10">
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto pt-14 pb-24 px-4 sm:px-6">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-light mb-5 text-primary/96 tracking-tight leading-tight">

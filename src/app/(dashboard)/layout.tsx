@@ -3,6 +3,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { SanityLive } from '@/sanity/lib/live';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { SidebarProvider } from '@/components/providers/SidebarProvider';
+import { DashboardScientificBackground } from '@/components/DashboardScientificBackground';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -22,6 +23,7 @@ export default function DashboardLayout({
         enableSystem
         disableTransitionOnChange
       >
+        <DashboardScientificBackground />
         <SidebarProvider>
           <div className="h-full">{children}</div>
         </SidebarProvider>

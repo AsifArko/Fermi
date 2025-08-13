@@ -9,20 +9,10 @@ export const metadata: Metadata = {
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="max-w-7xl mx-auto min-h-screen bg-background">
-      <div className="min-h-screen bg-background">
+    <div className="max-w-7xl mx-auto min-h-screen relative z-10">
+      <div className="min-h-screen">
         {/* Hero Section */}
-        <div className="relative min-h-[60vh] w-full flex items-center pt-20 overflow-hidden bg-gradient-to-tr from-background via-background to-primary/5">
-          {/* Grid Pattern */}
-          <div className="absolute inset-0 opacity-5">
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage: `radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)`,
-                backgroundSize: '40px 40px',
-              }}
-            ></div>
-          </div>
+        <div className="relative min-h-[60vh] w-full flex items-center pt-20 overflow-hidden">
           {/* Animated Lines */}
           <div className="absolute inset-0">
             <div
