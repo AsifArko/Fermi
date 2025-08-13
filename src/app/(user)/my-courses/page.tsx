@@ -7,7 +7,7 @@ import { getCourseProgress } from '@/sanity/lib/courses/getCourseProgress';
 import { MobileResponsiveCourseCard } from '@/components/shared/MobileResponsiveCourseCard';
 import { MyCoursesGrid } from '@/components/layout';
 import { generateRandomHash } from '@/lib/utils';
-import { GetCoursesQyeryResult } from '../../../sanity.types';
+import { EnhancedCourse } from '@/sanity/lib/courses/getCourses';
 
 export default async function MyCoursesPage() {
   const user = await currentUser();
@@ -19,17 +19,15 @@ export default async function MyCoursesPage() {
 
   // Get progress for each enrolled course
   const coursesWithProgress = await Promise.all(
-    enrolledCourses.map(
-      async (enrollment: { course: GetCoursesQyeryResult[number] }) => {
-        const { course } = enrollment;
-        if (!course) return null;
-        const progress = await getCourseProgress(user.id, course._id);
-        return {
-          course,
-          progress: progress.courseProgress,
-        };
-      }
-    )
+    enrolledCourses.map(async enrollment => {
+      const { course } = enrollment;
+      if (!course) return null;
+      const progress = await getCourseProgress(user.id, course._id);
+      return {
+        course,
+        progress: progress.courseProgress,
+      };
+    })
   );
 
   return (
@@ -66,7 +64,7 @@ export default async function MyCoursesPage() {
                 return (
                   <MobileResponsiveCourseCard
                     key={`${item.course._id}::${generateRandomHash()}`}
-                    course={item.course}
+                    course={item.course as unknown as EnhancedCourse}
                     progress={item.progress}
                     href={`/dashboard/courses/${item.course._id}`}
                     variant="featured"

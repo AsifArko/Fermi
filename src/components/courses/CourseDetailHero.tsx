@@ -78,7 +78,9 @@ export function CourseDetailHero({
                 </div>
 
                 {/* Enroll Button */}
-                <EnrollButton courseId={course._id} isEnrolled={isEnrolled} />
+                {course._id && (
+                  <EnrollButton courseId={course._id} isEnrolled={isEnrolled} />
+                )}
 
                 {/* Additional Info */}
                 <div className="mt-4 text-center">

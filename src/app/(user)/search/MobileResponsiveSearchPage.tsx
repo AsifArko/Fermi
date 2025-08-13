@@ -66,11 +66,8 @@ export default async function MobileResponsiveSearchPage({
 
   const decodedTerm = decodeURIComponent(term);
   const allCourses = await searchCourses(decodedTerm);
-  // Filter out courses with null slugs and assert type
-  const courses = allCourses.filter(
-    (course: EnhancedCourse): course is EnhancedCourse & { slug: string } =>
-      course.slug !== null
-  );
+  // Filter out courses with null slugs
+  const courses = allCourses.filter(course => course.slug !== null);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-16">
@@ -195,10 +192,10 @@ export default async function MobileResponsiveSearchPage({
 
             {/* Course Grid */}
             <SearchGrid>
-              {courses.map((course: EnhancedCourse & { slug: string }) => (
+              {courses.map(course => (
                 <MobileResponsiveCourseCard
                   key={course._id}
-                  course={course}
+                  course={course as unknown as EnhancedCourse}
                   href={`/courses/${course.slug}`}
                   variant="default"
                 />

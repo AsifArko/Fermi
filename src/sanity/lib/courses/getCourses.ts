@@ -133,5 +133,8 @@ export async function getCourses(): Promise<EnhancedCourse[]> {
   }`);
 
   const courses = await sanityFetch({ query: getCoursesQuery });
-  return courses.data;
+  // Filter out courses with null slugs to match EnhancedCourse type
+  const filteredCourses =
+    courses.data?.filter(course => course.slug !== null) || [];
+  return filteredCourses as EnhancedCourse[];
 }

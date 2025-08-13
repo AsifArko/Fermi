@@ -32,11 +32,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
   const decodedTerm = decodeURIComponent(term);
   const allCourses = await searchCourses(decodedTerm);
-  // Filter out courses with null slugs and assert type
-  const courses = allCourses.filter(
-    (course: EnhancedCourse): course is EnhancedCourse & { slug: string } =>
-      course.slug !== null
-  );
+  // Filter out courses with null slugs
+  const courses = allCourses.filter(course => course.slug !== null);
 
   return (
     <div className="h-full pt-16 relative z-10">
@@ -82,10 +79,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
           </div>
         ) : (
           <SearchGrid className="pb-8 sm:pb-12">
-            {courses.map((course: EnhancedCourse & { slug: string }) => (
+            {courses.map(course => (
               <MobileResponsiveCourseCard
                 key={course._id}
-                course={course}
+                course={course as unknown as EnhancedCourse}
                 href={`/courses/${course.slug}`}
                 variant="featured"
               />

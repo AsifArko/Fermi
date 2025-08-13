@@ -25,11 +25,7 @@ export async function getEnrolledCourses(clerkId: string) {
 
   return (
     result?.data?.enrolledCourses?.filter(
-      (
-        e: { course?: { _id: string } },
-        i: number,
-        arr: { course?: { _id: string } }[]
-      ) =>
+      (e, i: number, arr) =>
         e?.course?._id &&
         arr.findIndex(x => x?.course?._id === e?.course?._id) === i
     ) || []
