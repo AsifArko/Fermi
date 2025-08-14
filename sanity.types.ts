@@ -164,9 +164,16 @@ export type Enrollment = {
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: 'course';
   };
+  status?: 'pending' | 'active' | 'completed' | 'cancelled';
   amount?: number;
   paymentId?: string;
   enrolledAt?: string;
+  expiresAt?: string;
+  metadata?: {
+    enrollmentSource?: string;
+    referralCode?: string;
+    campaign?: string;
+  };
 };
 
 export type Student = {
@@ -180,6 +187,9 @@ export type Student = {
   email?: string;
   clerkId?: string;
   imageUrl?: string;
+  isActive?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type Course = {
@@ -1310,6 +1320,53 @@ export type SearchQueryResult = Array<{
   } | null;
 }>;
 
+// Source: src/sanity/lib/enrollment/enrollmentService.ts
+// Variable: enrollmentStatusQuery
+// Query: *[_type == "student" && clerkId == $clerkId][0] {        _id,        "enrollments": *[_type == "enrollment" && student._ref == ^._id && course._ref == $courseId] {          _id,          status,          enrolledAt,          expiresAt,          amount,          paymentId        }[0]      }
+export type EnrollmentStatusQueryResult = {
+  _id: string;
+  enrollments: {
+    _id: string;
+    status: 'active' | 'cancelled' | 'completed' | 'pending' | null;
+    enrolledAt: string | null;
+    expiresAt: string | null;
+    amount: number | null;
+    paymentId: string | null;
+  } | null;
+} | null;
+// Variable: studentEnrollmentsQuery
+// Query: *[_type == "student" && clerkId == $clerkId][0] {        "enrollments": *[_type == "enrollment" && student._ref == ^._id] {          _id,          status,          enrolledAt,          expiresAt,          amount,          paymentId,          "course": course-> {            _id,            title,            slug,            image,            category->{ name }          }        } | order(enrolledAt desc)      }
+export type StudentEnrollmentsQueryResult = {
+  enrollments: Array<{
+    _id: string;
+    status: 'active' | 'cancelled' | 'completed' | 'pending' | null;
+    enrolledAt: string | null;
+    expiresAt: string | null;
+    amount: number | null;
+    paymentId: string | null;
+    course: {
+      _id: string;
+      title: string | null;
+      slug: Slug | null;
+      image: {
+        asset?: {
+          _ref: string;
+          _type: 'reference';
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: 'sanity.imageAsset';
+        };
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: 'image';
+      } | null;
+      category: {
+        name: string | null;
+      } | null;
+    } | null;
+  }>;
+} | null;
+
 // Source: src/sanity/lib/lessons/getLessonById.ts
 // Variable: getLessonByIdQuery
 // Query: *[_type == "lesson" && _id == $id][0] {    ...,    files[]{      _key,      asset->{        _id,        _type,        originalFilename,        url,        mimeType,        size      },      title,      description    },    "module": module->{      ...,      "course": course->{...}    },    notebookUrl,    colabUrl,    notebookFile{      asset->{        url,        originalFilename      }    }  }
@@ -1748,9 +1805,16 @@ export type GetEnrolledCoursesQueryResult = {
         photo: string | null;
       } | null;
     } | null;
+    status?: 'active' | 'cancelled' | 'completed' | 'pending';
     amount?: number;
     paymentId?: string;
     enrolledAt?: string;
+    expiresAt?: string;
+    metadata?: {
+      enrollmentSource?: string;
+      referralCode?: string;
+      campaign?: string;
+    };
   }>;
 } | null;
 
@@ -1768,12 +1832,17 @@ export type GetStudentByClerkIdQueryResult = {
   email?: string;
   clerkId?: string;
   imageUrl?: string;
+  isActive?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 } | null;
 
 // Source: src/sanity/lib/student/isEnrolledInCourse.ts
 // Variable: studentQuery
-// Query: *[_type == "student" && clerkId == $clerkId][0]._id
-export type StudentQueryResult = string | null;
+// Query: *[_type == "student" && clerkId == $clerkId][0] { _id }
+export type StudentQueryResult = {
+  _id: string;
+} | null;
 // Variable: enrollmentQuery
 // Query: *[_type == "enrollment" && student._ref == $studentId && course._ref == $courseId][0]
 export type EnrollmentQueryResult = {
@@ -1794,10 +1863,45 @@ export type EnrollmentQueryResult = {
     _weak?: boolean;
     [internalGroqTypeReferenceTo]?: 'course';
   };
+  status?: 'active' | 'cancelled' | 'completed' | 'pending';
   amount?: number;
   paymentId?: string;
   enrolledAt?: string;
+  expiresAt?: string;
+  metadata?: {
+    enrollmentSource?: string;
+    referralCode?: string;
+    campaign?: string;
+  };
 } | null;
+
+// Source: src/sanity/lib/student/studentService.ts
+// Variable: studentByClerkIdQuery
+// Query: *[_type == "student" && clerkId == $clerkId][0] {        _id,        clerkId,        email,        firstName,        lastName,        imageUrl,        isActive,        createdAt,        updatedAt      }
+export type StudentByClerkIdQueryResult = {
+  _id: string;
+  clerkId: string | null;
+  email: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  imageUrl: string | null;
+  isActive: boolean | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+} | null;
+// Variable: allStudentsQuery
+// Query: *[_type == "student"] | order(createdAt desc) {        _id,        clerkId,        email,        firstName,        lastName,        imageUrl,        isActive,        createdAt,        updatedAt      }
+export type AllStudentsQueryResult = Array<{
+  _id: string;
+  clerkId: string | null;
+  email: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  imageUrl: string | null;
+  isActive: boolean | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+}>;
 
 // Query TypeMap
 import '@sanity/client';
@@ -1810,11 +1914,15 @@ declare module '@sanity/client' {
       | GetCompletionsQueryResult;
     '*[_type == "course"] {\n    ...,\n    "slug": slug.current,\n    "category": category->{...},\n    "instructor": instructor->{...},\n    "modules": modules[]->{\n      ...,\n      "lessons": lessons[]->{\n        ...,\n        "hasVideo": defined(videoUrl) || defined(loomUrl),\n        "hasNotebook": defined(notebookUrl) || defined(notebookFile),\n        "hasColab": defined(colabUrl),\n        "fileCount": count(files)\n      }\n    }\n  }': GetCoursesQueryResult;
     '*[_type == "course" && (\n    title match $term + "*" ||\n    description match $term + "*" ||\n    category->name match $term + "*"\n  )] {\n    ...,\n    "slug": slug.current,\n    "category": category->{...},\n    "instructor": instructor->{...},\n    "modules": modules[]->{\n      ...,\n      "lessons": lessons[]->{\n        ...,\n        "hasVideo": defined(videoUrl) || defined(loomUrl),\n        "hasNotebook": defined(notebookUrl) || defined(notebookFile),\n        "hasColab": defined(colabUrl),\n        "fileCount": count(files)\n      }\n    }\n  }': SearchQueryResult;
+    '\n      *[_type == "student" && clerkId == $clerkId][0] {\n        _id,\n        "enrollments": *[_type == "enrollment" && student._ref == ^._id && course._ref == $courseId] {\n          _id,\n          status,\n          enrolledAt,\n          expiresAt,\n          amount,\n          paymentId\n        }[0]\n      }\n    ': EnrollmentStatusQueryResult;
+    '\n      *[_type == "student" && clerkId == $clerkId][0] {\n        "enrollments": *[_type == "enrollment" && student._ref == ^._id] {\n          _id,\n          status,\n          enrolledAt,\n          expiresAt,\n          amount,\n          paymentId,\n          "course": course-> {\n            _id,\n            title,\n            slug,\n            image,\n            category->{ name }\n          }\n        } | order(enrolledAt desc)\n      }\n    ': StudentEnrollmentsQueryResult;
     '*[_type == "lesson" && _id == $id][0] {\n    ...,\n    files[]{\n      _key,\n      asset->{\n        _id,\n        _type,\n        originalFilename,\n        url,\n        mimeType,\n        size\n      },\n      title,\n      description\n    },\n    "module": module->{\n      ...,\n      "course": course->{...}\n    },\n    notebookUrl,\n    colabUrl,\n    notebookFile{\n      asset->{\n        url,\n        originalFilename\n      }\n    }\n  }': GetLessonByIdQueryResult;
     '*[_type == "lessonCompletion" && student._ref == $studentId && lesson._ref == $lessonId][0] {\n    ...\n  }': CompletionStatusQueryResult;
     '*[_type == "student" && clerkId == $clerkId][0] {\n    "enrolledCourses": *[_type == "enrollment" && student._ref == ^._id] {\n      ...,\n      "course": course-> {\n        ...,\n        "slug": slug.current,\n        "category": category->{...},\n        "instructor": instructor->{\n          ...,\n          "photo": photo.asset->url\n        }\n      }\n    }\n  }': GetEnrolledCoursesQueryResult;
-    '*[_type == "student" && clerkId == $clerkId][0]': GetStudentByClerkIdQueryResult;
-    '*[_type == "student" && clerkId == $clerkId][0]._id': StudentQueryResult;
+
+    '*[_type == "student" && clerkId == $clerkId][0] { _id }': StudentQueryResult;
     '*[_type == "enrollment" && student._ref == $studentId && course._ref == $courseId][0]': EnrollmentQueryResult;
+    '\n      *[_type == "student" && clerkId == $clerkId][0] {\n        _id,\n        clerkId,\n        email,\n        firstName,\n        lastName,\n        imageUrl,\n        isActive,\n        createdAt,\n        updatedAt\n      }\n    ': StudentByClerkIdQueryResult;
+    '\n      *[_type == "student"] | order(createdAt desc) {\n        _id,\n        clerkId,\n        email,\n        firstName,\n        lastName,\n        imageUrl,\n        isActive,\n        createdAt,\n        updatedAt\n      }\n    ': AllStudentsQueryResult;
   }
 }

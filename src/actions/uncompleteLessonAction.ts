@@ -9,8 +9,7 @@ export async function uncompleteLessonAction(
   try {
     await uncompleteLessonById({ lessonId, clerkId });
     return { success: true };
-  } catch (error) {
-    console.error('Error uncompleting lesson:', error);
+  } catch {
     throw new Error('Failed to uncomplete lesson');
   }
 }

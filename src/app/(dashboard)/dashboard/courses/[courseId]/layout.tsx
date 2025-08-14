@@ -1,10 +1,11 @@
 export const dynamic = 'force-dynamic';
-import { redirect } from 'next/navigation';
 import { currentUser } from '@clerk/nextjs/server';
-import getCourseById from '@/sanity/lib/courses/getCourseById';
+import { redirect } from 'next/navigation';
+
 import { Sidebar } from '@/components/Sidebar';
-import { getCourseProgress } from '@/sanity/lib/courses/getCourseProgress';
 import { checkCourseAccess } from '@/lib/auth';
+import getCourseById from '@/sanity/lib/courses/getCourseById';
+import { getCourseProgress } from '@/sanity/lib/courses/getCourseProgress';
 
 interface DashboardViewProps {
   children: React.ReactNode;
@@ -39,9 +40,9 @@ export default async function DashboardView({
   }
 
   return (
-    <div className="h-full">
+    <div className='h-full'>
       <Sidebar course={course} completedLessons={progress.completedLessons} />
-      <main className="h-full lg:pt-[64px] pl-20 lg:pl-96">{children}</main>
+      <main className='h-full lg:pt-[64px] pl-20 lg:pl-96'>{children}</main>
     </div>
   );
 }

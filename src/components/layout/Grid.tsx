@@ -25,9 +25,12 @@ export function CourseGrid({
   children: React.ReactNode;
   className?: string;
 }) {
-  return (
-    <Grid variant="courses" className={className}>
-      {children}
-    </Grid>
-  );
+  const props: {
+    children: React.ReactNode;
+    variant: 'courses';
+    className?: string;
+  } = { children, variant: 'courses' };
+  if (className) props.className = className;
+
+  return <Grid {...props} />;
 }

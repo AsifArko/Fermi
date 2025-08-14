@@ -1,7 +1,8 @@
 import groq from 'groq';
+
 import { client } from '../adminClient';
-import { getStudentByClerkId } from '../student/getStudentByClerkId';
 import { sanityFetch } from '../live';
+import { getStudentByClerkId } from '../student/getStudentByClerkId';
 
 export async function completeLessonById({
   lessonId,
@@ -70,7 +71,6 @@ export async function completeLessonById({
 
     return completion;
   } catch (error) {
-    console.error('Error completing lesson:', error);
     throw error;
   }
 }

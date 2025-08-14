@@ -22,7 +22,7 @@ export function ScientificBackground() {
     };
 
     // Generate random particle positions only on client side
-    const positions = [...Array(12)].map((_, i) => ({
+    const positions = [...Array(12)].map(() => ({
       left: Math.random() * 100,
       top: Math.random() * 100,
       animationDuration: 3 + Math.random() * 4,
@@ -35,11 +35,11 @@ export function ScientificBackground() {
   }, []);
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className='absolute inset-0 overflow-hidden pointer-events-none'>
       {/* Subtle grid lines */}
-      <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]">
+      <div className='absolute inset-0 opacity-[0.03] dark:opacity-[0.05]'>
         <div
-          className="absolute inset-0"
+          className='absolute inset-0'
           style={{
             backgroundImage: `
               linear-gradient(rgba(75, 85, 99, 0.1) 1px, transparent 1px),
@@ -53,11 +53,11 @@ export function ScientificBackground() {
 
       {/* Floating particles - only render on client side */}
       {isClient && (
-        <div className="absolute inset-0">
-          {particlePositions.map((particle, i) => (
+        <div className='absolute inset-0'>
+          {particlePositions.map(particle => (
             <div
-              key={i}
-              className="absolute w-1 h-1 bg-gray-400/20 rounded-full animate-pulse"
+              key={`particle-${particle.left}-${particle.top}-${particle.animationDuration}`}
+              className='absolute w-1 h-1 bg-gray-400/20 rounded-full animate-pulse'
               style={{
                 left: `${particle.left}%`,
                 top: `${particle.top}%`,
@@ -70,9 +70,9 @@ export function ScientificBackground() {
       )}
 
       {/* Subtle wave patterns */}
-      <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.03]">
+      <div className='absolute inset-0 opacity-[0.02] dark:opacity-[0.03]'>
         <div
-          className="absolute inset-0"
+          className='absolute inset-0'
           style={{
             background: `
               radial-gradient(circle at 20% 80%, rgba(75, 85, 99, 0.1) 0%, transparent 50%),
@@ -86,9 +86,9 @@ export function ScientificBackground() {
       </div>
 
       {/* DNA-like helix pattern */}
-      <div className="absolute inset-0 opacity-[0.015] dark:opacity-[0.025]">
+      <div className='absolute inset-0 opacity-[0.015] dark:opacity-[0.025]'>
         <div
-          className="absolute inset-0"
+          className='absolute inset-0'
           style={{
             backgroundImage: `
               repeating-linear-gradient(
@@ -106,16 +106,16 @@ export function ScientificBackground() {
       </div>
 
       {/* Quantum dots */}
-      <div className="absolute inset-0">
-        {[...Array(8)].map((_, i) => (
+      <div className='absolute inset-0'>
+        {[...Array(8)].map((_unused, index) => (
           <div
-            key={`dot-${i}`}
-            className="absolute w-2 h-2 bg-gray-400/30 rounded-full animate-ping"
+            key={`dot-${15 + index * 10}-${20 + (index % 3) * 25}-${Date.now()}`}
+            className='absolute w-2 h-2 bg-gray-400/30 rounded-full animate-ping'
             style={{
-              left: `${15 + i * 10}%`,
-              top: `${20 + (i % 3) * 25}%`,
-              animationDuration: `${2 + i * 0.5}s`,
-              animationDelay: `${i * 0.3}s`,
+              left: `${15 + index * 10}%`,
+              top: `${20 + (index % 3) * 25}%`,
+              animationDuration: `${2 + index * 0.5}s`,
+              animationDelay: `${index * 0.3}s`,
             }}
           />
         ))}

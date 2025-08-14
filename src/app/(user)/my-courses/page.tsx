@@ -1,13 +1,14 @@
 import { currentUser } from '@clerk/nextjs/server';
-import { redirect } from 'next/navigation';
-import { getEnrolledCourses } from '@/sanity/lib/student/getEnrolledCourses';
-import Link from 'next/link';
 import { GraduationCap } from 'lucide-react';
-import { getCourseProgress } from '@/sanity/lib/courses/getCourseProgress';
-import { MobileResponsiveCourseCard } from '@/components/shared/MobileResponsiveCourseCard';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
+
 import { MyCoursesGrid } from '@/components/layout';
+import { MobileResponsiveCourseCard } from '@/components/shared/MobileResponsiveCourseCard';
 import { generateRandomHash } from '@/lib/utils';
+import { getCourseProgress } from '@/sanity/lib/courses/getCourseProgress';
 import { EnhancedCourse } from '@/sanity/lib/courses/getCourses';
+import { getEnrolledCourses } from '@/sanity/lib/student/getEnrolledCourses';
 
 export default async function MyCoursesPage() {
   const user = await currentUser();
@@ -31,27 +32,27 @@ export default async function MyCoursesPage() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto relative z-10">
-      <div className="h-full pt-16">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex items-center gap-4 mb-8">
-            <GraduationCap className="h-8 w-8 text-gray-600 dark:text-gray-400 stroke-[1.5]" />
-            <h1 className="text-4xl font-light text-gray-800 dark:text-gray-200 tracking-tight">
+    <div className='max-w-7xl mx-auto relative z-10'>
+      <div className='h-full pt-16'>
+        <div className='container mx-auto px-4 py-8'>
+          <div className='flex items-center gap-4 mb-8'>
+            <GraduationCap className='h-8 w-8 text-gray-600 dark:text-gray-400 stroke-[1.5]' />
+            <h1 className='text-4xl font-light text-gray-800 dark:text-gray-200 tracking-tight'>
               My Courses
             </h1>
           </div>
 
           {enrolledCourses.length === 0 ? (
-            <div className="text-center py-12">
-              <h2 className="text-2xl font-semibold mb-4">No courses yet</h2>
-              <p className="text-muted-foreground mb-8">
+            <div className='text-center py-12'>
+              <h2 className='text-2xl font-semibold mb-4'>No courses yet</h2>
+              <p className='text-muted-foreground mb-8'>
                 You haven&apos;t enrolled in any courses yet. Browse our courses
                 to get started!
               </p>
               <Link
-                href="/"
+                href='/'
                 prefetch={false}
-                className="inline-flex items-center justify-center rounded-lg px-6 py-3 font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                className='inline-flex items-center justify-center rounded-lg px-6 py-3 font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors'
               >
                 Browse Courses
               </Link>
@@ -67,7 +68,7 @@ export default async function MyCoursesPage() {
                     course={item.course as unknown as EnhancedCourse}
                     progress={item.progress}
                     href={`/dashboard/courses/${item.course._id}`}
-                    variant="featured"
+                    variant='featured'
                   />
                 );
               })}

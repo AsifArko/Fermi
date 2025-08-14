@@ -1,11 +1,12 @@
-import { sanityFetch } from '../live';
 import { defineQuery } from 'groq';
+
 import type {
   SanityImageHotspot,
   SanityImageCrop,
   Slug,
   internalGroqTypeReferenceTo,
 } from '../../../sanity.types';
+import { sanityFetch } from '../live';
 
 // Custom type for enhanced course data with expanded modules and lessons
 export type EnhancedCourse = {

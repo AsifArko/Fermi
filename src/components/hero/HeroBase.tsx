@@ -1,5 +1,6 @@
-import React from 'react';
 import Link from 'next/link';
+import React from 'react';
+
 import { cn } from '@/lib/utils';
 
 interface HeroAction {
@@ -98,24 +99,24 @@ export function HeroBase({
     >
       {/* Animated background elements - only for animated background */}
       {background === 'animated' && (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className='absolute inset-0 overflow-hidden pointer-events-none'>
           <div
-            className="absolute top-1/4 left-1/4 w-32 h-32 bg-primary/5 rounded-full animate-pulse"
+            className='absolute top-1/4 left-1/4 w-32 h-32 bg-primary/5 rounded-full animate-pulse'
             style={{ animationDuration: '8s' }}
           />
           <div
-            className="absolute bottom-1/3 right-1/4 w-24 h-24 bg-secondary/5 rounded-full animate-pulse"
+            className='absolute bottom-1/3 right-1/4 w-24 h-24 bg-secondary/5 rounded-full animate-pulse'
             style={{ animationDuration: '6s', animationDelay: '1s' }}
           />
           <div
-            className="absolute top-1/2 right-1/3 w-16 h-16 bg-primary/3 rounded-full animate-pulse"
+            className='absolute top-1/2 right-1/3 w-16 h-16 bg-primary/3 rounded-full animate-pulse'
             style={{ animationDuration: '4s' }}
           />
         </div>
       )}
 
       {/* Content Container */}
-      <div className="max-w-4xl mx-auto text-center px-4">
+      <div className='max-w-4xl mx-auto text-center px-4'>
         {/* Title */}
         <h1
           className={cn(
@@ -154,9 +155,12 @@ export function HeroBase({
 
         {/* Action Buttons */}
         {actions.length > 0 && (
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className='flex flex-col sm:flex-row gap-4 justify-center items-center'>
             {actions.map((action, index) => (
-              <ButtonComponent key={index} action={action} />
+              <ButtonComponent
+                key={`action-${action.href || action.onClick?.toString() || index}`}
+                action={action}
+              />
             ))}
           </div>
         )}

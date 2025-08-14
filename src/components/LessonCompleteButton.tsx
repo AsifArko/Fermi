@@ -1,13 +1,15 @@
 'use client';
 
 import { CheckCircle, Loader2, XCircle } from 'lucide-react';
-import { Button } from './ui/button';
-import { useState, useEffect, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { cn } from '@/lib/utils';
-import { getLessonCompletionStatusAction } from '@/actions/getLessonCompletionStatusAction';
+import { useState, useEffect, useTransition } from 'react';
+
 import { completeLessonAction } from '@/actions/completeLessonAction';
+import { getLessonCompletionStatusAction } from '@/actions/getLessonCompletionStatusAction';
 import { uncompleteLessonAction } from '@/actions/uncompleteLessonAction';
+import { cn } from '@/lib/utils';
+
+import { Button } from './ui/button';
 
 interface LessonCompleteButtonProps {
   lessonId: string;
@@ -68,8 +70,8 @@ export function LessonCompleteButton({
     <Button
       onClick={handleToggle}
       disabled={isPending || isLoading}
-      size="icon"
-      variant="default"
+      size='icon'
+      variant='default'
       className={cn(
         'fixed bottom-4 right-4 z-50 rounded-full shadow-lg transition-all duration-200 ease-in-out',
         isCompleted
@@ -85,13 +87,13 @@ export function LessonCompleteButton({
       }
     >
       {isLoading ? (
-        <Loader2 className="h-6 w-6 animate-spin" />
+        <Loader2 className='h-6 w-6 animate-spin' />
       ) : isPending ? (
-        <Loader2 className="h-6 w-6 animate-spin" />
+        <Loader2 className='h-6 w-6 animate-spin' />
       ) : isCompleted ? (
-        <XCircle className="h-6 w-6" />
+        <XCircle className='h-6 w-6' />
       ) : (
-        <CheckCircle className="h-6 w-6" />
+        <CheckCircle className='h-6 w-6' />
       )}
     </Button>
   );

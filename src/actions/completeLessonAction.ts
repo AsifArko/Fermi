@@ -9,7 +9,6 @@ export async function completeLessonAction(
   try {
     await completeLessonById({ lessonId, clerkId });
   } catch (error) {
-    console.error('Error completing lesson:', error);
     throw error;
   }
 }

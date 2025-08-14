@@ -1,8 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
 import { createClient } from '@sanity/client';
-import { Button } from '@/components/ui/button';
 import {
   Eye,
   Download,
@@ -16,6 +14,9 @@ import {
   ChevronUp,
   Filter,
 } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface Asset {
@@ -56,13 +57,24 @@ type GroupBy = 'none' | 'type' | 'references' | 'date';
 type FileTypeFilter = 'all' | 'image' | 'document' | 'pdf' | 'notebook';
 
 export default function AssetManagerPage() {
-  const client = createClient({
+  const config: {
+    projectId: string;
+    dataset: string;
+    apiVersion: string;
+    useCdn: boolean;
+    token?: string;
+  } = {
     projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
     dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
     apiVersion: '2024-01-01',
     useCdn: false,
-    token: process.env.SANITY_API_ADMIN_TOKEN, // Admin token for delete operations
-  });
+  };
+
+  if (process.env.SANITY_API_ADMIN_TOKEN) {
+    config.token = process.env.SANITY_API_ADMIN_TOKEN;
+  }
+
+  const client = createClient(config);
 
   const [assets, setAssets] = useState<AssetWithReferences[]>([]);
   const [loading, setLoading] = useState(true);
@@ -130,8 +142,7 @@ export default function AssetManagerPage() {
       );
 
       setAssets(assetsWithReferences);
-    } catch (error) {
-      console.error('Error fetching assets:', error);
+    } catch {
     } finally {
       setLoading(false);
     }
@@ -179,32 +190,58 @@ export default function AssetManagerPage() {
         }) => {
           // Check course image
           if (course.image?.asset?._ref === assetId) {
-            references.push({
-              courseTitle: course.title,
-              courseSlug: course.slug?.current,
+            const reference: {
+              courseId: string;
+              moduleTitle: string;
+              moduleSlug: null;
+              lessonTitle: string;
+              lessonId: string;
+              lessonSlug: null;
+              courseTitle?: string;
+              courseSlug?: string | null;
+            } = {
               courseId: course._id,
               moduleTitle: 'Course Image',
               moduleSlug: null,
               lessonTitle: 'Course Image',
               lessonId: course._id,
               lessonSlug: null,
-            });
+            };
+
+            if (course.title) reference.courseTitle = course.title;
+            if (course.slug?.current)
+              reference.courseSlug = course.slug.current;
+
+            references.push(reference);
           }
 
           // Check lessons
           course.modules?.forEach(module => {
             module.lessons?.forEach(lesson => {
               if (lesson.notebookFile?.asset?._ref === assetId) {
-                references.push({
-                  courseTitle: course.title,
-                  courseSlug: course.slug?.current,
+                const reference: {
+                  courseId: string;
+                  moduleTitle: string;
+                  moduleSlug: null;
+                  lessonId: string;
+                  lessonSlug: null;
+                  courseTitle?: string;
+                  courseSlug?: string | null;
+                  lessonTitle?: string;
+                } = {
                   courseId: course._id,
-                  moduleTitle: module.title,
+                  moduleTitle: module.title || 'Unknown Module',
                   moduleSlug: null,
-                  lessonTitle: lesson.title,
                   lessonId: lesson._id,
                   lessonSlug: null,
-                });
+                };
+
+                if (course.title) reference.courseTitle = course.title;
+                if (course.slug?.current)
+                  reference.courseSlug = course.slug.current;
+                if (lesson.title) reference.lessonTitle = lesson.title;
+
+                references.push(reference);
               }
             });
           });
@@ -212,8 +249,7 @@ export default function AssetManagerPage() {
       );
 
       return references;
-    } catch (error) {
-      console.error('Error fetching references:', error);
+    } catch {
       return [];
     }
   };
@@ -232,27 +268,21 @@ export default function AssetManagerPage() {
         throw new Error('Asset not found in local state');
       }
 
-      console.log('Attempting to delete asset:', assetId);
-
       // Delete the asset from Sanity CDN using the proper mutation
       // Delete the asset from Sanity CDN using the standard method
-      const result = await client.delete(assetId);
-      console.log('Delete result:', result);
+      await client.delete(assetId);
 
       // Wait a moment for the deletion to propagate
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       // Verify deletion by trying to fetch the asset
       try {
-        const deletedAsset = await client.getDocument(assetId);
-        console.log('Asset still exists after deletion:', deletedAsset);
+        await client.getDocument(assetId);
         throw new Error('Asset deletion failed - asset still exists');
       } catch (fetchError: unknown) {
-        console.log('Fetch error after deletion:', fetchError);
         const error = fetchError as { statusCode?: number; message?: string };
         if (error.statusCode === 404 || error.message?.includes('not found')) {
           // Asset successfully deleted (404 means not found)
-          console.log('✅ Asset successfully deleted from Sanity CDN');
 
           // Remove from local state
           setAssets(assets.filter(asset => asset._id !== assetId));
@@ -275,8 +305,6 @@ export default function AssetManagerPage() {
         }
       }
     } catch (error) {
-      console.error('❌ Error deleting asset from Sanity CDN:', error);
-
       // Check if it's a permission error
       if (
         error instanceof Error &&
@@ -460,10 +488,10 @@ export default function AssetManagerPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin mx-auto"></div>
-          <p className="text-muted-foreground text-lg">
+      <div className='min-h-screen bg-background flex items-center justify-center'>
+        <div className='text-center space-y-4'>
+          <div className='w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin mx-auto'></div>
+          <p className='text-muted-foreground text-lg'>
             Loading your assets...
           </p>
         </div>
@@ -472,58 +500,58 @@ export default function AssetManagerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className='min-h-screen bg-background'>
       {/* Success Message */}
       {showSuccessMessage && (
-        <div className="fixed top-4 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 animate-in slide-in-from-right-2">
-          <div className="w-2 h-2 bg-white rounded-full"></div>
+        <div className='fixed top-4 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 animate-in slide-in-from-right-2'>
+          <div className='w-2 h-2 bg-white rounded-full'></div>
           {showSuccessMessage}
         </div>
       )}
 
       {/* Header */}
-      <div className="border-b border-border/50 bg-card/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
-                <FolderOpen className="w-8 h-8 text-primary" />
+      <div className='border-b border-border/50 bg-card/50 backdrop-blur-sm'>
+        <div className='container mx-auto px-4 py-6'>
+          <div className='flex items-center justify-between'>
+            <div className='space-y-2'>
+              <h1 className='text-3xl font-bold text-foreground flex items-center gap-3'>
+                <FolderOpen className='w-8 h-8 text-primary' />
                 Asset Manager
               </h1>
             </div>
 
             <Button
               onClick={fetchAssets}
-              variant="outline"
-              size="lg"
-              className="gap-2 hover:bg-accent/50"
+              variant='outline'
+              size='lg'
+              className='gap-2 hover:bg-accent/50'
             >
-              <RefreshCw className="w-4 h-4" />
+              <RefreshCw className='w-4 h-4' />
               Refresh Assets
             </Button>
           </div>
 
           {/* Search and Filters */}
-          <div className="mt-6 flex flex-col sm:flex-row gap-3">
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <div className='mt-6 flex flex-col sm:flex-row gap-3'>
+            <div className='relative flex-1 max-w-md'>
+              <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4' />
               <input
-                type="text"
-                placeholder="Search assets by name or type..."
+                type='text'
+                placeholder='Search assets by name or type...'
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200"
+                className='w-full pl-10 pr-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200'
               />
             </div>
 
-            <div className="flex gap-2">
-              <div className="relative">
+            <div className='flex gap-2'>
+              <div className='relative'>
                 <select
                   value={fileTypeFilter}
                   onChange={e =>
                     setFileTypeFilter(e.target.value as FileTypeFilter)
                   }
-                  className="px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200 appearance-none pr-10 text-sm"
+                  className='px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200 appearance-none pr-10 text-sm'
                   style={{
                     backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
                     backgroundPosition: 'right 0.5rem center',
@@ -532,35 +560,35 @@ export default function AssetManagerPage() {
                     paddingRight: '2.5rem',
                   }}
                 >
-                  <option value="all" className="py-2 px-3 hover:bg-accent">
+                  <option value='all' className='py-2 px-3 hover:bg-accent'>
                     All File Types
                   </option>
-                  <option value="image" className="py-2 px-3 hover:bg-accent">
+                  <option value='image' className='py-2 px-3 hover:bg-accent'>
                     Images (jpg, png, gif, etc.)
                   </option>
-                  <option value="pdf" className="py-2 px-3 hover:bg-accent">
+                  <option value='pdf' className='py-2 px-3 hover:bg-accent'>
                     PDF Files
                   </option>
                   <option
-                    value="notebook"
-                    className="py-2 px-3 hover:bg-accent"
+                    value='notebook'
+                    className='py-2 px-3 hover:bg-accent'
                   >
                     Jupyter Notebooks (ipynb)
                   </option>
                   <option
-                    value="document"
-                    className="py-2 px-3 hover:bg-accent"
+                    value='document'
+                    className='py-2 px-3 hover:bg-accent'
                   >
                     Documents (doc, docx, etc.)
                   </option>
                 </select>
               </div>
 
-              <div className="relative">
+              <div className='relative'>
                 <select
                   value={groupBy}
                   onChange={e => setGroupBy(e.target.value as GroupBy)}
-                  className="px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200 appearance-none pr-10 text-sm"
+                  className='px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200 appearance-none pr-10 text-sm'
                   style={{
                     backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
                     backgroundPosition: 'right 0.5rem center',
@@ -569,19 +597,19 @@ export default function AssetManagerPage() {
                     paddingRight: '2.5rem',
                   }}
                 >
-                  <option value="none" className="py-2 px-3 hover:bg-accent">
+                  <option value='none' className='py-2 px-3 hover:bg-accent'>
                     No Grouping
                   </option>
-                  <option value="type" className="py-2 px-3 hover:bg-accent">
+                  <option value='type' className='py-2 px-3 hover:bg-accent'>
                     File Type
                   </option>
                   <option
-                    value="references"
-                    className="py-2 px-3 hover:bg-accent"
+                    value='references'
+                    className='py-2 px-3 hover:bg-accent'
                   >
                     Usage Status
                   </option>
-                  <option value="date" className="py-2 px-3 hover:bg-accent">
+                  <option value='date' className='py-2 px-3 hover:bg-accent'>
                     Upload Date
                   </option>
                 </select>
@@ -592,19 +620,19 @@ export default function AssetManagerPage() {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className='container mx-auto px-4 py-8'>
+        <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
           {/* Asset List */}
-          <div className="lg:col-span-2">
-            <div className="bg-card rounded-2xl border border-border/50 shadow-lg overflow-hidden">
-              <div className="p-6 border-b border-border/50">
-                <h2 className="text-xl font-semibold text-foreground flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-primary" />
+          <div className='lg:col-span-2'>
+            <div className='bg-card rounded-2xl border border-border/50 shadow-lg overflow-hidden'>
+              <div className='p-6 border-b border-border/50'>
+                <h2 className='text-xl font-semibold text-foreground flex items-center gap-2'>
+                  <FileText className='w-5 h-5 text-primary' />
                   Assets ({filteredAssets.length})
                 </h2>
               </div>
 
-              <div className="max-h-[550px] overflow-y-auto">
+              <div className='max-h-[550px] overflow-y-auto'>
                 {groupBy === 'none'
                   ? // Regular list without grouping
                     sortedAssets.map(asset => (
@@ -623,16 +651,16 @@ export default function AssetManagerPage() {
                         return (
                           <div key={groupName}>
                             <div
-                              className="px-6 py-3 bg-muted/30 border-b border-border/30 cursor-pointer hover:bg-muted/50 transition-colors"
+                              className='px-6 py-3 bg-muted/30 border-b border-border/30 cursor-pointer hover:bg-muted/50 transition-colors'
                               onClick={() => toggleGroupCollapse(groupName)}
                             >
-                              <h3 className="font-medium text-foreground flex items-center gap-2">
+                              <h3 className='font-medium text-foreground flex items-center gap-2'>
                                 {isCollapsed ? (
-                                  <ChevronDown className="w-4 h-4 text-primary transition-transform" />
+                                  <ChevronDown className='w-4 h-4 text-primary transition-transform' />
                                 ) : (
-                                  <ChevronUp className="w-4 h-4 text-primary transition-transform" />
+                                  <ChevronUp className='w-4 h-4 text-primary transition-transform' />
                                 )}
-                                <Filter className="w-4 h-4 text-primary" />
+                                <Filter className='w-4 h-4 text-primary' />
                                 {groupName} ({groupAssets.length})
                               </h3>
                             </div>
@@ -654,11 +682,11 @@ export default function AssetManagerPage() {
                     )}
 
                 {filteredAssets.length === 0 && (
-                  <div className="p-12 text-center">
-                    <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-                      <FileText className="w-8 h-8 text-muted-foreground" />
+                  <div className='p-12 text-center'>
+                    <div className='w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4'>
+                      <FileText className='w-8 h-8 text-muted-foreground' />
                     </div>
-                    <p className="text-muted-foreground text-lg">
+                    <p className='text-muted-foreground text-lg'>
                       {searchTerm
                         ? 'No assets found matching your search.'
                         : 'No assets found'}
@@ -670,106 +698,106 @@ export default function AssetManagerPage() {
           </div>
 
           {/* Asset Details Panel */}
-          <div className="lg:col-span-1">
-            <div className="bg-card rounded-2xl border border-border/50 shadow-lg p-6 sticky top-8">
+          <div className='lg:col-span-1'>
+            <div className='bg-card rounded-2xl border border-border/50 shadow-lg p-6 sticky top-8'>
               {selectedAsset ? (
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3">
+                <div className='space-y-6'>
+                  <div className='flex items-center gap-3'>
                     {selectedAsset._type === 'sanity.imageAsset' ? (
                       <Image
-                        className="w-6 h-6 text-blue-500"
-                        role="img"
-                        aria-label="Image asset"
+                        className='w-6 h-6 text-blue-500'
+                        role='img'
+                        aria-label='Image asset'
                       />
                     ) : (
                       <FileText
-                        className="w-6 h-6 text-orange-500"
-                        role="img"
-                        aria-label="Document asset"
+                        className='w-6 h-6 text-orange-500'
+                        role='img'
+                        aria-label='Document asset'
                       />
                     )}
-                    <h2 className="text-xl font-semibold text-foreground">
+                    <h2 className='text-xl font-semibold text-foreground'>
                       Asset Details
                     </h2>
                   </div>
 
                   {/* File Information */}
-                  <div className="space-y-4">
-                    <h3 className="font-medium text-foreground">
+                  <div className='space-y-4'>
+                    <h3 className='font-medium text-foreground'>
                       File Information
                     </h3>
-                    <div className="bg-muted/50 rounded-lg p-4 space-y-3 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Name:</span>
-                        <span className="font-medium text-foreground">
+                    <div className='bg-muted/50 rounded-lg p-4 space-y-3 text-sm'>
+                      <div className='flex justify-between'>
+                        <span className='text-muted-foreground'>Name:</span>
+                        <span className='font-medium text-foreground'>
                           {selectedAsset.originalFilename || 'Untitled'}
                         </span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Type:</span>
-                        <span className="font-medium text-foreground">
+                      <div className='flex justify-between'>
+                        <span className='text-muted-foreground'>Type:</span>
+                        <span className='font-medium text-foreground'>
                           {selectedAsset._type === 'sanity.imageAsset'
                             ? 'Image'
                             : 'File'}
                         </span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">
+                      <div className='flex justify-between'>
+                        <span className='text-muted-foreground'>
                           MIME Type:
                         </span>
-                        <span className="font-medium text-foreground">
+                        <span className='font-medium text-foreground'>
                           {selectedAsset.mimeType || 'Unknown'}
                         </span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Size:</span>
-                        <span className="font-medium text-foreground">
+                      <div className='flex justify-between'>
+                        <span className='text-muted-foreground'>Size:</span>
+                        <span className='font-medium text-foreground'>
                           {selectedAsset.metadata?.size
                             ? formatFileSize(selectedAsset.metadata.size)
                             : 'Unknown'}
                         </span>
                       </div>
                       {selectedAsset.metadata?.dimensions && (
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">
+                        <div className='flex justify-between'>
+                          <span className='text-muted-foreground'>
                             Dimensions:
                           </span>
-                          <span className="font-medium text-foreground">
+                          <span className='font-medium text-foreground'>
                             {selectedAsset.metadata.dimensions.width} ×{' '}
                             {selectedAsset.metadata.dimensions.height}
                           </span>
                         </div>
                       )}
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Created:</span>
-                        <span className="font-medium text-foreground">
+                      <div className='flex justify-between'>
+                        <span className='text-muted-foreground'>Created:</span>
+                        <span className='font-medium text-foreground'>
                           {formatDate(selectedAsset.createdAt)}
                         </span>
                       </div>
                       {selectedAsset.url && (
-                        <div className="flex justify-between items-center">
-                          <span className="text-muted-foreground">
+                        <div className='flex justify-between items-center'>
+                          <span className='text-muted-foreground'>
                             CDN URL:
                           </span>
                           <a
                             href={selectedAsset.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-muted-foreground hover:text-foreground transition-colors"
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='text-muted-foreground hover:text-foreground transition-colors'
                             title={selectedAsset.url}
                           >
                             <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              xmlns="http://www.w3.org/2000/svg"
+                              className='w-4 h-4'
+                              fill='none'
+                              stroke='currentColor'
+                              viewBox='0 0 24 24'
+                              xmlns='http://www.w3.org/2000/svg'
                             >
                               <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
+                                strokeLinecap='round'
+                                strokeLinejoin='round'
                                 strokeWidth={2}
-                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                d='M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14'
                               />
                             </svg>
                           </a>
@@ -779,19 +807,19 @@ export default function AssetManagerPage() {
                   </div>
 
                   {/* References */}
-                  <div className="space-y-4">
-                    <h3 className="font-medium text-foreground">References</h3>
+                  <div className='space-y-4'>
+                    <h3 className='font-medium text-foreground'>References</h3>
                     {selectedAsset.references &&
                     selectedAsset.references.length > 0 ? (
-                      <div className="space-y-3">
+                      <div className='space-y-3'>
                         {selectedAsset.references.map(
                           (ref: AssetReference, index: number) => (
                             <div
-                              key={index}
-                              className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3 border border-green-200 dark:border-green-800"
+                              key={`asset-ref-${ref.courseId}-${ref.lessonId || ref.moduleTitle || index}`}
+                              className='bg-green-50 dark:bg-green-900/20 rounded-lg p-3 border border-green-200 dark:border-green-800'
                             >
-                              <div className="space-y-1">
-                                <div className="text-xs text-green-600 dark:text-green-300 space-y-1">
+                              <div className='space-y-1'>
+                                <div className='text-xs text-green-600 dark:text-green-300 space-y-1'>
                                   <p>Course: {ref.courseTitle}</p>
                                   <p>Module: {ref.moduleTitle}</p>
                                   <p>Lesson: {ref.lessonTitle}</p>
@@ -802,11 +830,11 @@ export default function AssetManagerPage() {
                         )}
                       </div>
                     ) : (
-                      <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 border border-yellow-200 dark:border-yellow-800 text-center">
-                        <p className="text-sm text-yellow-800 dark:text-yellow-200 font-medium">
+                      <div className='bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 border border-yellow-200 dark:border-yellow-800 text-center'>
+                        <p className='text-sm text-yellow-800 dark:text-yellow-200 font-medium'>
                           No references found
                         </p>
-                        <p className="text-xs text-yellow-600 dark:text-yellow-300 mt-1">
+                        <p className='text-xs text-yellow-600 dark:text-yellow-300 mt-1'>
                           This asset is not used in any lessons
                         </p>
                       </div>
@@ -814,19 +842,19 @@ export default function AssetManagerPage() {
                   </div>
 
                   {/* Actions */}
-                  <div className="space-y-4">
-                    <h3 className="font-medium text-foreground">Actions</h3>
-                    <div className="flex flex-col gap-2">
+                  <div className='space-y-4'>
+                    <h3 className='font-medium text-foreground'>Actions</h3>
+                    <div className='flex flex-col gap-2'>
                       {selectedAsset.url && (
                         <>
                           <Button
                             onClick={() =>
                               window.open(selectedAsset.url, '_blank')
                             }
-                            variant="outline"
-                            className="w-full gap-2 hover:bg-accent/50"
+                            variant='outline'
+                            className='w-full gap-2 hover:bg-accent/50'
                           >
-                            <Eye className="w-4 h-4" />
+                            <Eye className='w-4 h-4' />
                             View Asset
                           </Button>
                           <Button
@@ -837,10 +865,10 @@ export default function AssetManagerPage() {
                                 selectedAsset.originalFilename || 'download';
                               link.click();
                             }}
-                            variant="outline"
-                            className="w-full gap-2 hover:bg-accent/50"
+                            variant='outline'
+                            className='w-full gap-2 hover:bg-accent/50'
                           >
-                            <Download className="w-4 h-4" />
+                            <Download className='w-4 h-4' />
                             Download
                           </Button>
                         </>
@@ -870,11 +898,11 @@ export default function AssetManagerPage() {
                             deleteAsset(selectedAsset._id);
                           }
                         }}
-                        variant="destructive"
+                        variant='destructive'
                         disabled={deleting === selectedAsset._id}
-                        className="w-full gap-2"
+                        className='w-full gap-2'
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className='w-4 h-4' />
                         {deleting === selectedAsset._id
                           ? 'Deleting from CDN...'
                           : 'Delete from CDN'}
@@ -883,14 +911,14 @@ export default function AssetManagerPage() {
                   </div>
                 </div>
               ) : (
-                <div className="text-center py-12">
-                  <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-                    <FileText className="w-8 h-8 text-muted-foreground" />
+                <div className='text-center py-12'>
+                  <div className='w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4'>
+                    <FileText className='w-8 h-8 text-muted-foreground' />
                   </div>
-                  <p className="text-muted-foreground font-medium">
+                  <p className='text-muted-foreground font-medium'>
                     Select an asset
                   </p>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className='text-sm text-muted-foreground mt-1'>
                     Choose an asset from the list to view its details
                   </p>
                 </div>
@@ -945,28 +973,28 @@ function AssetItem({
         selectedAsset?._id === asset._id && 'bg-accent/50 border-primary/20'
       )}
     >
-      <div className="flex items-center justify-between">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-3 mb-2">
+      <div className='flex items-center justify-between'>
+        <div className='flex-1 min-w-0'>
+          <div className='flex items-center gap-3 mb-2'>
             {asset._type === 'sanity.imageAsset' ? (
               <Image
-                className="w-4 h-4 text-blue-500 flex-shrink-0"
-                role="img"
-                aria-label="Image asset"
+                className='w-4 h-4 text-blue-500 flex-shrink-0'
+                role='img'
+                aria-label='Image asset'
               />
             ) : (
               <FileText
-                className="w-4 h-4 text-orange-500 flex-shrink-0"
-                role="img"
-                aria-label="Document asset"
+                className='w-4 h-4 text-orange-500 flex-shrink-0'
+                role='img'
+                aria-label='Document asset'
               />
             )}
-            <h3 className="font-medium text-foreground truncate">
+            <h3 className='font-medium text-foreground truncate'>
               {asset.originalFilename || 'Untitled'}
             </h3>
           </div>
 
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+          <div className='flex items-center gap-3 text-xs text-muted-foreground'>
             <span
               className={cn(
                 'px-2 py-0.5 rounded-full text-xs font-medium',
@@ -977,9 +1005,9 @@ function AssetItem({
             >
               {asset._type === 'sanity.imageAsset' ? 'Image' : 'Document'}
             </span>
-            <span className="truncate">{asset.mimeType}</span>
+            <span className='truncate'>{asset.mimeType}</span>
             {asset.metadata?.size && (
-              <span className="flex-shrink-0">
+              <span className='flex-shrink-0'>
                 {formatFileSize(asset.metadata.size)}
               </span>
             )}
@@ -997,14 +1025,14 @@ function AssetItem({
           </div>
 
           {asset.metadata?.dimensions && (
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className='text-xs text-muted-foreground mt-1'>
               {asset.metadata.dimensions.width} ×{' '}
               {asset.metadata.dimensions.height}
             </p>
           )}
         </div>
 
-        <div className="text-right text-xs text-muted-foreground ml-4 flex-shrink-0">
+        <div className='text-right text-xs text-muted-foreground ml-4 flex-shrink-0'>
           {formatDate(asset.createdAt)}
         </div>
       </div>

@@ -1,8 +1,9 @@
 'use client';
 
+import { CheckCircle, Clock, XCircle, GraduationCap } from 'lucide-react';
+
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import { CheckCircle, Clock, XCircle, GraduationCap } from 'lucide-react';
 
 interface EnrollmentStatusBadgeProps {
   status: 'pending' | 'active' | 'completed' | 'cancelled';
@@ -49,7 +50,7 @@ export function EnrollmentStatusBadge({
 
   if (variant === 'compact') {
     return (
-      <div className="flex items-center justify-center">
+      <div className='flex items-center justify-center'>
         <Icon className={cn('w-3 h-3', config.iconClassName)} />
       </div>
     );
@@ -57,7 +58,7 @@ export function EnrollmentStatusBadge({
 
   return (
     <Badge
-      variant="outline"
+      variant='outline'
       className={cn(
         'inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium border',
         config.className,
@@ -88,7 +89,7 @@ export function EnrollmentStatusBadgeAlt({
       )}
     >
       <Icon className={cn('w-4 h-4', config.iconClassName)} />
-      <span className="font-semibold">{config.label}</span>
+      <span className='font-semibold'>{config.label}</span>
     </div>
   );
 }

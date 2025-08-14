@@ -5,13 +5,15 @@ import { CheckCircle, Loader2, Lock, XCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, useTransition, useCallback } from 'react';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+
 import {
   enrollInFreeCourse,
   getEnrollmentStatusAction,
   checkCourseAccessAction,
 } from '@/actions/enrollmentActions';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+
 import { EnrollmentStatusBadge } from './EnrollmentStatusBadge';
 
 // Types for the enhanced enroll button
@@ -77,8 +79,7 @@ export function EnrollButton({
           accessLevel: 'none',
         });
       }
-    } catch (error) {
-      console.error('Error loading enrollment state:', error);
+    } catch {
       setEnrollmentState({
         isLoading: false,
         isEnrolled: false,
@@ -116,8 +117,8 @@ export function EnrollButton({
             if (result.success) {
               await loadEnrollmentState();
             }
-          } catch (error) {
-            console.error('Error in manual enrollment creation:', error);
+          } catch {
+            // Error in manual enrollment creation
           }
         }
       }, 2000); // Wait 2 seconds for webhook to process
@@ -168,7 +169,6 @@ export function EnrollButton({
             // For free courses, just refresh enrollment state and stay on current page
             await loadEnrollmentState();
           } else {
-            console.error('Free enrollment failed:', result.error);
             // Refresh enrollment state
             await loadEnrollmentState();
           }
@@ -185,12 +185,9 @@ export function EnrollButton({
           } else if (result.url) {
             // Paid course - redirect to Stripe checkout
             window.location.href = result.url;
-          } else {
-            console.error('Course enrollment failed');
           }
         }
-      } catch (error) {
-        console.error('Enrollment failed:', error);
+      } catch {
         await loadEnrollmentState();
       }
     });
@@ -203,7 +200,7 @@ export function EnrollButton({
         disabled
         className={cn('w-full relative', getButtonClasses(variant), className)}
       >
-        <Loader2 className="w-4 h-4 animate-spin mr-2" />
+        <Loader2 className='w-4 h-4 animate-spin mr-2' />
         Loading...
       </Button>
     );
@@ -216,7 +213,7 @@ export function EnrollButton({
         disabled
         className={cn('w-full relative', getButtonClasses(variant), className)}
       >
-        <Loader2 className="w-4 h-4 animate-spin mr-2" />
+        <Loader2 className='w-4 h-4 animate-spin mr-2' />
         Checking enrollment...
       </Button>
     );
@@ -225,10 +222,10 @@ export function EnrollButton({
   // Show success message if payment was successful
   if (showSuccessMessage) {
     return (
-      <div className="w-full space-y-2">
-        <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
-          <CheckCircle className="w-4 h-4 text-green-600 mx-auto mb-2" />
-          <p className="text-green-800 text-sm font-medium">
+      <div className='w-full space-y-2'>
+        <div className='bg-green-50 border border-green-200 rounded-lg p-3 text-center'>
+          <CheckCircle className='w-4 h-4 text-green-600 mx-auto mb-2' />
+          <p className='text-green-800 text-sm font-medium'>
             Payment successful! Refreshing enrollment status...
           </p>
         </div>
@@ -240,7 +237,7 @@ export function EnrollButton({
             className
           )}
         >
-          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+          <Loader2 className='w-4 h-4 animate-spin mr-2' />
           Updating...
         </Button>
       </div>
@@ -254,8 +251,8 @@ export function EnrollButton({
         asChild
         className={cn('w-full', getButtonClasses(variant), className)}
       >
-        <Link href="/sign-in">
-          <Lock className="w-4 h-4 mr-2" />
+        <Link href='/sign-in'>
+          <Lock className='w-4 h-4 mr-2' />
           Sign in to Enroll
         </Link>
       </Button>
@@ -281,7 +278,7 @@ export function EnrollButton({
   // Show completed enrollment state
   if (enrollmentState.isEnrolled && enrollmentState.status === 'completed') {
     return (
-      <div className="w-full space-y-2">
+      <div className='w-full space-y-2'>
         <Button
           asChild
           className={cn(
@@ -291,11 +288,11 @@ export function EnrollButton({
           )}
         >
           <Link href={`/dashboard/courses/${courseId}`}>
-            <CheckCircle className="w-4 h-4 mr-2" />
+            <CheckCircle className='w-4 h-4 mr-2' />
             View Course
           </Link>
         </Button>
-        <EnrollmentStatusBadge status="completed" />
+        <EnrollmentStatusBadge status='completed' />
       </div>
     );
   }
@@ -303,7 +300,7 @@ export function EnrollButton({
   // Show pending enrollment state
   if (enrollmentState.isEnrolled && enrollmentState.status === 'pending') {
     return (
-      <div className="w-full space-y-2">
+      <div className='w-full space-y-2'>
         <Button
           disabled
           className={cn(
@@ -312,10 +309,10 @@ export function EnrollButton({
             className
           )}
         >
-          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          <Loader2 className='w-4 h-4 mr-2 animate-spin' />
           Enrollment Pending
         </Button>
-        <EnrollmentStatusBadge status="pending" />
+        <EnrollmentStatusBadge status='pending' />
       </div>
     );
   }
@@ -323,7 +320,7 @@ export function EnrollButton({
   // Show cancelled enrollment state with re-enroll option
   if (enrollmentState.isEnrolled && enrollmentState.status === 'cancelled') {
     return (
-      <div className="w-full space-y-2">
+      <div className='w-full space-y-2'>
         <Button
           onClick={handleEnroll}
           disabled={!enrollmentState.canEnroll}
@@ -333,10 +330,10 @@ export function EnrollButton({
             className
           )}
         >
-          <CheckCircle className="w-4 h-4 mr-2" />
+          <CheckCircle className='w-4 h-4 mr-2' />
           Re-enroll
         </Button>
-        <EnrollmentStatusBadge status="cancelled" />
+        <EnrollmentStatusBadge status='cancelled' />
       </div>
     );
   }
@@ -344,7 +341,7 @@ export function EnrollButton({
   // Show enroll button for eligible users
   if (enrollmentState.canEnroll) {
     return (
-      <div className="w-full space-y-2">
+      <div className='w-full space-y-2'>
         <Button
           onClick={handleEnroll}
           disabled={isPending}
@@ -356,12 +353,12 @@ export function EnrollButton({
         >
           {isPending ? (
             <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              <Loader2 className='w-4 h-4 mr-2 animate-spin' />
               Processing...
             </>
           ) : (
             <>
-              <CheckCircle className="w-4 h-4 mr-2" />
+              <CheckCircle className='w-4 h-4 mr-2' />
               {coursePrice === 0 ? 'Enroll Free' : `Enroll for $${coursePrice}`}
             </>
           )}
@@ -380,7 +377,7 @@ export function EnrollButton({
         className
       )}
     >
-      <XCircle className="w-4 h-4 mr-2" />
+      <XCircle className='w-4 h-4 mr-2' />
       Enrollment Unavailable
     </Button>
   );

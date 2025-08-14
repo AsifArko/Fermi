@@ -1,24 +1,27 @@
 'use client';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Button } from '@/components/ui/button';
 import { ArrowLeft, Library, ChevronRight, Play, X, Check } from 'lucide-react';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
+import { CourseProgress } from '@/components/CourseProgress';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { CourseProgress } from '@/components/CourseProgress';
 import { calculateCourseProgress } from '@/lib/courseProgress';
+import { cn } from '@/lib/utils';
+
 import {
   GetCompletionsQueryResult,
   GetCourseByIdQueryResult,
   Module,
 } from '../../sanity.types';
+
 import DarkModeToggle from './DarkModeToggle';
 import { useSidebar } from './providers/SidebarProvider';
 
@@ -63,63 +66,63 @@ export function Sidebar({ course, completedLessons = [] }: SidebarProps) {
   );
 
   const SidebarContent = () => (
-    <div className="h-full flex flex-col">
-      <div className="p-4 lg:p-6 border-b flex flex-col gap-y-4">
-        <div className="flex items-center justify-between">
+    <div className='h-full flex flex-col'>
+      <div className='p-4 lg:p-6 border-b flex flex-col gap-y-4'>
+        <div className='flex items-center justify-between'>
           <Link
-            href="/my-courses"
-            className="flex items-center gap-x-2 text-sm hover:text-primary transition-colors"
+            href='/my-courses'
+            className='flex items-center gap-x-2 text-sm hover:text-primary transition-colors'
           >
-            <ArrowLeft className="h-4 w-4" />
-            <div className="flex items-center gap-x-2">
-              <Library className="h-4 w-4" />
+            <ArrowLeft className='h-4 w-4' />
+            <div className='flex items-center gap-x-2'>
+              <Library className='h-4 w-4' />
               <span>Course Library</span>
             </div>
           </Link>
-          <div className="space-x-2">
+          <div className='space-x-2'>
             <DarkModeToggle />
             <Button
               onClick={close}
-              variant="ghost"
-              className="lg:hidden -mr-2"
-              size="icon"
+              variant='ghost'
+              className='lg:hidden -mr-2'
+              size='icon'
             >
-              <X className="h-4 w-4" />
+              <X className='h-4 w-4' />
             </Button>
           </div>
         </div>
-        <div className="space-y-4">
-          <h1 className="font-semibold text-lg lg:text-xl text-primary tracking-normal">
+        <div className='space-y-4'>
+          <h1 className='font-semibold text-lg lg:text-xl text-primary tracking-normal'>
             {course.title}
           </h1>
           <CourseProgress
             progress={progress}
-            variant="success"
-            label="Course Progress"
+            variant='success'
+            label='Course Progress'
           />
         </div>
       </div>
-      <ScrollArea className="flex-1 h-0">
-        <div className="p-2 lg:p-4 space-y-6 h-full">
+      <ScrollArea className='flex-1 h-0'>
+        <div className='p-2 lg:p-4 space-y-6 h-full'>
           {course.modules?.map((module, moduleIndex) => (
             <div
               key={module._id}
-              className="bg-background border border-border rounded-xl shadow-sm p-4"
+              className='bg-background border border-border rounded-xl shadow-sm p-4'
             >
-              <div className="flex items-center gap-x-3 mb-2">
-                <span className="text-lg font-bold text-muted-foreground min-w-[28px]">
+              <div className='flex items-center gap-x-3 mb-2'>
+                <span className='text-lg font-bold text-muted-foreground min-w-[28px]'>
                   {String(moduleIndex + 1).padStart(2, '0')}
                 </span>
-                <div className="flex flex-col text-left flex-1 min-w-0">
-                  <p className="text-base font-semibold truncate text-primary/90">
+                <div className='flex flex-col text-left flex-1 min-w-0'>
+                  <p className='text-base font-semibold truncate text-primary/90'>
                     {module.title}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className='text-xs text-muted-foreground'>
                     {module.lessons?.length || 0} lessons
                   </p>
                 </div>
               </div>
-              <div className="flex flex-col divide-y divide-border">
+              <div className='flex flex-col divide-y divide-border'>
                 {module.lessons?.map((lesson, lessonIndex) => {
                   const isActive =
                     pathname ===
@@ -139,11 +142,11 @@ export function Sidebar({ course, completedLessons = [] }: SidebarProps) {
                         isCompleted && 'text-muted-foreground'
                       )}
                     >
-                      <span className="text-xs font-medium text-muted-foreground min-w-[28px]">
+                      <span className='text-xs font-medium text-muted-foreground min-w-[28px]'>
                         {String(lessonIndex + 1).padStart(2, '0')}
                       </span>
                       {isCompleted ? (
-                        <Check className="h-4 w-4 shrink-0 text-gray-500" />
+                        <Check className='h-4 w-4 shrink-0 text-gray-500' />
                       ) : (
                         <Play
                           className={cn(
@@ -177,17 +180,17 @@ export function Sidebar({ course, completedLessons = [] }: SidebarProps) {
   return (
     <>
       {/* Thin Mobile Sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-50 flex flex-col items-center w-[60px] border-r bg-background lg:hidden py-4 gap-y-4">
+      <aside className='fixed inset-y-0 left-0 z-50 flex flex-col items-center w-[60px] border-r bg-background lg:hidden py-4 gap-y-4'>
         <TooltipProvider delayDuration={0}>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Link href="/" prefetch={false}>
-                <Button variant="ghost" size="icon" className="h-10 w-10">
-                  <Library className="h-5 w-5" />
+              <Link href='/' prefetch={false}>
+                <Button variant='ghost' size='icon' className='h-10 w-10'>
+                  <Library className='h-5 w-5' />
                 </Button>
               </Link>
             </TooltipTrigger>
-            <TooltipContent side="right">
+            <TooltipContent side='right'>
               <p>Course Library</p>
             </TooltipContent>
           </Tooltip>
@@ -196,9 +199,9 @@ export function Sidebar({ course, completedLessons = [] }: SidebarProps) {
             <TooltipTrigger asChild>
               <Button
                 onClick={toggle}
-                variant="ghost"
-                size="icon"
-                className="h-10 w-10"
+                variant='ghost'
+                size='icon'
+                className='h-10 w-10'
               >
                 <ChevronRight
                   className={cn(
@@ -208,7 +211,7 @@ export function Sidebar({ course, completedLessons = [] }: SidebarProps) {
                 />
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="right">
+            <TooltipContent side='right'>
               <p>Toggle Sidebar</p>
             </TooltipContent>
           </Tooltip>
@@ -225,7 +228,7 @@ export function Sidebar({ course, completedLessons = [] }: SidebarProps) {
             : 'translate-x-[-100%] lg:translate-x-0'
         )}
       >
-        <div className="h-full">
+        <div className='h-full'>
           <SidebarContent />
         </div>
       </aside>
@@ -233,7 +236,7 @@ export function Sidebar({ course, completedLessons = [] }: SidebarProps) {
       {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-30 bg-background/80 backdrop-blur-sm lg:hidden"
+          className='fixed inset-0 z-30 bg-background/80 backdrop-blur-sm lg:hidden'
           onClick={close}
         />
       )}

@@ -1,6 +1,7 @@
+import { defineQuery } from 'groq';
+
 import { client } from '../adminClient';
 import { sanityFetch } from '../live';
-import { defineQuery } from 'groq';
 
 // Types for the new enrollment system
 export interface EnrollmentStatus {
@@ -52,7 +53,7 @@ export async function getEnrollmentStatus(
   courseId: string
 ): Promise<EnrollmentStatus> {
   try {
-    const query = defineQuery(`
+    const enrollmentStatusQuery = defineQuery(`
       *[_type == "student" && clerkId == $clerkId][0] {
         _id,
         "enrollments": *[_type == "enrollment" && student._ref == ^._id && course._ref == $courseId] {
@@ -67,7 +68,7 @@ export async function getEnrollmentStatus(
     `);
 
     const result = await sanityFetch({
-      query,
+      query: enrollmentStatusQuery,
       params: { clerkId, courseId },
     });
 
@@ -89,17 +90,28 @@ export async function getEnrollmentStatus(
       };
     }
 
-    return {
+    const enrollmentResult: {
+      isEnrolled: boolean;
+      status: 'pending' | 'active' | 'completed' | 'cancelled' | null;
+      enrollmentId: string;
+      amount: number;
+      enrolledAt?: string;
+      expiresAt?: string;
+      paymentId?: string;
+    } = {
       isEnrolled: true,
-      status: enrollment.status,
-      enrollmentId: enrollment._id,
-      enrolledAt: enrollment.enrolledAt,
-      expiresAt: enrollment.expiresAt,
-      amount: enrollment.amount,
-      paymentId: enrollment.paymentId,
+      status: enrollment.status || null,
+      enrollmentId: enrollment._id || '',
+      amount: enrollment.amount || 0,
     };
-  } catch (error) {
-    console.error('Error getting enrollment status:', error);
+
+    if (enrollment.enrolledAt)
+      enrollmentResult.enrolledAt = enrollment.enrolledAt;
+    if (enrollment.expiresAt) enrollmentResult.expiresAt = enrollment.expiresAt;
+    if (enrollment.paymentId) enrollmentResult.paymentId = enrollment.paymentId;
+
+    return enrollmentResult;
+  } catch {
     return {
       isEnrolled: false,
       status: null,
@@ -150,10 +162,8 @@ export async function createEnrollment(
       metadata: metadata || {},
     });
 
-    console.log('Enrollment created successfully:', enrollment);
     return enrollment as unknown as Enrollment;
   } catch (error) {
-    console.error('Error creating enrollment:', error);
     throw error;
   }
 }
@@ -171,10 +181,8 @@ export async function updateEnrollmentStatus(
       .set({ status })
       .commit();
 
-    console.log('Enrollment status updated:', updatedEnrollment);
     return updatedEnrollment as unknown as Enrollment;
   } catch (error) {
-    console.error('Error updating enrollment status:', error);
     throw error;
   }
 }
@@ -194,10 +202,8 @@ export async function cancelEnrollment(
       })
       .commit();
 
-    console.log('Enrollment cancelled:', cancelledEnrollment);
     return cancelledEnrollment as unknown as Enrollment;
   } catch (error) {
-    console.error('Error cancelling enrollment:', error);
     throw error;
   }
 }
@@ -209,7 +215,7 @@ export async function getStudentEnrollments(
   clerkId: string
 ): Promise<Enrollment[]> {
   try {
-    const query = defineQuery(`
+    const studentEnrollmentsQuery = defineQuery(`
       *[_type == "student" && clerkId == $clerkId][0] {
         "enrollments": *[_type == "enrollment" && student._ref == ^._id] {
           _id,
@@ -230,13 +236,30 @@ export async function getStudentEnrollments(
     `);
 
     const result = await sanityFetch({
-      query,
+      query: studentEnrollmentsQuery,
       params: { clerkId },
     });
 
-    return result?.data?.enrollments || [];
-  } catch (error) {
-    console.error('Error getting student enrollments:', error);
+    const enrollments = result?.data?.enrollments || [];
+
+    // Transform the query result to match the Enrollment interface
+    return enrollments.map(enrollment => ({
+      _id: enrollment._id || '',
+      _type: 'enrollment' as const,
+      student: { _ref: '', _type: 'reference' as const }, // We don't have this in the query
+      course: { _ref: '', _type: 'reference' as const }, // We don't have this in the query
+      status: (enrollment.status || 'pending') as
+        | 'pending'
+        | 'active'
+        | 'completed'
+        | 'cancelled',
+      amount: enrollment.amount || 0,
+      paymentId: enrollment.paymentId || undefined,
+      enrolledAt: enrollment.enrolledAt || new Date().toISOString(),
+      expiresAt: enrollment.expiresAt || undefined,
+      metadata: {},
+    }));
+  } catch {
     return [];
   }
 }
@@ -257,8 +280,7 @@ export async function hasCourseAccess(
       (enrollmentStatus.status === 'active' ||
         enrollmentStatus.status === 'completed')
     );
-  } catch (error) {
-    console.error('Error checking course access:', error);
+  } catch {
     return false;
   }
 }
@@ -276,8 +298,7 @@ export async function getCourseEnrollmentCount(
     );
 
     return count || 0;
-  } catch (error) {
-    console.error('Error getting course enrollment count:', error);
+  } catch {
     return 0;
   }
 }

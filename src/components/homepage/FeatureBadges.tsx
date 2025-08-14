@@ -20,9 +20,9 @@ export function FeatureBadges() {
 
   return (
     <>
-      {features.map((feature, index) => (
+      {features.map(feature => (
         <span
-          key={index}
+          key={`feature-${feature.text}`}
           className={`inline-flex items-center px-3 py-1 rounded-sm text-xs font-medium ${feature.color}`}
         >
           {feature.text}

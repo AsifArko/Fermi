@@ -1,8 +1,9 @@
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { getStudentByClerkId } from '@/sanity/lib/student/getStudentByClerkId';
-import { createEnrollment } from '@/sanity/lib/student/createEnrollment';
 import stripe, { Stripe } from 'stripe';
+
+import { createEnrollment } from '@/sanity/lib/student/createEnrollment';
+import { getStudentByClerkId } from '@/sanity/lib/student/getStudentByClerkId';
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -13,12 +14,10 @@ export async function POST(req: Request) {
     const signature = headersList.get('stripe-signature');
 
     if (!signature) {
-      console.error('No Stripe signature found in headers');
       return new NextResponse('No signature found', { status: 400 });
     }
 
     if (!webhookSecret) {
-      console.error('STRIPE_WEBHOOK_SECRET environment variable not set');
       return new NextResponse('Webhook secret not configured', { status: 500 });
     }
 
@@ -28,7 +27,6 @@ export async function POST(req: Request) {
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
-      console.error(`Webhook signature verification failed: ${errorMessage}`);
       return new NextResponse(`Webhook Error: ${errorMessage}`, {
         status: 400,
       });
@@ -46,15 +44,11 @@ export async function POST(req: Request) {
 
         // Fallback: try to get from session description or other fields
         if (!finalCourseId || !finalUserId) {
-          console.log(
-            'Webhook received but cannot process due to missing metadata'
-          );
           return new NextResponse(null, { status: 200 });
         }
 
         const student = await getStudentByClerkId(finalUserId);
         if (!student) {
-          console.error('Student not found for userId:', finalUserId);
           return new NextResponse('Student not found', { status: 400 });
         }
 
@@ -82,8 +76,7 @@ export async function POST(req: Request) {
         // Log unhandled events but return 200 to acknowledge receipt
         return new NextResponse(null, { status: 200 });
     }
-  } catch (error) {
-    console.error('Error in webhook handler:', error);
+  } catch {
     return new NextResponse('Webhook handler failed', { status: 500 });
   }
 }

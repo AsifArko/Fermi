@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { defineType, defineField } from 'sanity';
+
 import { urlFor } from '../lib/image';
 
 export const lessonCompletionType = defineType({

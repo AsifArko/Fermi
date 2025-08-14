@@ -1,14 +1,15 @@
 import { type SchemaTypeDefinition } from 'sanity';
-import { studentType } from './studentType';
+
 import { blockContent } from './blockContent';
 import { categoryType } from './categoryType';
+import { codeType } from './codeType';
 import { courseType } from './courseType';
 import { enrollmentType } from './enrollmentType';
 import { instructorType } from './instructorType';
 import { lessonCompletionType } from './lessonCompletionType';
-import { moduleType } from './moduleType';
 import { lessonType } from './lessonType';
-import { codeType } from './codeType';
+import { moduleType } from './moduleType';
+import { studentType } from './studentType';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [

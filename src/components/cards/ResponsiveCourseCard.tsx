@@ -1,9 +1,10 @@
 'use client';
 
 import { useMediaQuery } from '@/hooks/useMediaQuery';
-import { MobileCourseCard } from '../mobile/MobileCourseCard';
-import { DesktopCourseCard } from '../desktop/DesktopCourseCard';
+
 import { GetCoursesQueryResult } from '../../../sanity.types';
+import { DesktopCourseCard } from '../desktop/DesktopCourseCard';
+import { MobileCourseCard } from '../mobile/MobileCourseCard';
 
 interface ResponsiveCourseCardProps {
   course: GetCoursesQueryResult[number];

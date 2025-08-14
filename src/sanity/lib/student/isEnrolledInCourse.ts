@@ -1,14 +1,15 @@
 import groq from 'groq';
+
 import { client } from '../adminClient';
 
 export async function isEnrolledInCourse(clerkId: string, courseId: string) {
   try {
     // First get the student document using clerkId
-    const studentQuery = groq`*[_type == "student" && clerkId == $clerkId][0]._id`;
-    const studentId = await client.fetch(studentQuery, { clerkId });
+    const studentQuery = groq`*[_type == "student" && clerkId == $clerkId][0] { _id }`;
+    const studentResult = await client.fetch(studentQuery, { clerkId });
+    const studentId = studentResult?._id;
 
     if (!studentId) {
-      console.log('No student found with clerkId:', clerkId);
       return false;
     }
 
@@ -20,8 +21,7 @@ export async function isEnrolledInCourse(clerkId: string, courseId: string) {
     });
 
     return !!enrollment;
-  } catch (error) {
-    console.error('Error checking enrollment status:', error);
+  } catch {
     return false;
   }
 }

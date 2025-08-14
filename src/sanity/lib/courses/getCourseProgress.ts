@@ -1,8 +1,10 @@
 import { defineQuery } from 'groq';
+
+import { calculateCourseProgress } from '@/lib/courseProgress';
+import { Module } from '@/sanity.types';
+
 import { sanityFetch } from '../live';
 import { getStudentByClerkId } from '../student/getStudentByClerkId';
-import { Module } from '@/sanity.types';
-import { calculateCourseProgress } from '@/lib/courseProgress';
 
 export async function getCourseProgress(clerkId: string, courseId: string) {
   // First get the student's Sanity ID

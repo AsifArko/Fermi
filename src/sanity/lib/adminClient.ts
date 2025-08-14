@@ -1,9 +1,10 @@
-import { createClient } from 'next-sanity';
+import { createClient, ClientConfig } from 'next-sanity';
 
-import { apiVersion, dataset, projectId } from '../env';
 import baseUrl from '@/lib/baseUrl';
 
-export const client = createClient({
+import { apiVersion, dataset, projectId } from '../env';
+
+const config: ClientConfig = {
   projectId,
   dataset,
   apiVersion,
@@ -11,5 +12,10 @@ export const client = createClient({
   stega: {
     studioUrl: `${baseUrl}/studio`,
   },
-  token: process.env.SANITY_API_ADMIN_TOKEN,
-});
+};
+
+if (process.env.SANITY_API_ADMIN_TOKEN) {
+  config.token = process.env.SANITY_API_ADMIN_TOKEN;
+}
+
+export const client = createClient(config);

@@ -29,11 +29,14 @@ export function CourseGrid({
   children: React.ReactNode;
   className?: string;
 }) {
-  return (
-    <MobileResponsiveGrid variant="courses" className={className}>
-      {children}
-    </MobileResponsiveGrid>
-  );
+  const props: {
+    children: React.ReactNode;
+    variant: 'courses';
+    className?: string;
+  } = { children, variant: 'courses' };
+  if (className) props.className = className;
+
+  return <MobileResponsiveGrid {...props} />;
 }
 
 // Grid for my-courses page
@@ -44,11 +47,14 @@ export function MyCoursesGrid({
   children: React.ReactNode;
   className?: string;
 }) {
-  return (
-    <MobileResponsiveGrid variant="my-courses" className={className}>
-      {children}
-    </MobileResponsiveGrid>
-  );
+  const props: {
+    children: React.ReactNode;
+    variant: 'my-courses';
+    className?: string;
+  } = { children, variant: 'my-courses' };
+  if (className) props.className = className;
+
+  return <MobileResponsiveGrid {...props} />;
 }
 
 // Grid for search results
@@ -59,9 +65,12 @@ export function SearchGrid({
   children: React.ReactNode;
   className?: string;
 }) {
-  return (
-    <MobileResponsiveGrid variant="search" className={className}>
-      {children}
-    </MobileResponsiveGrid>
-  );
+  const props: {
+    children: React.ReactNode;
+    variant: 'search';
+    className?: string;
+  } = { children, variant: 'search' };
+  if (className) props.className = className;
+
+  return <MobileResponsiveGrid {...props} />;
 }

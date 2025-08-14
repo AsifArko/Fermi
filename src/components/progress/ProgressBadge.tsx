@@ -44,38 +44,38 @@ export function ProgressBadge({
       )}
     >
       {/* SVG Circle */}
-      <svg className="w-full h-full transform -rotate-90" viewBox="0 0 50 50">
+      <svg className='w-full h-full transform -rotate-90' viewBox='0 0 50 50'>
         {/* Background circle */}
         <circle
-          cx="25"
-          cy="25"
+          cx='25'
+          cy='25'
           r={radius}
-          stroke="currentColor"
+          stroke='currentColor'
           strokeWidth={strokeWidth}
-          fill="none"
-          className="text-muted/30"
+          fill='none'
+          className='text-muted/30'
         />
         {/* Progress circle */}
         <circle
-          cx="25"
-          cy="25"
+          cx='25'
+          cy='25'
           r={radius}
-          stroke="currentColor"
+          stroke='currentColor'
           strokeWidth={strokeWidth}
-          fill="none"
+          fill='none'
           className={cn(
             'transition-all duration-300 ease-out',
             variantColors[variant]
           )}
           strokeDasharray={strokeDasharray}
           strokeDashoffset={strokeDashoffset}
-          strokeLinecap="round"
+          strokeLinecap='round'
         />
       </svg>
 
       {/* Percentage text */}
       {showPercentage && (
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className='absolute inset-0 flex items-center justify-center'>
           <span className={cn('font-semibold', variantColors[variant])}>
             {progress}%
           </span>

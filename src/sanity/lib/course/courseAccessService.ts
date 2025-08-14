@@ -62,46 +62,94 @@ export async function checkCourseAccess(
     // User is enrolled, determine access level based on status
     switch (enrollmentStatus.status) {
       case 'active':
-        return {
+        const activeResult: {
+          hasAccess: boolean;
+          accessLevel: 'full';
+          enrollmentStatus?: 'pending' | 'active' | 'completed' | 'cancelled';
+          canEnroll: boolean;
+          enrollmentRequired: boolean;
+          enrolledAt?: string;
+          expiresAt?: string;
+        } = {
           hasAccess: true,
           accessLevel: 'full',
           enrollmentStatus: enrollmentStatus.status,
-          enrolledAt: enrollmentStatus.enrolledAt,
-          expiresAt: enrollmentStatus.expiresAt,
           canEnroll: false,
           enrollmentRequired: false,
         };
+
+        if (enrollmentStatus.enrolledAt)
+          activeResult.enrolledAt = enrollmentStatus.enrolledAt;
+        if (enrollmentStatus.expiresAt)
+          activeResult.expiresAt = enrollmentStatus.expiresAt;
+
+        return activeResult;
 
       case 'completed':
-        return {
+        const completedResult: {
+          hasAccess: boolean;
+          accessLevel: 'full';
+          enrollmentStatus?: 'pending' | 'active' | 'completed' | 'cancelled';
+          canEnroll: boolean;
+          enrollmentRequired: boolean;
+          enrolledAt?: string;
+          expiresAt?: string;
+        } = {
           hasAccess: true,
           accessLevel: 'full',
           enrollmentStatus: enrollmentStatus.status,
-          enrolledAt: enrollmentStatus.enrolledAt,
-          expiresAt: enrollmentStatus.expiresAt,
           canEnroll: false,
           enrollmentRequired: false,
         };
+
+        if (enrollmentStatus.enrolledAt)
+          completedResult.enrolledAt = enrollmentStatus.enrolledAt;
+        if (enrollmentStatus.expiresAt)
+          completedResult.expiresAt = enrollmentStatus.expiresAt;
+
+        return completedResult;
 
       case 'pending':
-        return {
+        const pendingResult: {
+          hasAccess: boolean;
+          accessLevel: 'preview';
+          enrollmentStatus?: 'pending' | 'active' | 'completed' | 'cancelled';
+          canEnroll: boolean;
+          enrollmentRequired: boolean;
+          enrolledAt?: string;
+        } = {
           hasAccess: false,
           accessLevel: 'preview',
           enrollmentStatus: enrollmentStatus.status,
-          enrolledAt: enrollmentStatus.enrolledAt,
           canEnroll: false,
           enrollmentRequired: false,
         };
 
+        if (enrollmentStatus.enrolledAt)
+          pendingResult.enrolledAt = enrollmentStatus.enrolledAt;
+
+        return pendingResult;
+
       case 'cancelled':
-        return {
+        const cancelledResult: {
+          hasAccess: boolean;
+          accessLevel: 'preview';
+          enrollmentStatus?: 'pending' | 'active' | 'completed' | 'cancelled';
+          canEnroll: boolean;
+          enrollmentRequired: boolean;
+          enrolledAt?: string;
+        } = {
           hasAccess: false,
           accessLevel: 'preview',
           enrollmentStatus: enrollmentStatus.status,
-          enrolledAt: enrollmentStatus.enrolledAt,
           canEnroll: true,
           enrollmentRequired: true,
         };
+
+        if (enrollmentStatus.enrolledAt)
+          cancelledResult.enrolledAt = enrollmentStatus.enrolledAt;
+
+        return cancelledResult;
 
       default:
         return {
@@ -111,8 +159,7 @@ export async function checkCourseAccess(
           enrollmentRequired: true,
         };
     }
-  } catch (error) {
-    console.error('Error checking course access:', error);
+  } catch {
     return {
       hasAccess: false,
       accessLevel: 'none',
@@ -132,8 +179,7 @@ export async function getCourseAccessLevel(
   try {
     const access = await checkCourseAccess({ clerkId, courseId });
     return access.accessLevel;
-  } catch (error) {
-    console.error('Error getting course access level:', error);
+  } catch {
     return 'none';
   }
 }
@@ -169,8 +215,7 @@ export async function validateCourseAccess(
     }
 
     return { isValid: true };
-  } catch (error) {
-    console.error('Error validating course access:', error);
+  } catch {
     return {
       isValid: false,
       reason: 'Unable to validate access',
@@ -181,16 +226,12 @@ export async function validateCourseAccess(
 /**
  * Check if user can preview course content
  */
-export async function canPreviewCourse(
-  _clerkId: string,
-  _courseId: string
-): Promise<boolean> {
+export async function canPreviewCourse(): Promise<boolean> {
   try {
     // All users can preview course content (course listing, description, etc.)
     // This is different from accessing actual course materials
     return true;
-  } catch (error) {
-    console.error('Error checking course preview access:', error);
+  } catch {
     return false;
   }
 }
@@ -231,10 +272,9 @@ export async function canEnrollInCourse(
 
     return {
       canEnroll: access.canEnroll,
-      reason: access.canEnroll ? undefined : 'Enrollment not available',
+      ...(access.canEnroll ? {} : { reason: 'Enrollment not available' }),
     };
-  } catch (error) {
-    console.error('Error checking enrollment eligibility:', error);
+  } catch {
     return {
       canEnroll: false,
       reason: 'Unable to determine eligibility',
@@ -262,8 +302,7 @@ export async function getCoursesAccessSummary(
     });
 
     return summary;
-  } catch (error) {
-    console.error('Error getting courses access summary:', error);
+  } catch {
     return {};
   }
 }

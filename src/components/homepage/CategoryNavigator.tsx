@@ -1,6 +1,5 @@
 'use client';
 
-import { cn } from '@/lib/utils';
 import {
   Cpu,
   Brain,
@@ -11,6 +10,8 @@ import {
   Zap,
   Globe,
 } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
 
 interface Category {
   id: string;
@@ -88,20 +89,20 @@ export function CategoryNavigator({ className }: CategoryNavigatorProps) {
     <section
       className={cn('py-4 sm:py-6 border-b border-border/20', className)}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col space-y-4">
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+        <div className='flex flex-col space-y-4'>
           {/* Section Header */}
-          <div className="text-center">
-            <h2 className="text-lg sm:text-xl font-semibold text-foreground mb-2">
+          <div className='text-center'>
+            <h2 className='text-lg sm:text-xl font-semibold text-foreground mb-2'>
               Explore by Category
             </h2>
-            <p className="text-sm text-muted-foreground">
+            <p className='text-sm text-muted-foreground'>
               Choose your learning path from our specialized domains
             </p>
           </div>
 
           {/* Categories Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4">
+          <div className='grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4'>
             {categories.map(category => {
               const Icon = category.icon;
 
@@ -123,7 +124,7 @@ export function CategoryNavigator({ className }: CategoryNavigatorProps) {
                       category.color
                     )}
                   >
-                    <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                    <Icon className='w-4 h-4 sm:w-5 sm:h-5 text-white' />
                   </div>
 
                   {/* Name */}

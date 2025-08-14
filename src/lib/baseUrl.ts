@@ -12,9 +12,6 @@ function getBaseUrl(): string {
     }
 
     // If neither is set, we need to set one of them in Vercel
-    console.warn(
-      'No base URL configured for production. Please set VERCEL_PROJECT_PRODUCTION_URL or NEXT_PUBLIC_BASE_URL in your Vercel environment variables.'
-    );
     return 'https://fermi.vercel.app'; // Replace with your actual domain
   }
 

@@ -9,8 +9,7 @@ export async function getLessonCompletionStatusAction(
   try {
     const status = await getLessonCompletionStatus(lessonId, clerkId);
     return status;
-  } catch (error) {
-    console.error('Error fetching lesson completion status:', error);
+  } catch {
     return false;
   }
 }

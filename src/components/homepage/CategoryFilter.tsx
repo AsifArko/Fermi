@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+
 import { cn } from '@/lib/utils';
 
 interface CategoryFilterProps {
@@ -30,7 +31,7 @@ export function CategoryFilter({
 
   return (
     <section className={cn('py-6 border-b border-border/20 mb-8', className)}>
-      <div className="flex flex-wrap justify-center gap-3">
+      <div className='flex flex-wrap justify-center gap-3'>
         <span
           onClick={() => handleCategoryClick('all')}
           className={cn(

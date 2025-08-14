@@ -8,11 +8,11 @@ interface VideoPlayerProps {
 
 export const VideoPlayer = ({ url }: VideoPlayerProps) => {
   return (
-    <div className="relative aspect-video">
+    <div className='relative aspect-video'>
       <ReactPlayer
         src={url}
-        width="100%"
-        height="100%"
+        width='100%'
+        height='100%'
         controls
         playing={false}
       />

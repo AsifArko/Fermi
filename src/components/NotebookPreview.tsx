@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+
 import NotebookViewer from './NotebookViewer';
 
 interface cellOutputType {
@@ -44,7 +45,7 @@ export default function NotebookPreview({ url }: { url: string }) {
   }, [url]);
 
   if (!url) return null;
-  if (error) return <div className="text-red-500">Error: {error}</div>;
+  if (error) return <div className='text-red-500'>Error: {error}</div>;
   if (!notebook) return <div>Loading notebook...</div>;
   if (typeof notebook !== 'object' || !('cells' in notebook)) {
     return <div>Invalid notebook data</div>;

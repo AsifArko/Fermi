@@ -1,5 +1,6 @@
-import { CourseCardBase } from './CourseCardBase';
 import { GetCoursesQueryResult } from '../../../sanity.types';
+
+import { CourseCardBase } from './CourseCardBase';
 
 interface CourseCardDashboardProps {
   course: GetCoursesQueryResult[number];
@@ -12,13 +13,20 @@ export function CourseCardDashboard({
   href,
   className,
 }: CourseCardDashboardProps) {
-  return (
-    <CourseCardBase
-      course={course}
-      href={href}
-      variant="dashboard"
-      showProgress={true}
-      className={className}
-    />
-  );
+  const props: {
+    course: GetCoursesQueryResult[number];
+    href: string;
+    variant: 'dashboard';
+    showProgress: boolean;
+    className?: string;
+  } = {
+    course,
+    href,
+    variant: 'dashboard',
+    showProgress: true,
+  };
+
+  if (className) props.className = className;
+
+  return <CourseCardBase {...props} />;
 }

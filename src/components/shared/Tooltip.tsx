@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+
 import { cn } from '@/lib/utils';
 
 interface TooltipProps {
@@ -48,7 +49,7 @@ export function Tooltip({
 
   return (
     <div
-      className="relative inline-block"
+      className='relative inline-block'
       onMouseEnter={showTooltip}
       onMouseLeave={hideTooltip}
       onFocus={showTooltip}
@@ -62,7 +63,7 @@ export function Tooltip({
             positionClasses[position],
             className
           )}
-          role="tooltip"
+          role='tooltip'
         >
           {content}
           {/* Arrow */}

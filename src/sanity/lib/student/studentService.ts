@@ -1,6 +1,7 @@
+import { defineQuery } from 'groq';
+
 import { client } from '../adminClient';
 import { sanityFetch } from '../live';
-import { defineQuery } from 'groq';
 
 // Types for the new student system
 export interface Student {
@@ -39,7 +40,7 @@ export async function getStudentByClerkId(
   clerkId: string
 ): Promise<Student | null> {
   try {
-    const query = defineQuery(`
+    const studentByClerkIdQuery = defineQuery(`
       *[_type == "student" && clerkId == $clerkId][0] {
         _id,
         clerkId,
@@ -54,13 +55,41 @@ export async function getStudentByClerkId(
     `);
 
     const result = await sanityFetch({
-      query,
+      query: studentByClerkIdQuery,
       params: { clerkId },
     });
 
-    return result?.data || null;
-  } catch (error) {
-    console.error('Error getting student by Clerk ID:', error);
+    const studentData = result?.data;
+    if (!studentData) return null;
+
+    // Transform the query result to match the Student interface
+    const student: {
+      _id: string;
+      _type: 'student';
+      clerkId: string;
+      email: string;
+      firstName?: string;
+      lastName?: string;
+      imageUrl?: string;
+      isActive: boolean;
+      createdAt: string;
+      updatedAt: string;
+    } = {
+      _id: studentData._id,
+      _type: 'student' as const,
+      clerkId: studentData.clerkId || '',
+      email: studentData.email || '',
+      isActive: studentData.isActive || false,
+      createdAt: studentData.createdAt || new Date().toISOString(),
+      updatedAt: studentData.updatedAt || new Date().toISOString(),
+    };
+
+    if (studentData.firstName) student.firstName = studentData.firstName;
+    if (studentData.lastName) student.lastName = studentData.lastName;
+    if (studentData.imageUrl) student.imageUrl = studentData.imageUrl;
+
+    return student;
+  } catch {
     return null;
   }
 }
@@ -91,12 +120,17 @@ export async function getOrCreateStudent(
         existingStudent.imageUrl !== imageUrl;
 
       if (needsUpdate) {
-        return await updateStudent(existingStudent._id, {
-          email,
-          firstName,
-          lastName,
-          imageUrl,
-        });
+        const updateParams: {
+          email: string;
+          firstName?: string;
+          lastName?: string;
+          imageUrl?: string;
+        } = { email };
+        if (firstName) updateParams.firstName = firstName;
+        if (lastName) updateParams.lastName = lastName;
+        if (imageUrl) updateParams.imageUrl = imageUrl;
+
+        return await updateStudent(existingStudent._id, updateParams);
       }
 
       return existingStudent;
@@ -107,7 +141,6 @@ export async function getOrCreateStudent(
       'Student does not exist. Create student only during enrollment.'
     );
   } catch (error) {
-    console.error('Error in getOrCreateStudent:', error);
     throw error;
   }
 }
@@ -145,10 +178,8 @@ export async function createStudent(
       updatedAt: new Date().toISOString(),
     });
 
-    console.log('Student created successfully:', student);
     return student as unknown as Student;
   } catch (error) {
-    console.error('Error creating student:', error);
     throw error;
   }
 }
@@ -169,10 +200,8 @@ export async function updateStudent(
       })
       .commit();
 
-    console.log('Student updated successfully:', updatedStudent);
     return updatedStudent as unknown as Student;
   } catch (error) {
-    console.error('Error updating student:', error);
     throw error;
   }
 }
@@ -190,10 +219,8 @@ export async function deactivateStudent(studentId: string): Promise<Student> {
       })
       .commit();
 
-    console.log('Student deactivated successfully:', deactivatedStudent);
     return deactivatedStudent as unknown as Student;
   } catch (error) {
-    console.error('Error deactivating student:', error);
     throw error;
   }
 }
@@ -211,10 +238,8 @@ export async function reactivateStudent(studentId: string): Promise<Student> {
       })
       .commit();
 
-    console.log('Student reactivated successfully:', reactivatedStudent);
     return reactivatedStudent as unknown as Student;
   } catch (error) {
-    console.error('Error reactivating student:', error);
     throw error;
   }
 }
@@ -224,7 +249,7 @@ export async function reactivateStudent(studentId: string): Promise<Student> {
  */
 export async function getAllStudents(): Promise<Student[]> {
   try {
-    const query = defineQuery(`
+    const allStudentsQuery = defineQuery(`
       *[_type == "student"] | order(createdAt desc) {
         _id,
         clerkId,
@@ -239,12 +264,53 @@ export async function getAllStudents(): Promise<Student[]> {
     `);
 
     const result = await sanityFetch({
-      query,
+      query: allStudentsQuery,
     });
 
-    return result?.data || [];
-  } catch (error) {
-    console.error('Error getting all students:', error);
+    const students = result?.data || [];
+
+    // Transform the query result to match the Student interface
+    return students.map(
+      (studentData: {
+        _id: string;
+        clerkId: string | null;
+        email: string | null;
+        firstName: string | null;
+        lastName: string | null;
+        imageUrl: string | null;
+        isActive: boolean | null;
+        createdAt: string | null;
+        updatedAt: string | null;
+      }) => {
+        const student: {
+          _id: string;
+          _type: 'student';
+          clerkId: string;
+          email: string;
+          firstName?: string;
+          lastName?: string;
+          imageUrl?: string;
+          isActive: boolean;
+          createdAt: string;
+          updatedAt: string;
+        } = {
+          _id: studentData._id,
+          _type: 'student' as const,
+          clerkId: studentData.clerkId || '',
+          email: studentData.email || '',
+          isActive: studentData.isActive || false,
+          createdAt: studentData.createdAt || new Date().toISOString(),
+          updatedAt: studentData.updatedAt || new Date().toISOString(),
+        };
+
+        if (studentData.firstName) student.firstName = studentData.firstName;
+        if (studentData.lastName) student.lastName = studentData.lastName;
+        if (studentData.imageUrl) student.imageUrl = studentData.imageUrl;
+
+        return student;
+      }
+    );
+  } catch {
     return [];
   }
 }
@@ -273,8 +339,7 @@ export async function getStudentStats(): Promise<{
         inactiveStudents: 0,
       }
     );
-  } catch (error) {
-    console.error('Error getting student stats:', error);
+  } catch {
     return {
       totalStudents: 0,
       activeStudents: 0,

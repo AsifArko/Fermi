@@ -1,5 +1,6 @@
-import { CourseCardBase } from './CourseCardBase';
 import { GetCoursesQueryResult } from '../../../sanity.types';
+
+import { CourseCardBase } from './CourseCardBase';
 
 interface CourseCardHomeProps {
   course: GetCoursesQueryResult[number];
@@ -12,13 +13,20 @@ export function CourseCardHome({
   href,
   className,
 }: CourseCardHomeProps) {
-  return (
-    <CourseCardBase
-      course={course}
-      href={href}
-      variant="home"
-      showProgress={false}
-      className={className}
-    />
-  );
+  const props: {
+    course: GetCoursesQueryResult[number];
+    href: string;
+    variant: 'home';
+    showProgress: boolean;
+    className?: string;
+  } = {
+    course,
+    href,
+    variant: 'home',
+    showProgress: false,
+  };
+
+  if (className) props.className = className;
+
+  return <CourseCardBase {...props} />;
 }

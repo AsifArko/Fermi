@@ -1,5 +1,5 @@
-import { defineType, defineField } from 'sanity';
 import Image from 'next/image';
+import { defineType, defineField } from 'sanity';
 
 export const enrollmentType = defineType({
   name: 'enrollment',

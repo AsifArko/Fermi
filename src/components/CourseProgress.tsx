@@ -27,15 +27,15 @@ export function CourseProgress({
         className
       )}
     >
-      <div className="flex items-center justify-between gap-2">
+      <div className='flex items-center justify-between gap-2'>
         {label && (
-          <span className="text-[11px] font-normal text-muted-foreground/80 uppercase tracking-widest">
+          <span className='text-[11px] font-normal text-muted-foreground/80 uppercase tracking-widest'>
             {label}
           </span>
         )}
-        <div className="flex items-center gap-1">
+        <div className='flex items-center gap-1'>
           {showPercentage && (
-            <span className="text-[11px] font-normal text-muted-foreground/80 uppercase tracking-widest">
+            <span className='text-[11px] font-normal text-muted-foreground/80 uppercase tracking-widest'>
               {progress}%
             </span>
           )}

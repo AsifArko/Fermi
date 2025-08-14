@@ -1,6 +1,6 @@
-import { isEnrolledInCourse } from '@/sanity/lib/student/isEnrolledInCourse';
-import { getStudentByClerkId } from '@/sanity/lib/student/getStudentByClerkId';
 import getCourseById from '@/sanity/lib/courses/getCourseById';
+import { getStudentByClerkId } from '@/sanity/lib/student/getStudentByClerkId';
+import { isEnrolledInCourse } from '@/sanity/lib/student/isEnrolledInCourse';
 
 interface AuthResult {
   isAuthorized: boolean;

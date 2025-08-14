@@ -20,7 +20,7 @@ export function PageLayout({
   return (
     <div className={cn('min-h-screen bg-background', className)}>
       {header}
-      <main className="pt-16 sm:pt-20">{children}</main>
+      <main className='pt-16 sm:pt-20'>{children}</main>
       {footer}
     </div>
   );
@@ -34,8 +34,15 @@ export function PageLayoutWithContainer({
   className,
   containerProps = { maxWidth: '7xl', padding: 'lg' },
 }: PageLayoutProps) {
+  const props: {
+    header?: React.ReactNode;
+    footer?: React.ReactNode;
+    className?: string;
+  } = { header, footer };
+  if (className) props.className = className;
+
   return (
-    <PageLayout header={header} footer={footer} className={className}>
+    <PageLayout {...props}>
       <Container {...containerProps}>{children}</Container>
     </PageLayout>
   );

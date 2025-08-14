@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+
 import { projectId, dataset } from '@/sanity/env';
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ assetId: string }> }
 ) {
   try {
@@ -18,20 +19,11 @@ export async function GET(
     // Construct the Sanity asset URL - assetId is now the full Sanity document ID
     const assetUrl = `https://cdn.sanity.io/files/${projectId}/${dataset}/${assetId}`;
 
-    console.log('Attempting to fetch file from:', assetUrl);
-
     // Fetch the file from Sanity
     const response = await fetch(assetUrl);
 
-    console.log('Response status:', response.status);
-    console.log(
-      'Response headers:',
-      Object.fromEntries(response.headers.entries())
-    );
-
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Sanity response error:', errorText);
       return NextResponse.json(
         {
           error: 'File not found',
@@ -58,8 +50,7 @@ export async function GET(
         'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
       },
     });
-  } catch (error) {
-    console.error('Error serving file:', error);
+  } catch {
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

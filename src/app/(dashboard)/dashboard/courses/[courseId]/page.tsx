@@ -1,6 +1,7 @@
-import getCourseById from '@/sanity/lib/courses/getCourseById';
-import { redirect } from 'next/navigation';
 import { currentUser } from '@clerk/nextjs/server';
+import { redirect } from 'next/navigation';
+
+import getCourseById from '@/sanity/lib/courses/getCourseById';
 
 interface CoursePageProps {
   params: Promise<{
@@ -25,10 +26,10 @@ export default async function CoursePage({ params }: CoursePageProps) {
   }
 
   return (
-    <div className="h-full flex items-center justify-center relative z-10">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold">Welcome to {course.title}</h2>
-        <p className="text-muted-foreground">
+    <div className='h-full flex items-center justify-center relative z-10'>
+      <div className='text-center'>
+        <h2 className='text-2xl font-bold'>Welcome to {course.title}</h2>
+        <p className='text-muted-foreground'>
           This course has no content yet. Please check back later.
         </p>
       </div>

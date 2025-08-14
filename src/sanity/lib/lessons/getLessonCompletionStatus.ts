@@ -1,4 +1,5 @@
 import { defineQuery } from 'groq';
+
 import { sanityFetch } from '../live';
 import { getStudentByClerkId } from '../student/getStudentByClerkId';
 

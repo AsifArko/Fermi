@@ -1,12 +1,13 @@
 'use client';
 
-import { createStripeCheckout } from '@/actions/createStripeCheckout';
 import { useUser } from '@clerk/nextjs';
+import { loadStripe } from '@stripe/stripe-js';
 import { CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useTransition } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
+
+import { createStripeCheckout } from '@/actions/createStripeCheckout';
 
 // Initialize Stripe
 const stripePromise = loadStripe(
@@ -34,35 +35,24 @@ function EnrollButton({
   }, [searchParams, router]);
 
   const handleEnroll = async (courseId: string) => {
-    console.log('Enroll button clicked for course:', courseId);
-    console.log('User:', user);
-    console.log('User ID:', user?.id);
-
     startTransition(async () => {
       try {
         const userId = user?.id;
         if (!userId) {
-          console.log('No user ID found');
           return;
         }
 
-        console.log('Creating Stripe checkout for user:', userId);
         const stripe = await stripePromise;
         if (!stripe) {
           throw new Error('Stripe failed to initialize');
         }
 
         const result = await createStripeCheckout(courseId, userId);
-        console.log('Checkout result:', result);
 
         if (result?.url) {
-          console.log('Redirecting to:', result.url);
           router.push(result.url);
-        } else {
-          console.log('No URL returned from checkout');
         }
       } catch (error) {
-        console.error('Failed to create checkout session:', error);
         throw error;
       }
     });
@@ -71,8 +61,8 @@ function EnrollButton({
   // Show loading state while checking user is loading
   if (!isUserLoaded || isPending) {
     return (
-      <div className="w-full h-12 rounded-lg bg-gray-100 flex items-center justify-center">
-        <div className="w-5 h-5 border-2 border-gray-400 border-t-gray-600 rounded-full animate-spin" />
+      <div className='w-full h-12 rounded-lg bg-gray-100 flex items-center justify-center'>
+        <div className='w-5 h-5 border-2 border-gray-400 border-t-gray-600 rounded-full animate-spin' />
       </div>
     );
   }
@@ -83,10 +73,10 @@ function EnrollButton({
       <Link
         prefetch={false}
         href={`/dashboard/courses/${courseId}`}
-        className="w-full rounded-lg px-6 py-3 font-medium bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transition-all duration-300 h-12 flex items-center justify-center gap-2 group"
+        className='w-full rounded-lg px-6 py-3 font-medium bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:from-green-600 hover:to-emerald-600 transition-all duration-300 h-12 flex items-center justify-center gap-2 group'
       >
         <span>Access Course</span>
-        <CheckCircle className="w-5 h-5 group-hover:scale-110 transition-transform" />
+        <CheckCircle className='w-5 h-5 group-hover:scale-110 transition-transform' />
       </Link>
     );
   }
@@ -114,8 +104,8 @@ function EnrollButton({
         </span>
       )}
       {isPending && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-5 h-5 border-2 border-gray-400 border-t-gray-600 rounded-full animate-spin" />
+        <div className='absolute inset-0 flex items-center justify-center'>
+          <div className='w-5 h-5 border-2 border-gray-400 border-t-gray-600 rounded-full animate-spin' />
         </div>
       )}
     </button>

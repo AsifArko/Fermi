@@ -1,14 +1,16 @@
+import { ClerkProvider } from '@clerk/nextjs';
 import { type Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import './globals.css';
-import { ThemeProvider } from '@/components/ThemeProvider';
-import { VisualEditing } from 'next-sanity';
 import { draftMode } from 'next/headers';
+import { VisualEditing } from 'next-sanity';
+
 import { DisableDraftMode } from '@/components/DisableDraftMode';
 import Footer from '@/components/Footer';
-import { ClerkProvider } from '@clerk/nextjs';
-import Header from '@/components/Header';
 import { GlobalScientificBackground } from '@/components/GlobalScientificBackground';
+import Header from '@/components/Header';
+import { ThemeProvider } from '@/components/ThemeProvider';
+
+import './globals.css';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -32,11 +34,11 @@ export default async function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang='en'
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable}`}
     >
-      <body className="antialiased" suppressHydrationWarning>
+      <body className='antialiased' suppressHydrationWarning>
         <GlobalScientificBackground />
         {(await draftMode()).isEnabled && (
           <>
@@ -46,8 +48,8 @@ export default async function RootLayout({
         )}
         <ClerkProvider>
           <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
+            attribute='class'
+            defaultTheme='system'
             enableSystem
             disableTransitionOnChange
           >

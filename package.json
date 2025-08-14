@@ -11,7 +11,13 @@
     "lint:fix": "next lint --fix",
     "typegen": "sanity schema extract && sanity typegen generate",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "type-check": "tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "spell-check": "cspell \"**/*.{js,jsx,ts,tsx,md,json}\"",
+    "markdown-lint": "markdownlint \"**/*.md\" --ignore node_modules",
     "prepare": "husky",
     "purge-all": "tsx scripts/purge-enrollments.ts",
     "migrate:enrollment": "tsx scripts/migrate-enrollment-schema.ts"
@@ -60,18 +66,32 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
+    "@testing-library/jest-dom": "^6.7.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.0.7",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
-    "@typescript-eslint/eslint-plugin": "^8.15.0",
-    "@typescript-eslint/parser": "^8.15.0",
+    "@typescript-eslint/eslint-plugin": "^8.39.1",
+    "@typescript-eslint/parser": "^8.39.1",
+    "cspell": "^9.2.0",
     "dependency-cruiser": "^17.0.1",
     "dotenv": "^17.2.1",
     "eslint": "^9.30.0",
     "eslint-config-next": "^15.3.4",
     "eslint-config-prettier": "^9.1.0",
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.10",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-sonarjs": "^3.0.4",
+    "eslint-plugin-unicorn": "^60.0.0",
+    "husky": "^9.1.7",
+    "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.0.5",
+    "lint-staged": "^15.5.2",
+    "markdownlint-cli": "^0.45.0",
     "prettier": "^3.3.3",
     "tsx": "^4.20.4",
     "typescript": "^5.8.3"
@@ -81,7 +101,7 @@
       "eslint --fix",
       "prettier --write"
     ],
-    "*.{json,md,css}": [
+    "*.{json,md,css,scss}": [
       "prettier --write"
     ]
   }

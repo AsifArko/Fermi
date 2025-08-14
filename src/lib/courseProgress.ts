@@ -1,4 +1,5 @@
 import { Module } from '@/sanity.types';
+
 import { GetCompletionsQueryResult } from '../../sanity.types';
 
 export function calculateTotalLessons(modules: Module[] | null): number {

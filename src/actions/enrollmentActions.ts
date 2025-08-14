@@ -1,6 +1,12 @@
 'use server';
 
 import { clerkClient } from '@clerk/nextjs/server';
+
+import {
+  checkCourseAccess,
+  canEnrollInCourse,
+} from '@/sanity/lib/course/courseAccessService';
+import getCourseById from '@/sanity/lib/courses/getCourseById';
 import {
   createEnrollment,
   getEnrollmentStatus,
@@ -9,11 +15,6 @@ import {
   createStudent,
   getStudentByClerkId,
 } from '@/sanity/lib/student/studentService';
-import {
-  checkCourseAccess,
-  canEnrollInCourse,
-} from '@/sanity/lib/course/courseAccessService';
-import getCourseById from '@/sanity/lib/courses/getCourseById';
 
 // Types for enrollment actions
 export interface EnrollmentResult {
@@ -103,13 +104,22 @@ export async function enrollInFreeCourse(
         };
       }
 
-      student = await createStudent({
+      const studentParams: {
+        clerkId: string;
+        email: string;
+        firstName?: string;
+        lastName?: string;
+        imageUrl?: string;
+      } = {
         clerkId: userId,
         email,
-        firstName: firstName || undefined,
-        lastName: lastName || undefined,
-        imageUrl: imageUrl || undefined,
-      });
+      };
+
+      if (firstName) studentParams.firstName = firstName;
+      if (lastName) studentParams.lastName = lastName;
+      if (imageUrl) studentParams.imageUrl = imageUrl;
+
+      student = await createStudent(studentParams);
     }
 
     // Create enrollment
@@ -131,7 +141,6 @@ export async function enrollInFreeCourse(
       redirectUrl: `/dashboard/courses/${courseId}`,
     };
   } catch (error) {
-    console.error('Error enrolling in free course:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error occurred',
@@ -156,13 +165,21 @@ export async function getEnrollmentStatusAction(
 
     const enrollmentStatus = await getEnrollmentStatus(userId, courseId);
 
-    return {
+    const result: {
+      success: boolean;
+      status?: 'pending' | 'active' | 'completed' | 'cancelled';
+      enrollmentId?: string;
+    } = {
       success: true,
       status: enrollmentStatus.status || undefined,
-      enrollmentId: enrollmentStatus.enrollmentId,
     };
+
+    if (enrollmentStatus.enrollmentId) {
+      result.enrollmentId = enrollmentStatus.enrollmentId;
+    }
+
+    return result;
   } catch (error) {
-    console.error('Error getting enrollment status:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error occurred',
@@ -203,7 +220,6 @@ export async function checkCourseAccessAction(
       canEnroll: access.canEnroll,
     };
   } catch (error) {
-    console.error('Error checking course access:', error);
     return {
       success: false,
       hasAccess: false,
@@ -255,7 +271,6 @@ export async function cancelEnrollmentAction(
       status: cancelledEnrollment.status,
     };
   } catch (error) {
-    console.error('Error cancelling enrollment:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error occurred',
@@ -295,7 +310,6 @@ export async function getEnrollmentsSummaryAction(
       enrollments,
     };
   } catch (error) {
-    console.error('Error getting enrollments summary:', error);
     return {
       success: false,
       enrollments: {},
@@ -365,7 +379,6 @@ export async function createEnrollmentFromStripeSession(
       status: enrollment.status,
     };
   } catch (error) {
-    console.error('Error creating enrollment from Stripe session:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error occurred',

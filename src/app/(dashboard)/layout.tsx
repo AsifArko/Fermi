@@ -1,9 +1,10 @@
-import type { Metadata } from 'next';
 import { ClerkProvider } from '@clerk/nextjs';
-import { SanityLive } from '@/sanity/lib/live';
+import type { Metadata } from 'next';
+
+import { DashboardScientificBackground } from '@/components/DashboardScientificBackground';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { SidebarProvider } from '@/components/providers/SidebarProvider';
-import { DashboardScientificBackground } from '@/components/DashboardScientificBackground';
+import { SanityLive } from '@/sanity/lib/live';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -18,14 +19,14 @@ export default function DashboardLayout({
   return (
     <ClerkProvider>
       <ThemeProvider
-        attribute="class"
-        defaultTheme="system"
+        attribute='class'
+        defaultTheme='system'
         enableSystem
         disableTransitionOnChange
       >
         <DashboardScientificBackground />
         <SidebarProvider>
-          <div className="h-full">{children}</div>
+          <div className='h-full'>{children}</div>
         </SidebarProvider>
       </ThemeProvider>
 
