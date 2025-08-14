@@ -2,10 +2,8 @@ import { urlFor } from '@/sanity/lib/image';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import EnrollButton from '@/components/EnrollButton';
 import getCourseBySlug from '@/sanity/lib/courses/getCourseBySlug';
-import { isEnrolledInCourse } from '@/sanity/lib/student/isEnrolledInCourse';
-import { auth } from '@clerk/nextjs/server';
+import { EnrollButton } from '@/components/enrollment';
 import { ScientificBackground } from '@/components/homepage/ScientificBackground';
 
 function RectangleShape({
@@ -45,12 +43,6 @@ interface CoursePageProps {
 export default async function CoursePage({ params }: CoursePageProps) {
   const { slug } = await params;
   const course = await getCourseBySlug(slug);
-  const { userId } = await auth();
-
-  const isEnrolled =
-    userId && course?._id
-      ? await isEnrolledInCourse(userId, course._id)
-      : false;
 
   if (!course) {
     return (
@@ -112,7 +104,11 @@ export default async function CoursePage({ params }: CoursePageProps) {
                   <div className="text-xl md:text-2xl font-bold text-white mb-1">
                     {course.price === 0 ? 'Free' : `$${course.price}`}
                   </div>
-                  <EnrollButton courseId={course._id} isEnrolled={isEnrolled} />
+                  <EnrollButton
+                    courseId={course._id}
+                    coursePrice={course.price || 0}
+                    variant="hero"
+                  />
                 </div>
               </div>
             </div>

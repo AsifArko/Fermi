@@ -13,6 +13,13 @@ export async function createEnrollment({
   paymentId,
   amount,
 }: CreateEnrollmentParams) {
+  console.log('Creating enrollment with params:', {
+    studentId,
+    courseId,
+    paymentId,
+    amount,
+  });
+
   const enrollment = await client.create({
     _type: 'enrollment',
     student: {
@@ -28,5 +35,6 @@ export async function createEnrollment({
     enrolledAt: new Date().toISOString(),
   });
 
+  console.log('Enrollment created successfully:', enrollment);
   return enrollment;
 }

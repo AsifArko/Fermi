@@ -44,7 +44,7 @@ export async function createStripeCheckout(courseId: string, userId: string) {
     }
     const priceInCents = Math.round(course.price * 100);
 
-    // if course is free, create enrollment and redirect to course page (BYPASS STRIPE CHECKOUT)
+    // if course is free, create enrollment and return success (BYPASS STRIPE CHECKOUT)
     if (priceInCents === 0) {
       await createEnrollment({
         studentId: user._id,
@@ -53,7 +53,7 @@ export async function createStripeCheckout(courseId: string, userId: string) {
         amount: 0,
       });
 
-      return { url: `/courses/${course.slug?.current}` };
+      return { success: true };
     }
 
     const { title, description, image, slug } = course;

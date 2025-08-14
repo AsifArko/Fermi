@@ -22,7 +22,7 @@ export function GlobalScientificBackground() {
     };
 
     // Generate random particle positions only on client side
-    const positions = [...Array(12)].map((_unused, i) => ({
+    const positions = [...Array(12)].map((_, i) => ({
       left: Math.random() * 100,
       top: Math.random() * 100,
       animationDuration: 3 + Math.random() * 4,
@@ -107,7 +107,7 @@ export function GlobalScientificBackground() {
 
       {/* Quantum dots */}
       <div className="absolute inset-0">
-        {[...Array(8)].map((_unused, i) => (
+        {[...Array(8)].map((_, i) => (
           <div
             key={`dot-${i}`}
             className="absolute w-2 h-2 bg-gray-400/30 rounded-full animate-ping"

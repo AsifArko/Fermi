@@ -10,16 +10,19 @@ export const studentType = defineType({
       name: 'firstName',
       title: 'First Name',
       type: 'string',
+      validation: rule => rule.required(),
     }),
     defineField({
       name: 'lastName',
       title: 'Last Name',
       type: 'string',
+      validation: rule => rule.required(),
     }),
     defineField({
       name: 'email',
       title: 'Email',
       type: 'string',
+      validation: rule => rule.required().email(),
     }),
     defineField({
       name: 'clerkId',
@@ -27,11 +30,32 @@ export const studentType = defineType({
       type: 'string',
       validation: rule => rule.required(),
     }),
-
     defineField({
       name: 'imageUrl',
       title: 'Profile Image URL',
       type: 'url',
+    }),
+    defineField({
+      name: 'isActive',
+      title: 'Is Active',
+      type: 'boolean',
+      description: 'Whether this student account is active',
+      initialValue: true,
+      validation: rule => rule.required(),
+    }),
+    defineField({
+      name: 'createdAt',
+      title: 'Created At',
+      type: 'datetime',
+      initialValue: new Date().toISOString(),
+      validation: rule => rule.required(),
+    }),
+    defineField({
+      name: 'updatedAt',
+      title: 'Updated At',
+      type: 'datetime',
+      initialValue: new Date().toISOString(),
+      validation: rule => rule.required(),
     }),
   ],
   preview: {
@@ -39,18 +63,23 @@ export const studentType = defineType({
       firstName: 'firstName',
       lastName: 'lastName',
       imageUrl: 'imageUrl',
+      isActive: 'isActive',
+      email: 'email',
     },
-    prepare({ firstName, lastName, imageUrl }) {
+    prepare({ firstName, lastName, imageUrl, isActive, email }) {
+      const displayName =
+        firstName && lastName
+          ? `${firstName} ${lastName}`
+          : email || 'Unknown Student';
+
+      const status = isActive ? 'Active' : 'Inactive';
+
       return {
-        title: `${firstName.charAt(0).toUpperCase()}${firstName.slice(1)} ${lastName.charAt(0).toUpperCase()}${lastName.slice(1)}`,
-        media: (
-          <Image
-            src={imageUrl}
-            alt={`${firstName} ${lastName}`}
-            width={100}
-            height={100}
-          />
-        ),
+        title: displayName,
+        subtitle: `Student - ${status}`,
+        media: imageUrl ? (
+          <Image src={imageUrl} alt={displayName} width={100} height={100} />
+        ) : undefined,
       };
     },
   },

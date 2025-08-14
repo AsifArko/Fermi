@@ -21,6 +21,21 @@ export const enrollmentType = defineType({
       validation: rule => rule.required(),
     }),
     defineField({
+      name: 'status',
+      title: 'Enrollment Status',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Pending', value: 'pending' },
+          { title: 'Active', value: 'active' },
+          { title: 'Completed', value: 'completed' },
+          { title: 'Cancelled', value: 'cancelled' },
+        ],
+      },
+      validation: rule => rule.required(),
+      initialValue: 'pending',
+    }),
+    defineField({
       name: 'amount',
       title: 'Amount',
       type: 'number',
@@ -31,14 +46,46 @@ export const enrollmentType = defineType({
       name: 'paymentId',
       title: 'Payment ID',
       type: 'string',
-      validation: rule => rule.required(),
-      description: 'ID of the payment in Stripe',
+      description: 'ID of the payment in Stripe (optional for free courses)',
     }),
     defineField({
       name: 'enrolledAt',
       title: 'Enrolled At',
       type: 'datetime',
       initialValue: new Date().toISOString(),
+      validation: rule => rule.required(),
+    }),
+    defineField({
+      name: 'expiresAt',
+      title: 'Expires At',
+      type: 'datetime',
+      description: 'Optional expiration date for the enrollment',
+    }),
+    defineField({
+      name: 'metadata',
+      title: 'Metadata',
+      type: 'object',
+      description: 'Additional enrollment data',
+      fields: [
+        defineField({
+          name: 'enrollmentSource',
+          title: 'Enrollment Source',
+          type: 'string',
+          description: 'How the user enrolled (web, mobile, admin, etc.)',
+        }),
+        defineField({
+          name: 'referralCode',
+          title: 'Referral Code',
+          type: 'string',
+          description: 'Referral code used during enrollment',
+        }),
+        defineField({
+          name: 'campaign',
+          title: 'Campaign',
+          type: 'string',
+          description: 'Marketing campaign that led to enrollment',
+        }),
+      ],
     }),
   ],
   preview: {
@@ -47,19 +94,36 @@ export const enrollmentType = defineType({
       studentFirstName: 'student.firstName',
       studentLastName: 'student.lastName',
       studentImage: 'student.imageUrl',
+      status: 'status',
+      amount: 'amount',
     },
-    prepare({ courseTitle, studentFirstName, studentLastName, studentImage }) {
+    prepare({
+      courseTitle,
+      studentFirstName,
+      studentLastName,
+      studentImage,
+      status,
+      amount,
+    }) {
+      const displayName =
+        studentFirstName && studentLastName
+          ? `${studentFirstName} ${studentLastName}`
+          : 'Unknown Student';
+
+      const priceDisplay =
+        amount === 0 ? 'Free' : `$${(amount / 100).toFixed(2)}`;
+
       return {
-        title: `${studentFirstName} ${studentLastName}`,
-        subtitle: courseTitle,
-        media: (
+        title: displayName,
+        subtitle: `${courseTitle} - ${status} (${priceDisplay})`,
+        media: studentImage ? (
           <Image
             src={studentImage}
-            alt={`${studentFirstName} ${studentLastName}`}
+            alt={displayName}
             width={100}
             height={100}
           />
-        ),
+        ) : undefined,
       };
     },
   },

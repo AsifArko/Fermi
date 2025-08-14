@@ -34,22 +34,35 @@ function EnrollButton({
   }, [searchParams, router]);
 
   const handleEnroll = async (courseId: string) => {
+    console.log('Enroll button clicked for course:', courseId);
+    console.log('User:', user);
+    console.log('User ID:', user?.id);
+
     startTransition(async () => {
       try {
         const userId = user?.id;
-        if (!userId) return;
+        if (!userId) {
+          console.log('No user ID found');
+          return;
+        }
 
+        console.log('Creating Stripe checkout for user:', userId);
         const stripe = await stripePromise;
         if (!stripe) {
           throw new Error('Stripe failed to initialize');
         }
 
-        const { url } = await createStripeCheckout(courseId, userId);
-        if (url) {
-          router.push(url);
+        const result = await createStripeCheckout(courseId, userId);
+        console.log('Checkout result:', result);
+
+        if (result?.url) {
+          console.log('Redirecting to:', result.url);
+          router.push(result.url);
+        } else {
+          console.log('No URL returned from checkout');
         }
       } catch (error) {
-        console.error('Failed to create checkout session');
+        console.error('Failed to create checkout session:', error);
         throw error;
       }
     });
