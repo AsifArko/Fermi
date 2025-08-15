@@ -1,0 +1,43 @@
+# docker-compose.staging.yml
+version: '3.8'
+services:
+  nextjs:
+    build:
+      context: .
+      target: runner
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=staging
+      - NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  sanity:
+    build:
+      context: .
+      target: sanity-runner
+    ports:
+      - '3333:3333'
+    environment:
+      - NODE_ENV=staging
+      - SANITY_PROJECT_ID=${NEXT_PUBLIC_SANITY_PROJECT_ID}
+      - SANITY_DATASET=${NEXT_PUBLIC_SANITY_DATASET}
+    restart: unless-stopped
+
+  # Monitoring for staging
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./monitoring/prometheus.staging.yml:/etc/prometheus/prometheus.yml
+      - prometheus_staging_data:/prometheus
+    restart: unless-stopped
+
+volumes:
+  prometheus_staging_data:

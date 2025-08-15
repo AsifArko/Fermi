@@ -1,0 +1,60 @@
+# docker-compose.production.yml
+version: '3.8'
+services:
+  nextjs:
+    build:
+      context: .
+      target: runner
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+
+  sanity:
+    build:
+      context: .
+      target: sanity-runner
+    ports:
+      - '3333:3333'
+    environment:
+      - NODE_ENV=production
+      - SANITY_PROJECT_ID=${NEXT_PUBLIC_SANITY_PROJECT_ID}
+      - SANITY_DATASET=${NEXT_PUBLIC_SANITY_DATASET}
+    restart: unless-stopped
+
+  # Monitoring for production
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./monitoring/prometheus.production.yml:/etc/prometheus/prometheus.yml
+      - prometheus_production_data:/prometheus
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - '3001:3000'
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+    volumes:
+      - grafana_production_data:/var/lib/grafana
+    restart: unless-stopped
+
+volumes:
+  prometheus_production_data:
+  grafana_production_data:

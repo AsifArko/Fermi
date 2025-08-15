@@ -30,6 +30,8 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: false,
   },
+  // Docker optimization
+  output: 'standalone',
   async redirects() {
     return [];
   },

@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "staging_rules.yml"
+
+scrape_configs:
+  - job_name: 'fermi-nextjs-staging'
+    static_configs:
+      - targets: ['nextjs:3000']
+    metrics_path: '/api/metrics'
+    scrape_interval: 10s
+
+  - job_name: 'fermi-sanity-staging'
+    static_configs:
+      - targets: ['sanity:3333']
+    scrape_interval: 15s
+
+  - job_name: 'prometheus-staging'
+    static_configs:
+      - targets: ['localhost:9090']

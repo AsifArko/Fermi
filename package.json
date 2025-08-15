@@ -20,7 +20,17 @@
     "markdown-lint": "markdownlint \"**/*.md\" --ignore node_modules",
     "prepare": "husky",
     "purge-all": "tsx scripts/purge-enrollments.ts",
-    "migrate:enrollment": "tsx scripts/migrate-enrollment-schema.ts"
+    "migrate:enrollment": "tsx scripts/migrate-enrollment-schema.ts",
+    "docker:build": "docker build -t fermi:latest .",
+    "docker:build:staging": "docker build -t fermi:staging .",
+    "docker:build:production": "docker build -t fermi:production .",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up -d",
+    "docker:staging": "docker-compose -f docker-compose.staging.yml up -d",
+    "docker:production": "docker-compose -f docker-compose.production.yml up -d",
+    "deploy:staging": "./scripts/deploy.sh staging",
+    "deploy:production": "./scripts/deploy.sh production",
+    "rollback:staging": "./scripts/rollback.sh staging",
+    "rollback:production": "./scripts/rollback.sh production"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.23.2",
