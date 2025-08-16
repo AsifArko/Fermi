@@ -219,31 +219,6 @@ export function EnrollButton({
     );
   }
 
-  // Show success message if payment was successful
-  if (showSuccessMessage) {
-    return (
-      <div className='w-full space-y-2'>
-        <div className='bg-green-50 border border-green-200 rounded-lg p-3 text-center'>
-          <CheckCircle className='w-4 h-4 text-green-600 mx-auto mb-2' />
-          <p className='text-green-800 text-sm font-medium'>
-            Payment successful! Refreshing enrollment status...
-          </p>
-        </div>
-        <Button
-          disabled
-          className={cn(
-            'w-full relative',
-            getButtonClasses(variant),
-            className
-          )}
-        >
-          <Loader2 className='w-4 h-4 animate-spin mr-2' />
-          Updating...
-        </Button>
-      </div>
-    );
-  }
-
   // Show sign-in prompt for unauthenticated users
   if (!user?.id) {
     return (

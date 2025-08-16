@@ -1,5 +1,3 @@
-import { NextResponse } from 'next/server';
-
 import { MonitoringService } from '@/lib/monitoring/monitoringService';
 
 export async function GET() {
@@ -7,20 +5,21 @@ export async function GET() {
     const monitoring = MonitoringService.getInstance();
     const metrics = monitoring.getMetrics();
 
-    return new NextResponse(metrics, {
+    return new Response(metrics, {
       headers: {
-        'Content-Type': 'text/plain; version=0.0.4; charset=utf-8',
+        'Content-Type': 'text/plain',
+        'Cache-Control': 'no-cache',
       },
     });
   } catch (error) {
-    // Log error in development only
-    if (process.env.NODE_ENV === 'development') {
-      // eslint-disable-next-line no-console
-      console.error('Error fetching metrics:', error);
-    }
-    return NextResponse.json(
-      { error: 'Failed to fetch metrics' },
-      { status: 500 }
+    return new Response(
+      `# HELP monitoring_error Error retrieving metrics\n# TYPE monitoring_error counter\nmonitoring_error 1`,
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+      }
     );
   }
 }

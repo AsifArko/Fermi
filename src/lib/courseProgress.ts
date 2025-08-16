@@ -1,6 +1,4 @@
-import { Module } from '@/sanity.types';
-
-import { GetCompletionsQueryResult } from '../../sanity.types';
+import { Module, GetCompletionsQueryResult } from '../../sanity.types';
 
 export function calculateTotalLessons(modules: Module[] | null): number {
   if (!modules) return 0;

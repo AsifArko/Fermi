@@ -1,7 +1,7 @@
 import { defineQuery } from 'groq';
 
 import { calculateCourseProgress } from '@/lib/courseProgress';
-import { Module } from '@/sanity.types';
+import { Module } from '../../../../sanity.types';
 
 import { sanityFetch } from '../live';
 import { getStudentByClerkId } from '../student/getStudentByClerkId';

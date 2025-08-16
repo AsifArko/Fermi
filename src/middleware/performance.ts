@@ -1,21 +1,33 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { MonitoringService } from '../lib/monitoring/monitoringService';
 
-import { MonitoringService } from '@/lib/monitoring/monitoringService';
+export function performanceMiddleware(_request: NextRequest) {
+  const startTime = Date.now();
 
-export function performanceMiddleware(request: NextRequest) {
-  const monitoring = MonitoringService.getInstance();
+  // Record the request
+  const response = NextResponse.next();
 
-  // Record request start
-  monitoring.activeConnections = monitoring.activeConnections + 1;
+  // Add response headers for monitoring
+  response.headers.set('X-Monitoring-Enabled', 'true');
 
-  // For now, just record basic metrics without response handling
-  // TODO: Implement proper response monitoring
-  const method = request.method;
-  const route = request.nextUrl.pathname;
+  // Record the request after response is sent
+  response.headers.set('X-Request-Start', startTime.toString());
 
-  // Record request immediately
-  monitoring.recordHttpRequest(method, route, 200, 0);
+  return response;
+}
 
-  // Decrease active connections
-  monitoring.activeConnections = Math.max(0, monitoring.activeConnections - 1);
+// Middleware to record completed requests
+export function recordRequest(
+  method: string,
+  url: string,
+  statusCode: number,
+  duration: number
+) {
+  try {
+    const monitoringService = MonitoringService.getInstance();
+    monitoringService.recordHttpRequest(method, url, statusCode, duration);
+  } catch (error) {
+    // Silently fail if monitoring is not available
+    console.warn('Failed to record request for monitoring:', error);
+  }
 }

@@ -1,53 +1,106 @@
 import { StructureBuilder } from 'sanity/structure';
+import { AnalyticsDashboard } from './components/analytics-dashboard';
+import { MonitoringDashboard } from './components/monitoring-dashboard';
+import {
+  BookOpen,
+  GraduationCap,
+  User,
+  Users as UsersIcon,
+  FolderOpen,
+  Code,
+  FileText,
+  Edit,
+  Activity,
+  Monitor,
+} from 'lucide-react';
 
 // https://www.sanity.io/docs/structure-builder-cheat-sheet
 export const structure = (S: StructureBuilder) =>
   S.list()
-    .title('Admin Dashboard')
+    .title('Content')
     .items([
-      // Course Content
+      // Analytics Dashboard
+      S.listItem()
+        .title('Site Analytics')
+        .icon(Activity)
+        .child(S.component(AnalyticsDashboard).title('Analytics Dashboard')),
+
+      // Monitoring Dashboard
+      S.listItem()
+        .title('System Monitoring')
+        .icon(Monitor)
+        .child(S.component(MonitoringDashboard).title('Monitoring Dashboard')),
+
+      S.divider(),
+
+      // Course Content Management
       S.listItem()
         .title('Course Content')
+        .icon(BookOpen)
         .child(
-          S.documentTypeList('course')
-            .title('Courses')
-            .child(courseId =>
-              S.list()
-                .title('Course Options')
-                .items([
-                  // Option to edit course content
-                  S.listItem()
-                    .title('Edit Course Content')
-                    .child(
-                      S.document().schemaType('course').documentId(courseId)
-                    ),
-                  // Option to view course enrollments
-                  S.listItem()
-                    .title('View Students')
-                    .child(
-                      S.documentList()
-                        .title('Course Enrollments')
-                        .filter(
-                          '_type == "enrollment" && course._ref == $courseId'
-                        )
-                        .params({ courseId })
-                    ),
-                ])
-            )
+          S.list()
+            .title('Course Management')
+            .items([
+              S.listItem()
+                .title('All Courses')
+                .icon(GraduationCap)
+                .child(
+                  S.documentTypeList('course')
+                    .title('Courses')
+                    .child(courseId =>
+                      S.list()
+                        .title('Course Options')
+                        .items([
+                          S.listItem()
+                            .title('Edit Course Content')
+                            .icon(Edit)
+                            .child(
+                              S.document()
+                                .schemaType('course')
+                                .documentId(courseId)
+                            ),
+                          S.listItem()
+                            .title('View Students')
+                            .icon(UsersIcon)
+                            .child(
+                              S.documentList()
+                                .title('Course Enrollments')
+                                .filter(
+                                  '_type == "enrollment" && course._ref == $courseId'
+                                )
+                                .params({ courseId })
+                            ),
+                        ])
+                    )
+                ),
+              S.listItem()
+                .title('Course Categories')
+                .icon(FolderOpen)
+                .child(S.documentTypeList('category').title('Categories')),
+              S.listItem()
+                .title('Course Modules')
+                .icon(Code)
+                .child(S.documentTypeList('module').title('Modules')),
+              S.listItem()
+                .title('Course Lessons')
+                .icon(FileText)
+                .child(S.documentTypeList('lesson').title('Lessons')),
+            ])
         ),
 
       S.divider(),
 
-      // Users
+      // User Management
       S.listItem()
         .title('User Management')
+        .icon(UsersIcon)
         .child(
           S.list()
-            .title('Select a Type of User')
+            .title('User Management')
             .items([
-              // Instructors with options
               S.listItem()
                 .title('Instructors')
+                .icon(User)
                 .schemaType('instructor')
                 .child(
                   S.documentTypeList('instructor')
@@ -56,17 +109,17 @@ export const structure = (S: StructureBuilder) =>
                       S.list()
                         .title('Instructor Options')
                         .items([
-                          // Option to edit instructor details
                           S.listItem()
                             .title('Edit Instructor Details')
+                            .icon(Edit)
                             .child(
                               S.document()
                                 .schemaType('instructor')
                                 .documentId(instructorId)
                             ),
-                          // Option to view instructor's courses
                           S.listItem()
                             .title('View Courses')
+                            .icon(BookOpen)
                             .child(
                               S.documentList()
                                 .title("Instructor's Courses")
@@ -78,9 +131,9 @@ export const structure = (S: StructureBuilder) =>
                         ])
                     )
                 ),
-              // Students with options
               S.listItem()
                 .title('Students')
+                .icon(GraduationCap)
                 .schemaType('student')
                 .child(
                   S.documentTypeList('student')
@@ -89,17 +142,17 @@ export const structure = (S: StructureBuilder) =>
                       S.list()
                         .title('Student Options')
                         .items([
-                          // Option to edit student details
                           S.listItem()
                             .title('Edit Student Details')
+                            .icon(Edit)
                             .child(
                               S.document()
                                 .schemaType('student')
                                 .documentId(studentId)
                             ),
-                          // Option to view enrollments
                           S.listItem()
                             .title('View Enrollments')
+                            .icon(BookOpen)
                             .child(
                               S.documentList()
                                 .title('Student Enrollments')
@@ -108,35 +161,45 @@ export const structure = (S: StructureBuilder) =>
                                 )
                                 .params({ studentId })
                             ),
-                          // Option to view completed lessons
-                          S.listItem()
-                            .title('View Completed Lessons')
-                            .child(
-                              S.documentList()
-                                .title('Completed Lessons')
-                                .schemaType('lessonCompletion')
-                                .filter(
-                                  '_type == "lessonCompletion" && student._ref == $studentId'
-                                )
-                                .params({ studentId })
-                                .defaultOrdering([
-                                  { field: 'completedAt', direction: 'desc' },
-                                ])
-                            ),
                         ])
                     )
+                ),
+              S.listItem()
+                .title('Enrollments')
+                .icon(UsersIcon)
+                .child(
+                  S.documentTypeList('enrollment').title('Course Enrollments')
+                ),
+              S.listItem()
+                .title('Lesson Completions')
+                .icon(FileText)
+                .child(
+                  S.documentTypeList('lessonCompletion').title(
+                    'Lesson Completions'
+                  )
                 ),
             ])
         ),
 
       S.divider(),
 
-      // System Management
-      S.listItem()
-        .title('System Management')
-        .child(
-          S.list()
-            .title('System Management')
-            .items([S.documentTypeListItem('category').title('Categories')])
-        ),
+      // Include remaining document types (excluding the ones we've grouped)
+      ...S.documentTypeListItems().filter(
+        listItem =>
+          ![
+            'course',
+            'instructor',
+            'student',
+            'enrollment',
+            'lessonCompletion',
+            'category',
+            'module',
+            'lesson',
+            'pageView',
+            'userEvent',
+            'performanceMetric',
+            'systemMetric',
+            'errorLog',
+          ].includes(listItem.getId() as string)
+      ),
     ]);

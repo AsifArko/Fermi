@@ -13,6 +13,107 @@
  */
 
 // Source: schema.json
+export type UserEvent = {
+  _id: string;
+  _type: 'userEvent';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  id?: string;
+  timestamp?: string;
+  eventType?:
+    | 'page_view'
+    | 'button_click'
+    | 'form_submit'
+    | 'download'
+    | 'purchase'
+    | 'error';
+  eventName?: string;
+  sessionId?: string;
+  userId?: string;
+  url?: string;
+  metadata?: {
+    buttonId?: string;
+    formName?: string;
+    downloadType?: string;
+    purchaseAmount?: number;
+  };
+  ipAddress?: string;
+};
+
+export type SystemMetric = {
+  _id: string;
+  _type: 'systemMetric';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  id?: string;
+  timestamp?: string;
+  metricType?:
+    | 'cpu'
+    | 'memory'
+    | 'disk'
+    | 'network'
+    | 'response_time'
+    | 'error_rate';
+  value?: number;
+  unit?: string;
+  status?: 'normal' | 'warning' | 'critical';
+  thresholds?: {
+    warning?: number;
+    critical?: number;
+  };
+  metadata?: {
+    hostname?: string;
+    environment?: string;
+    version?: string;
+  };
+};
+
+export type PerformanceMetric = {
+  _id: string;
+  _type: 'performanceMetric';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  id?: string;
+  timestamp?: string;
+  url?: string;
+  loadTime?: number;
+  firstContentfulPaint?: number;
+  largestContentfulPaint?: number;
+  cumulativeLayoutShift?: number;
+  firstInputDelay?: number;
+  sessionId?: string;
+  userId?: string;
+  deviceType?: 'desktop' | 'mobile' | 'tablet';
+  browser?: string;
+  performanceScore?: number;
+};
+
+export type PageView = {
+  _id: string;
+  _type: 'pageView';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  id?: string;
+  timestamp?: string;
+  url?: string;
+  referrer?: string;
+  userAgent?: string;
+  ipAddress?: string;
+  sessionId?: string;
+  userId?: string;
+  pageLoadTime?: number;
+  deviceType?: 'desktop' | 'mobile' | 'tablet';
+  browser?: string;
+  os?: string;
+  country?: string;
+  city?: string;
+  isp?: string;
+};
+
 export type LessonCompletion = {
   _id: string;
   _type: 'lessonCompletion';
@@ -144,6 +245,33 @@ export type Lesson = {
         _key: string;
       }
   >;
+};
+
+export type ErrorLog = {
+  _id: string;
+  _type: 'errorLog';
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  id?: string;
+  timestamp?: string;
+  errorType?: 'client' | 'server' | 'database' | 'external';
+  message?: string;
+  stack?: string;
+  url?: string;
+  sessionId?: string;
+  userId?: string;
+  ipAddress?: string;
+  userAgent?: string;
+  severity?: 'low' | 'medium' | 'high' | 'critical';
+  resolved?: boolean;
+  resolvedAt?: string;
+  resolvedBy?: string;
+  metadata?: {
+    component?: string;
+    action?: string;
+    environment?: string;
+  };
 };
 
 export type Enrollment = {
@@ -436,9 +564,14 @@ export type SanityAssetSourceData = {
 };
 
 export type AllSanitySchemaTypes =
+  | UserEvent
+  | SystemMetric
+  | PerformanceMetric
+  | PageView
   | LessonCompletion
   | Module
   | Lesson
+  | ErrorLog
   | Enrollment
   | Student
   | Course
@@ -1919,7 +2052,7 @@ declare module '@sanity/client' {
     '*[_type == "lesson" && _id == $id][0] {\n    ...,\n    files[]{\n      _key,\n      asset->{\n        _id,\n        _type,\n        originalFilename,\n        url,\n        mimeType,\n        size\n      },\n      title,\n      description\n    },\n    "module": module->{\n      ...,\n      "course": course->{...}\n    },\n    notebookUrl,\n    colabUrl,\n    notebookFile{\n      asset->{\n        url,\n        originalFilename\n      }\n    }\n  }': GetLessonByIdQueryResult;
     '*[_type == "lessonCompletion" && student._ref == $studentId && lesson._ref == $lessonId][0] {\n    ...\n  }': CompletionStatusQueryResult;
     '*[_type == "student" && clerkId == $clerkId][0] {\n    "enrolledCourses": *[_type == "enrollment" && student._ref == ^._id] {\n      ...,\n      "course": course-> {\n        ...,\n        "slug": slug.current,\n        "category": category->{...},\n        "instructor": instructor->{\n          ...,\n          "photo": photo.asset->url\n        }\n      }\n    }\n  }': GetEnrolledCoursesQueryResult;
-
+    '*[_type == "student" && clerkId == $clerkId][0]': GetStudentByClerkIdQueryResult;
     '*[_type == "student" && clerkId == $clerkId][0] { _id }': StudentQueryResult;
     '*[_type == "enrollment" && student._ref == $studentId && course._ref == $courseId][0]': EnrollmentQueryResult;
     '\n      *[_type == "student" && clerkId == $clerkId][0] {\n        _id,\n        clerkId,\n        email,\n        firstName,\n        lastName,\n        imageUrl,\n        isActive,\n        createdAt,\n        updatedAt\n      }\n    ': StudentByClerkIdQueryResult;

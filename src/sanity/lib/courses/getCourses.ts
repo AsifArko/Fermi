@@ -5,7 +5,7 @@ import type {
   SanityImageCrop,
   Slug,
   internalGroqTypeReferenceTo,
-} from '../../../sanity.types';
+} from '../../../../sanity.types';
 import { sanityFetch } from '../live';
 
 // Custom type for enhanced course data with expanded modules and lessons

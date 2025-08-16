@@ -9,6 +9,12 @@ import Footer from '@/components/Footer';
 import { GlobalScientificBackground } from '@/components/GlobalScientificBackground';
 import Header from '@/components/Header';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import { Monitoring } from '@/components/Monitoring';
+
+// Initialize monitoring services
+import '@/lib/monitoring/init';
+// Initialize client-side monitoring
+import '@/lib/monitoring/client';
 
 import './globals.css';
 
@@ -56,6 +62,7 @@ export default async function RootLayout({
             <Header />
             {children}
             <Footer />
+            <Monitoring />
           </ThemeProvider>
         </ClerkProvider>
       </body>

@@ -1,7 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { analyticsService } from '@/lib/monitoring/analyticsService';
-import { MonitoringService } from '@/lib/monitoring/monitoringService';
+import {
+  analyticsService,
+  PageView,
+  UserEvent,
+  PerformanceMetric,
+} from '@/lib/monitoring/analyticsService';
+
+// Helper functions for device detection
+function getDeviceType(userAgent: string): 'desktop' | 'mobile' | 'tablet' {
+  const mobileRegex =
+    /Mobile|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+  const tabletRegex = /iPad|Android(?=.*\bMobile\b)(?=.*\bSafari\b)/i;
+
+  if (tabletRegex.test(userAgent)) return 'tablet';
+  if (mobileRegex.test(userAgent)) return 'mobile';
+  return 'desktop';
+}
+
+function getBrowser(userAgent: string): string {
+  if (userAgent.includes('Chrome')) return 'Chrome';
+  if (userAgent.includes('Firefox')) return 'Firefox';
+  if (userAgent.includes('Safari')) return 'Safari';
+  if (userAgent.includes('Edge')) return 'Edge';
+  if (userAgent.includes('Opera')) return 'Opera';
+  return 'Unknown';
+}
+
+function getOS(userAgent: string): string {
+  if (userAgent.includes('Windows')) return 'Windows';
+  if (userAgent.includes('Mac')) return 'macOS';
+  if (userAgent.includes('Linux')) return 'Linux';
+  if (userAgent.includes('Android')) return 'Android';
+  if (userAgent.includes('iOS')) return 'iOS';
+  return 'Unknown';
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,7 +55,9 @@ export async function POST(request: NextRequest) {
 
     // Track page view if provided
     if (pageView) {
-      await analyticsService.trackPageView({
+      const fullPageView: PageView = {
+        id: `pv_${Date.now()}`,
+        timestamp: new Date(),
         url: pageView.url,
         referrer: pageView.referrer,
         userAgent,
@@ -30,38 +65,37 @@ export async function POST(request: NextRequest) {
         userId: pageView.userId,
         pageLoadTime: pageView.pageLoadTime || 0,
         sessionId,
-      });
+        deviceType: getDeviceType(userAgent),
+        browser: getBrowser(userAgent),
+        os: getOS(userAgent),
+      };
 
-      // Also record in monitoring service
-      const monitoring = MonitoringService.getInstance();
-      monitoring.recordPageView(
-        pageView.url,
-        pageView.deviceType || 'desktop',
-        pageView.browser || 'unknown'
-      );
+      await analyticsService.trackPageView(fullPageView);
     }
 
     // Track user event if provided
     if (eventType && eventName) {
-      await analyticsService.trackUserEvent({
+      const fullUserEvent: UserEvent = {
+        id: `ue_${Date.now()}`,
+        timestamp: new Date(),
         eventType,
         eventName,
-        url,
+        url: url || '/',
         userId: metadata?.userId,
         ipAddress,
         sessionId,
-        metadata,
-      });
+        metadata: metadata,
+      };
 
-      // Also record in monitoring service
-      const monitoring = MonitoringService.getInstance();
-      monitoring.recordUserEvent(eventType, eventName);
+      await analyticsService.trackUserEvent(fullUserEvent);
     }
 
-    // Track performance metrics if provided
+    // Track performance metric if provided
     if (performance) {
-      await analyticsService.trackPerformance({
-        url,
+      const fullPerformanceMetric: PerformanceMetric = {
+        id: `perf_${Date.now()}`,
+        timestamp: new Date(),
+        url: url || '/',
         loadTime: performance.loadTime || 0,
         firstContentfulPaint: performance.firstContentfulPaint || 0,
         largestContentfulPaint: performance.largestContentfulPaint || 0,
@@ -69,18 +103,22 @@ export async function POST(request: NextRequest) {
         firstInputDelay: performance.firstInputDelay || 0,
         userId: metadata?.userId,
         sessionId,
-      });
+      };
+
+      await analyticsService.trackPerformanceMetric(fullPerformanceMetric);
     }
 
-    return NextResponse.json({ success: true, sessionId });
+    return NextResponse.json({
+      success: true,
+      message: 'Event tracked successfully',
+    });
   } catch (error) {
-    // Log error in development only
-    if (process.env.NODE_ENV === 'development') {
-      // eslint-disable-next-line no-console
-      console.error('Error tracking analytics:', error);
-    }
     return NextResponse.json(
-      { error: 'Failed to track analytics' },
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        message: 'Failed to track event',
+      },
       { status: 500 }
     );
   }

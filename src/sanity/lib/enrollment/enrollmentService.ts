@@ -224,12 +224,11 @@ export async function getStudentEnrollments(
           expiresAt,
           amount,
           paymentId,
-          "course": course-> {
+          course->{
             _id,
             title,
             slug,
-            image,
-            category->{ name }
+            image
           }
         } | order(enrolledAt desc)
       }
@@ -243,21 +242,23 @@ export async function getStudentEnrollments(
     const enrollments = result?.data?.enrollments || [];
 
     // Transform the query result to match the Enrollment interface
-    return enrollments.map(enrollment => ({
-      _id: enrollment._id || '',
+    return enrollments.map((enrollment: any) => ({
+      _id: enrollment._id,
       _type: 'enrollment' as const,
-      student: { _ref: '', _type: 'reference' as const }, // We don't have this in the query
-      course: { _ref: '', _type: 'reference' as const }, // We don't have this in the query
-      status: (enrollment.status || 'pending') as
-        | 'pending'
-        | 'active'
-        | 'completed'
-        | 'cancelled',
+      student: {
+        _ref: enrollment.student?._ref || '',
+        _type: 'reference' as const,
+      },
+      course: {
+        _ref: enrollment.course?._id || '',
+        _type: 'reference' as const,
+      },
+      status: enrollment.status || 'pending',
       amount: enrollment.amount || 0,
-      paymentId: enrollment.paymentId || undefined,
+      paymentId: enrollment.paymentId,
       enrolledAt: enrollment.enrolledAt || new Date().toISOString(),
-      expiresAt: enrollment.expiresAt || undefined,
-      metadata: {},
+      expiresAt: enrollment.expiresAt,
+      metadata: enrollment.metadata || {},
     }));
   } catch {
     return [];
