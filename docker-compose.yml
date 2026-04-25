@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  nextjs:
+    build:
+      context: .
+      target: nextjs-runner
+      args:
+        NEXT_PUBLIC_SANITY_PROJECT_ID: ${NEXT_PUBLIC_SANITY_PROJECT_ID}
+        NEXT_PUBLIC_SANITY_DATASET: ${NEXT_PUBLIC_SANITY_DATASET}
+        SANITY_API_TOKEN: ${SANITY_API_TOKEN}
+        SANITY_API_ADMIN_TOKEN: ${SANITY_API_ADMIN_TOKEN}
+        SANITY_STUDIO_PROJECT_ID: ${SANITY_STUDIO_PROJECT_ID}
+        SANITY_STUDIO_DATASET: ${SANITY_STUDIO_DATASET}
+        NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL}
+        NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}
+        STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+        STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+        NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+        CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - .env.local:/app/.env.local
+
+  sanity:
+    build:
+      context: .
+      target: sanity-runner
+    ports:
+      - '3333:3333'
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - .env.local:/app/.env.local
